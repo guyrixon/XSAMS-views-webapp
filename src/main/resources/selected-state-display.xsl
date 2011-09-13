@@ -494,6 +494,17 @@
         </p>
     </xsl:template>
     
+    <xsl:template match="xsams:PartitionFunction">
+        <p>
+            <xsl:text>Partitionfunction: &#xa;</xsl:text>
+            <xsl:text>T: </xsl:text>
+            <xsl:value-of select="xsams:T/xsams:DataList"/>
+            <xsl:text>&#xa;Q: </xsl:text>
+            <xsl:value-of select="xsams:Q/xsams:DataList"/>
+            <xsl:text>&#xa;</xsl:text>
+        </p>
+    </xsl:template>
+    
     
     <xsl:template name="quantity-with-unit">
         <xsl:param name="quantity"/>
