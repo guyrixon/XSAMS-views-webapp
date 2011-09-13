@@ -35,34 +35,38 @@
                         <th>Final state</th>
                         <th>Broadening</th>
                     </tr>
-                    <xsl:apply-templates/>
+                    <xsl:for-each select="line">
+                        <xsl:sort select="sort-key"/>
+                        <xsl:call-template name="line"/>
+                    </xsl:for-each>
                 </table>
             </body>
         </html>
     </xsl:template>
     
-    <xsl:template match="atomic-line">
-        <tr>
-            <td><xsl:call-template name="atomic-specie"><xsl:with-param name="line" select="."/></xsl:call-template></td>
-            <td><xsl:value-of select="xsams:IonCharge"/></td>
-            <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:RadiativeTransition/xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
-            <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:RadiativeTransition/xsams:Probability"></xsl:with-param></xsl:call-template></td>
-            <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="xsams:AtomicState[1]"/></xsl:call-template></td>
-            <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="xsams:AtomicState[2]"/></xsl:call-template></td>
-            <td><xsl:call-template name="broadening"><xsl:with-param name="line" select="."/></xsl:call-template></td>
-        </tr>
-    </xsl:template>
-                    
-    <xsl:template match="molecular-line">
-        <tr>
-            <td><xsl:call-template name="molecular-specie"><xsl:with-param name="line" select="."></xsl:with-param></xsl:call-template></td>
-            <td><xsl:value-of select="xsams:IonCharge"/></td>
-            <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:RadiativeTransition/xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
-            <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:RadiativeTransition/xsams:Probability"></xsl:with-param></xsl:call-template></td>
-            <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="xsams:MolecularState[1]"/></xsl:call-template></td>
-            <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="xsams:MolecularState[2]"/></xsl:call-template></td>
-            <td><xsl:call-template name="broadening"><xsl:with-param name="line" select="."/></xsl:call-template></td>
-        </tr> 
+    <xsl:template name="line">
+        <xsl:if test="kind = 'atomic'">
+            <tr>
+                <td><xsl:call-template name="atomic-specie"><xsl:with-param name="line" select="."/></xsl:call-template></td>
+                <td><xsl:value-of select="xsams:IonCharge"/></td>
+                <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:RadiativeTransition/xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
+                <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:RadiativeTransition/xsams:Probability"></xsl:with-param></xsl:call-template></td>
+                <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="xsams:AtomicState[1]"/></xsl:call-template></td>
+                <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="xsams:AtomicState[2]"/></xsl:call-template></td>
+                <td><xsl:call-template name="broadening"><xsl:with-param name="line" select="."/></xsl:call-template></td>
+            </tr>
+        </xsl:if>
+        <xsl:if test="kind = 'molecular'">  
+            <tr>
+                <td><xsl:call-template name="molecular-specie"><xsl:with-param name="line" select="."></xsl:with-param></xsl:call-template></td>
+                <td><xsl:value-of select="xsams:IonCharge"/></td>
+                <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:RadiativeTransition/xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
+                <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:RadiativeTransition/xsams:Probability"></xsl:with-param></xsl:call-template></td>
+                <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="xsams:MolecularState[1]"/></xsl:call-template></td>
+                <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="xsams:MolecularState[2]"/></xsl:call-template></td>
+                <td><xsl:call-template name="broadening"><xsl:with-param name="line" select="."/></xsl:call-template></td>
+            </tr>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template name="atomic-specie">
@@ -175,5 +179,7 @@
         <xsl:text> </xsl:text>
         <xsl:value-of select="$quantity/xsams:Value/@units"/>
     </xsl:template>
+    
+    <xsl:template match="text()|@*"/>
     
 </xsl:stylesheet>

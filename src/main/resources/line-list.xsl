@@ -52,12 +52,21 @@
         <xsl:variable name="initialStateId" select="xsams:InitialStateRef"/>
         <xsl:variable name="finalStateId" select="xsams:FinalStateRef"/>
         
-        <xsl:if test="key('atomicState', $initialStateId)">
-            <atomic-line>
-                <!-- The transition itself. -->
-                <xsl:copy-of select="."/>
+        <line>
+            <sort-key>
+                <xsl:value-of select="xsams:EnergyWavelength/xsams:Wavelength/xsams:Value"/>
+                <xsl:value-of select="xsams:EnergyWavelength/xsams:Wavenumber/xsams:Value"/>
+                <xsl:value-of select="xsams:EnergyWavelength/xsams:Frequency/xsams:Value"/>
+                <xsl:value-of select="xsams:EnergyWavelength/xsams:Energy/xsams:Value"/>
+            </sort-key>
+                  
+            <!-- The transition itself. -->
+            <xsl:copy-of select="."/>
                 
-                <!-- These variables contain the node-sets for the XML representing the states. -->
+            <xsl:if test="key('atomicState', $initialStateId)">
+                <kind>atomic</kind>
+              
+            <!-- These variables contain the node-sets for the XML representing the states. -->  
                 <xsl:variable name="initialState" select="key('atomicState', $initialStateId)"/>
                 <xsl:variable name="finalState" select="key('atomicState', $finalStateId)"/>
                 
@@ -75,17 +84,13 @@
                 <xsl:copy-of select="$initialState/../../xsams:IsotopeParameters"/>
                         
                 <!-- Metadata from the Atom containing the Isotope -->
-                <xsl:copy-of select="$initialState/../../../xsams:ChemicalElement"/>     
+                <xsl:copy-of select="$initialState/../../../xsams:ChemicalElement"/>
                 
-            </atomic-line>
-        </xsl:if>
-        
-        <xsl:if test="key('molecularState', $initialStateId)">
+            </xsl:if>
             
-            <molecular-line>
-                <!-- The transition itself. -->
-                <xsl:copy-of select="."/>
-                
+            <xsl:if test="key('molecularState', $initialStateId)">
+                <kind>molecular</kind>
+              
                 <!-- These variables contain the node-sets for the XML representing the states. -->
                 <xsl:variable name="initialState" select="key('molecularState', $initialStateId)"/>
                 <xsl:variable name="finalState" select="key('molecularState', $finalStateId)"/>
@@ -96,9 +101,10 @@
                 
                 <!-- Metadata from the Molecule containing the states -->
                 <xsl:copy-of select="$initialState/../xsams:MolecularChemicalSpecies"/>
+              
+            </xsl:if>
                 
-            </molecular-line>
-        </xsl:if>
+        </line>
         
     </xsl:template>
     
