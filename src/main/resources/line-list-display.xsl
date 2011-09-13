@@ -33,6 +33,7 @@
                         <th>Probability</th>
                         <th>Initial state</th>
                         <th>Final state</th>
+                        <th>Broadening</th>
                     </tr>
                     <xsl:apply-templates/>
                 </table>
@@ -48,6 +49,7 @@
             <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:RadiativeTransition/xsams:Probability"></xsl:with-param></xsl:call-template></td>
             <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="xsams:AtomicState[1]"/></xsl:call-template></td>
             <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="xsams:AtomicState[2]"/></xsl:call-template></td>
+            <td><xsl:call-template name="broadening"><xsl:with-param name="line" select="."/></xsl:call-template></td>
         </tr>
     </xsl:template>
                     
@@ -59,6 +61,7 @@
             <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:RadiativeTransition/xsams:Probability"></xsl:with-param></xsl:call-template></td>
             <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="xsams:MolecularState[1]"/></xsl:call-template></td>
             <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="xsams:MolecularState[2]"/></xsl:call-template></td>
+            <td><xsl:call-template name="broadening"><xsl:with-param name="line" select="."/></xsl:call-template></td>
         </tr> 
     </xsl:template>
     
@@ -141,6 +144,27 @@
             <xsl:text> - </xsl:text>
             <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
         </a>    
+    </xsl:template>
+    
+    
+    <xsl:template name="broadening">
+        <xsl:param name="line"/>
+        <xsl:for-each select="$line/Broadening">
+            <xsl:value-of select="@name"/>
+            <xsl:text>: </xsl:text>
+            <xsl:for-each select="xsams:Lineshape">
+                <xsl:value-of select="@name"/>
+                <xsl:text>(</xsl:text>
+                <xsl:for-each select="xsams:LineshapeParameter[xsams:Value]">
+                    <xsl:value-of select="@name"/>
+                    <xsl:text>=</xsl:text>
+                    <xsl:value-of select="Value"/>
+                    <xsl:text>, </xsl:text>
+                </xsl:for-each>
+                <xsl:text>) </xsl:text>
+            </xsl:for-each>
+            <xsl:text>; </xsl:text>
+        </xsl:for-each>
     </xsl:template>
     
    
