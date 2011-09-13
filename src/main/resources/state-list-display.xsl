@@ -62,6 +62,7 @@
         </xsl:variable>
         
         <xsl:for-each select="xsams:MolecularState">
+            <xsl:sort select="MolecularStateCharacterisation/StateEnergy/Value"/>
             <xsl:call-template name="molecular-state">
                 <xsl:with-param name="specie" select="$specie"/>
                 <xsl:with-param name="state" select="."/>
