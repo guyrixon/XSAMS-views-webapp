@@ -50,7 +50,7 @@
         </p>
     </xsl:template>
     
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:StoichiometricFormula/xsams:Value">
+    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:StoichiometricFormula">
         <p>
             <xsl:text>Stoichiometric formula: </xsl:text>
             <xsl:value-of select="."/>
