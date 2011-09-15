@@ -28,6 +28,7 @@
         <html>
             <head>
                 <title>VAMDC results: atomic and molecular states</title>
+                <style>table {border-style: solid; border-width: 1px; border-collapse="collapse"}</style>
             </head>
             <body>
                 <h1>Query results: atomic and molecular states</h1>
@@ -39,7 +40,7 @@
                     </a>
                 </p>
                 
-                <table>
+                <table rules="all">
                     <tr>
                         <th>Specie</th>
                         <th>Ion charge</th>

@@ -14,6 +14,7 @@
         <html>
             <head>
                 <title>VAMDC results: radiative transitions</title>
+                <style>table {border-style: solid; border-width: 1px; border-collapse="collapse"}</style>
             </head>
             <body>
                 <h1>Query results: radiative transitions</h1>
@@ -25,7 +26,7 @@
                     </a>
                 </p>
                 
-                <table>
+                <table rules="all">
                     <tr>
                         <th>Specie</th>
                         <th>Ion charge</th>
@@ -107,21 +108,21 @@
     
     <xsl:template name="probability">
         <xsl:param name="p"/>
-        <xsl:if test="$p/xsams:TransitionProbabilityA/Value">
+        <xsl:if test="$p/xsams:TransitionProbabilityA">
             <xsl:text> A=</xsl:text>
-            <xsl:value-of select="$p/xsams:TransitionProbabilityA/Value"/>
+            <xsl:value-of select="$p/xsams:TransitionProbabilityA/xsams:Value"/>
         </xsl:if>
         <xsl:if test="$p/xsams:OscillatorStrength">
             <xsl:text> f=</xsl:text>
-            <xsl:value-of select="$p/xsams:OscillatorStrength/Value"/>
+            <xsl:value-of select="$p/xsams:OscillatorStrength/xsams:Value"/>
         </xsl:if>
         <xsl:if test="$p/xsams:WeightedOscillatorStrength">
             <xsl:text> gf=</xsl:text>
-            <xsl:value-of select="$p/xsams:WeightedOscillatorStrength/Value"/>
+            <xsl:value-of select="$p/xsams:WeightedOscillatorStrength/xsams:Value"/>
         </xsl:if>
         <xsl:if test="$p/xsams:Log10WeightedOscillatorStrength">
             <xsl:text> log</xsl:text><sub>10</sub><xsl:text>gf=</xsl:text>
-            <xsl:value-of select="$p/xsams:Log10WeightedOscillatorStrength?Value"/>
+            <xsl:value-of select="$p/xsams:Log10WeightedOscillatorStrength/xsams:Value"/>
         </xsl:if>
     </xsl:template>
     
@@ -132,9 +133,16 @@
         <xsl:param name="state"/>
         <a>
             <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>&amp;stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
-            <xsl:value-of select="$state/xsams:Description"/>
-            <xsl:text> - </xsl:text>
-            <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
+            <xsl:choose>
+                <xsl:when test="$state/xsams:Description or $state/xsams:MolecularStateCharacterisation/xsams:StateEnergy">
+                    <xsl:value-of select="$state/xsams:Description"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>?</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
         </a>    
     </xsl:template>
     
@@ -144,9 +152,16 @@
         <xsl:param name="state"/>
         <a>
             <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>?stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
-            <xsl:value-of select="$state/xsams:Description"/>
-            <xsl:text> - </xsl:text>
-            <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
+            <xsl:choose>
+                <xsl:when test="$state/xsams:Description or $state/xsams:MolecularStateCharacterisation/xsams:StateEnergy">
+                    <xsl:value-of select="$state/xsams:Description"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>?</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
         </a>    
     </xsl:template>
     
