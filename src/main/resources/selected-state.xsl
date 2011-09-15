@@ -14,11 +14,6 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="/">
-        <xsl:processing-instruction name="xml-stylesheet">href="selected-state-display.xsl" type="text/xsl"</xsl:processing-instruction>
-        <xsl:apply-templates/>
-    </xsl:template>
-    
     <!-- Don't copy transitions and collisions. -->
     <xsl:template match="xsams:Processes"/>
     

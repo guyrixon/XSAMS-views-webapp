@@ -151,9 +151,9 @@
     <xsl:template name="atomic-state">
         <xsl:param name="state"/>
         <a>
-            <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>?stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
+            <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>&amp;stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
             <xsl:choose>
-                <xsl:when test="$state/xsams:Description or $state/xsams:MolecularStateCharacterisation/xsams:StateEnergy">
+                <xsl:when test="$state/xsams:Description or $state/xsams:AtomicNumericalData/xsams:StateEnergy">
                     <xsl:value-of select="$state/xsams:Description"/>
                     <xsl:text> </xsl:text>
                     <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
