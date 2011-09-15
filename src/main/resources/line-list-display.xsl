@@ -107,21 +107,21 @@
     
     <xsl:template name="probability">
         <xsl:param name="p"/>
-        <xsl:if test="$p/xsams:TransitionProbabilityA">
+        <xsl:if test="$p/xsams:TransitionProbabilityA/Value">
             <xsl:text> A=</xsl:text>
-            <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$p/xsams:TransitionProbabilityA"/></xsl:call-template>
+            <xsl:value-of select="$p/xsams:TransitionProbabilityA/Value"/>
         </xsl:if>
         <xsl:if test="$p/xsams:OscillatorStrength">
             <xsl:text> f=</xsl:text>
-            <xsl:value-of select="$p/xsams:OscillatorStrength"/>
+            <xsl:value-of select="$p/xsams:OscillatorStrength/Value"/>
         </xsl:if>
         <xsl:if test="$p/xsams:WeightedOscillatorStrength">
             <xsl:text> gf=</xsl:text>
-            <xsl:value-of select="$p/xsams:WeightedOscillatorStrength"/>
+            <xsl:value-of select="$p/xsams:WeightedOscillatorStrength/Value"/>
         </xsl:if>
         <xsl:if test="$p/xsams:Log10WeightedOscillatorStrength">
             <xsl:text> log</xsl:text><sub>10</sub><xsl:text>gf=</xsl:text>
-            <xsl:value-of select="$p/xsams:Log10WeightedOscillatorStrength"/>
+            <xsl:value-of select="$p/xsams:Log10WeightedOscillatorStrength?Value"/>
         </xsl:if>
     </xsl:template>
     
