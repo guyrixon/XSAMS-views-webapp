@@ -111,6 +111,7 @@
             <td><xsl:value-of select="$charge"/></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
             <td><xsl:value-of select="$state/Description"/></td>
+            <td></td>
             <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
         </tr>
     </xsl:template>
