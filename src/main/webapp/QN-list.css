@@ -1,0 +1,25 @@
+/*
+ * Display of quantum numbers as a command-separated list of name=value pairs.
+ * In the HTML, the list must be a dl of class QN-list.
+ */
+dl.QN-list dt {
+  display: inline;
+  font-style: italic;
+}
+dl.QN-list dt:after {
+  content: " = ";
+}
+
+dl.QN-list dd {
+  display: inline;
+  padding: 0 0 0.5em 0;
+  margin: 0;
+}
+
+dl.QN-list dd:after {
+  content: ', ';
+}
+
+dl.QN-list dd:last-child:after {
+    content: ""
+}
