@@ -48,4 +48,5 @@
       </plugin>
     </plugins>
   </build>
+    <description>A web application to present an XSAMS document as web pages.</description>
 </project>
