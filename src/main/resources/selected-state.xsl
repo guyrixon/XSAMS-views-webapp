@@ -19,25 +19,25 @@
     
     <!-- Don't copy species unless they own the selected state. -->
     <xsl:template match="xsams:Atom">
-        <xsl:if test="xsams:Isotope/xsams:Ion/xsams:AtomicState/@stateID=$stateID">
+        <xsl:if test="descendant::xsams:AtomicState[@stateID=$stateID]">
             <xsl:copy>
-                <xsl:apply-templates select="@*|node()"/>
+                <xsl:apply-templates/>
             </xsl:copy>
         </xsl:if>
     </xsl:template>
     
     <xsl:template match="xsams:Isotope">
-        <xsl:if test="xsams:Ion/xsams:AtomicState/@xsams:stateID=$stateID">
+      <xsl:if test="descendant::xsams:AtomicState[@stateID=$stateID]">
             <xsl:copy>
-                <xsl:apply-templates select="@*|node()"/>
+                <xsl:apply-templates/>
             </xsl:copy>
         </xsl:if>
     </xsl:template>
     
     <xsl:template match="xsams:Ion">
-        <xsl:if test="xsams:AtomicState/@stateID=$stateID">
+      <xsl:if test="descendant::xsams:AtomicState[@stateID=$stateID]">
             <xsl:copy>
-                <xsl:apply-templates select="@*|node()"/>
+                <xsl:apply-templates/>
             </xsl:copy>
         </xsl:if>
     </xsl:template>
@@ -46,7 +46,7 @@
     <xsl:template match="xsams:Molecule">
         <xsl:if test="xsams:MolecularState/@stateID=$stateID">
             <xsl:copy>
-                <xsl:apply-templates select="@*|node()"/>
+                <xsl:apply-templates/>
             </xsl:copy>
         </xsl:if>
     </xsl:template>
@@ -54,9 +54,9 @@
     
     <!-- Don't copy states unless the ID matches the selected state. -->
     <xsl:template match="xsams:AtomicState | xsams:MolecularState">
-        <xsl:if test="$stateID=@stateID">
-            <xsl:copy-of select="."/>
-        </xsl:if>
+      <xsl:if test="@stateID=$stateID">
+        <xsl:copy-of select="."/>
+      </xsl:if>
     </xsl:template>
     
 </xsl:stylesheet>
