@@ -27,6 +27,7 @@ public class SelectedStateServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
     String stateId = request.getParameter("stateID");
+    System.out.println("stateID = " + stateId);
     File tmp = File.createTempFile("xsams", null);
     URL u = new URL(request.getParameter("url"));
     StreamSource in = new StreamSource(u.openStream());
