@@ -22,6 +22,7 @@
         <html>
             <head>
                 <title>VAMDC: available data for selected state</title>
+                <link rel="stylesheet" href="QN-list.css" type="text/css"/>
             </head>
             <body>
                 <h1>Available data for selected state</h1>
@@ -70,7 +71,7 @@
     </xsl:template>
     
     <xsl:template match="xsams:Atom">
-        <h2>Specie</h2>
+        <h2>Species</h2>
         <p>
             <xsl:choose>
                 <xsl:when test="xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber">
@@ -90,6 +91,14 @@
             </xsl:if>
         </p>
         <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="xsams:Isotope">
+      <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="xsams:Ion">
+      <xsl:apply-templates/>
     </xsl:template>
     
     <xsl:template match="xsams:IonCharge">
@@ -189,8 +198,36 @@
     
     <xsl:template match="xsams:AtomicQuantumNumbers">
         <h3>Atomic quantum numbers</h3>
-        <p>TBD</p>
+        <dl class="QN-list">
+          <xsl:apply-templates/>
+        </dl>
     </xsl:template>
+    
+    <xsl:template match="xsams:TotalAngularMomentum">
+      <dt>J</dt>
+      <dd><xsl:value-of select="."/></dd>
+    </xsl:template>
+  
+    <xsl:template match="xsams:Kappa">
+      <dt>&#954;</dt>
+      <dd><xsl:value-of select="."/></dd>
+    </xsl:template>
+  
+  <xsl:template match="xsams:Parity">
+    <dt>parity</dt>
+    <dd><xsl:value-of select="."/></dd>
+  </xsl:template>
+  
+  <xsl:template match="xsams:HyperfineMomentum">
+    <dt>F</dt>
+    <dd><xsl:value-of select="."/></dd>
+  </xsl:template>
+  
+  <xsl:template match="xsams:MagneticQuantumNumber">
+    <dt>m</dt>
+    <dd><xsl:value-of select="."/></dd>
+  </xsl:template>
+  
     
     <xsl:template match="xsams:AtomicComposition">
         <h3>Components of state wave-function</h3>
