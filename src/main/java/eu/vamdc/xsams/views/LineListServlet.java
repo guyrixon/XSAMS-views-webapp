@@ -21,19 +21,29 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Guy Rixon
  */
-public class LineListServlet extends HttpServlet {
+public class LineListServlet extends TransformingServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
-    File tmp = File.createTempFile("xsams", null);
-    URL u = new URL(request.getParameter("url"));
-    StreamSource in = new StreamSource(u.openStream());
-    StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
-    StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
-    StreamResult out = new StreamResult(response.getOutputStream());
-    transform(in, tmpOut, getLineListTransformer(), u);
-    transform(tmpIn, out, getLineListDisplayTransformer(), u);
+    try {
+      URL remote = getOriginalDataUrl(request);
+      URL local = getDataAccessUrl(remote);
+      getServletContext().log("Taking data from " + local);
+      File tmp = File.createTempFile("xsams", null);
+      StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
+      StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
+      StreamSource in = new StreamSource(local.openStream());
+      StreamResult out = new StreamResult(response.getOutputStream());
+      transform(in, tmpOut, getLineListTransformer(), remote);
+      transform(tmpIn, out, getLineListDisplayTransformer(), remote);
+    }
+    catch (RequestException e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+    }
   }
   
   
@@ -63,18 +73,6 @@ public class LineListServlet extends HttpServlet {
     }
   }
   
-  private void transform(StreamSource in, StreamResult out, Transformer t, URL u)
-      throws ServletException {
-    try {
-      String url = URLEncoder.encode(u.toString(), "UTF-8");
-      t.setParameter("xsamsUrl", u.toString());
-      t.setParameter("stateListUrl", "state-list?url="+url);
-      t.setParameter("selectedStateUrl", "state?url="+url);
-      t.transform(in, out);
-    }
-    catch (Exception e) {
-      throw new ServletException(e);
-    }
-  }
+  
   
 }

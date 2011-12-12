@@ -5,12 +5,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -19,16 +17,25 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Guy Rixon
  */
-public class StateListServlet extends HttpServlet {
+public class StateListServlet extends TransformingServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
-    URL u = new URL(request.getParameter("url"));
-    StreamSource in = new StreamSource(u.openStream());
-    
-    StreamResult out = new StreamResult(response.getOutputStream());
-    transform(in, out, getStateListDisplayTransformer(), u);
+    try {
+      URL remote = getOriginalDataUrl(request);
+      URL local = getDataAccessUrl(remote);
+      getServletContext().log("Taking data from " + local);
+      StreamSource in = new StreamSource(local.openStream()); 
+      StreamResult out = new StreamResult(response.getOutputStream());
+      transform(in, out, getStateListDisplayTransformer(), remote);
+    }
+    catch (RequestException e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+    }
   }
   
   
@@ -42,20 +49,6 @@ public class StateListServlet extends HttpServlet {
       return TransformerFactory.newInstance().newTransformer(transform);
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);
-    }
-  }
-  
-  private void transform(StreamSource in, StreamResult out, Transformer t, URL u)
-      throws ServletException {
-    try {
-      String url = URLEncoder.encode(u.toString(), "UTF-8");
-      t.setParameter("xsamsUrl", u.toString());
-      t.setParameter("lineListUrl", "line-list?url="+url);
-      t.setParameter("selectedStateUrl", "state?url="+url);
-      t.transform(in, out);
-    }
-    catch (Exception e) {
-      throw new ServletException(e);
     }
   }
   
