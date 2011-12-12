@@ -32,7 +32,16 @@
     </xsl:template>
     
     <xsl:template match="xsams:Molecule">
-        <h2>Specie</h2>
+        <h2>Species</h2>
+        <p>
+          <xsl:text>InChI: </xsl:text>
+          <xsl:value-of select="descendant::xsams:InChI"/>
+          <xsl:if test="descendant::xsams:InChIKey">
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="descendant::xsams:InChIKey"/>
+            <xsl:text>)</xsl:text>
+          </xsl:if>
+        </p>
         <xsl:apply-templates/>
     </xsl:template>
    
@@ -58,18 +67,6 @@
         </p>
     </xsl:template>
     
-    <xsl:template match="xsams:InChI">
-        <p>
-            <xsl:text>InChI: </xsl:text>
-            <xsl:value-of select="."/>
-            <xsl:if test="../xsams:InChIKey">
-                <xsl:text> (</xsl:text>
-                <xsl:value-of select="../xsams:InChIKey"/>
-                <xsl:text>)</xsl:text>
-            </xsl:if>
-        </p>
-    </xsl:template>
-    
     <xsl:template match="xsams:Atom">
         <h2>Species</h2>
         <p>
@@ -85,11 +82,22 @@
                     <xsl:text> (isotope unspecified)</xsl:text>
                 </xsl:otherwise>
             </xsl:choose>
-            <xsl:if test="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin">
-                <xsl:text> Nuclear spin: </xsl:text>
-                <xsl:value-of select="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin"/>
-            </xsl:if>
         </p>
+        <p>
+          <xsl:text>InChI: </xsl:text>
+          <xsl:value-of select="descendant::xsams:InChI"/>
+          <xsl:if test="descendant::xsams:InChIKey">
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="descendant::xsams:InChIKey"/>
+            <xsl:text>)</xsl:text>
+          </xsl:if>
+        </p>
+        <xsl:if test="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin">
+          <p>
+            <xsl:text> Nuclear spin: </xsl:text>
+           <xsl:value-of select="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin"/>
+          </p>
+        </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -229,10 +237,14 @@
   </xsl:template>
   
     
-    <xsl:template match="xsams:AtomicComposition">
-        <h3>Components of state wave-function</h3>
-        <p>TBD</p>
-    </xsl:template>
+  <xsl:template match="xsams:AtomicComposition">
+    <h3>Components of state wave-function</h3>
+    <ul>
+      <xsl:for-each select="xsams:Component/xsams:Configuration/xsams:ConfigurationLabel">
+        <li><xsl:value-of select="."/></li>
+      </xsl:for-each>
+    </ul>     
+  </xsl:template>
     
     <xsl:template match="xsams:TotalStatisticalWeight">
         <p>

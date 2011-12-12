@@ -16,28 +16,33 @@
     xmlns:lpos="http://vamdc.org/xml/xsams/0.2/cases/lpos"
     xmlns:nltos="http://vamdc.org/xml/xsams/0.2/cases/nltos">
     
-    <!-- Sets the URL for the page listing radiative transitions. -->
-    <xsl:param name="lineListUrl"/>
-    
-    <!-- Sets the URL for the page showing a selected state. -->
-    <xsl:param name="selectedStateUrl"/>
+    <!-- The URL-encoded URL for fetching the XSAMS data. -->
+    <xsl:param name="xsams-url"/>
     
     <xsl:output method="html" encoding="UTF-8"/>
     
     <xsl:template match="xsams:XSAMSData">
-        <html>
-            <head>
-                <title>VAMDC results: atomic and molecular states</title>
-                <style>table {border-style: solid; border-width: 1px; border-collapse="collapse"}</style>
-            </head>
+      <html>
+        <head>
+          <title>VAMDC results: atomic and molecular states</title>
+            <style>table {border-style: solid; border-width: 1px; border-collapse="collapse"}</style>
+            <link rel="stylesheet" href="QN-list.css" type="text/css"/>
+          </head>
+          
             <body>
                 <h1>Query results: atomic and molecular states</h1>
                 
                 <p>
-                    <a>
-                        <xsl:attribute name="href"><xsl:value-of select="$lineListUrl"/></xsl:attribute>
-                        <xsl:text>(Switch to display of radiative transitions.)</xsl:text>
-                    </a>
+                  <a>
+                    <xsl:attribute name="href"><xsl:text>line-list?url=</xsl:text><xsl:value-of select="$xsams-url"/></xsl:attribute>
+                    <xsl:text>(Switch to display of radiative transitions.)</xsl:text>
+                  </a>
+                </p>
+                <p>
+                  <a>
+                    <xsl:attribute name="href"><xsl:text>state-list?reload&amp;url=</xsl:text><xsl:value-of select="$xsams-url"/></xsl:attribute>
+                    <xsl:text>(Reload data from source.)</xsl:text>
+                  </a>
                 </p>
                 
                 <table rules="all">
@@ -111,16 +116,47 @@
             <td><xsl:value-of select="$charge"/></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
             <td><xsl:value-of select="$state/Description"/></td>
-            <td></td>
+            <td><dl class="QN-list"><xsl:apply-templates/></dl></td>
             <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
         </tr>
     </xsl:template>
+    
+    
+    <xsl:template match="xsams:TotalAngularMomentum">
+      <dt>J</dt>
+      <dd><xsl:value-of select="."/></dd>
+    </xsl:template>
+  
+    <xsl:template match="xsams:Kappa">
+      <dt>&#954;</dt>
+      <dd><xsl:value-of select="."/></dd>
+    </xsl:template>
+  
+  <xsl:template match="xsams:Parity">
+    <dt>parity</dt>
+    <dd><xsl:value-of select="."/></dd>
+  </xsl:template>
+  
+  <xsl:template match="xsams:HyperfineMomentum">
+    <dt>F</dt>
+    <dd><xsl:value-of select="."/></dd>
+  </xsl:template>
+  
+  <xsl:template match="xsams:MagneticQuantumNumber">
+    <dt>m</dt>
+    <dd><xsl:value-of select="."/></dd>
+  </xsl:template>
     
     <!-- Writes a hyperlink to the page for the given state. -->
     <xsl:template name="state-link">
         <xsl:param name="state"/>
         <a>
-            <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>&amp;stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
+            <xsl:attribute name="href">
+              <xsl:text>state?stateID=</xsl:text>
+              <xsl:value-of select="$state/@stateID"/>
+              <xsl:text>&amp;url=</xsl:text>
+              <xsl:value-of select="$xsams-url"/>
+            </xsl:attribute>
             <xsl:text>Detail</xsl:text>
         </a>    
     </xsl:template>

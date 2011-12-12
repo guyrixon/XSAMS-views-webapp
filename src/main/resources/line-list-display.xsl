@@ -2,11 +2,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:xsams="http://vamdc.org/xml/xsams/0.2">
     
-    <!-- Sets the URL for the page listing states. -->
-    <xsl:param name="stateListUrl"/>
-    
-    <!-- Sets the URL for the page showing a selected state. -->
-    <xsl:param name="selectedStateUrl"/>
+    <!-- The URL-encoded URL for fetching the XSAMS data. -->
+    <xsl:param name="xsams-url"/>
     
     <xsl:output method="html" encoding="UTF-8"/>
     
@@ -21,14 +18,20 @@
                 
                 <p>
                     <a>
-                        <xsl:attribute name="href"><xsl:value-of select="$stateListUrl"/></xsl:attribute>
+                        <xsl:attribute name="href">state-list?url=<xsl:value-of select="$xsams-url"/></xsl:attribute>
                         <xsl:text>(Switch to display of states.)</xsl:text>
                     </a>
+                </p>
+                <p>
+                  <a>
+                    <xsl:attribute name="href"><xsl:text>line-list?reload&amp;url=</xsl:text><xsl:value-of select="$xsams-url"/></xsl:attribute>
+                    <xsl:text>(Reload data from source.)</xsl:text>
+                  </a>
                 </p>
                 
                 <table rules="all">
                     <tr>
-                        <th>Specie</th>
+                        <th>Species</th>
                         <th>Ion charge</th>
                         <th>&#955;/&#957;/n/E</th>
                         <th>Probability</th>
@@ -132,7 +135,12 @@
     <xsl:template name="molecular-state">
         <xsl:param name="state"/>
         <a>
-            <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>&amp;stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
+          <xsl:attribute name="href">
+              <xsl:text>state?stateID=</xsl:text>
+              <xsl:value-of select="$state/@stateID"/>
+              <xsl:text>&amp;url=</xsl:text>
+              <xsl:value-of select="$xsams-url"/>
+            </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="$state/xsams:Description or $state/xsams:MolecularStateCharacterisation/xsams:StateEnergy">
                     <xsl:value-of select="$state/xsams:Description"/>
@@ -151,7 +159,12 @@
     <xsl:template name="atomic-state">
         <xsl:param name="state"/>
         <a>
-            <xsl:attribute name="href"><xsl:value-of select="$selectedStateUrl"/><xsl:text>&amp;stateID=</xsl:text><xsl:value-of select="$state/@stateID"/></xsl:attribute>
+            <xsl:attribute name="href">
+              <xsl:text>state?stateID=</xsl:text>
+              <xsl:value-of select="$state/@stateID"/>
+              <xsl:text>&amp;url=</xsl:text>
+              <xsl:value-of select="$xsams-url"/>
+            </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="$state/xsams:Description or $state/xsams:AtomicNumericalData/xsams:StateEnergy">
                     <xsl:value-of select="$state/xsams:Description"/>
