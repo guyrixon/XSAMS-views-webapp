@@ -9,16 +9,9 @@
     </head>
     <body>
         <h1>Views of an XSAMS document</h1>
-        <form  action="line-list" method="get">
+        <form  action="service" method="get">
           <p>
-            List of radiative transitions for XSAMS document at URL: 
-            <input type="text" size="96" name="url"/>
-            <input type="submit"/>
-          </p>
-        </form>
-        <form action="state-list" method="get">
-          <p>
-            List of state for XSAMS document at URL: 
+            Visualize data from URL: 
             <input type="text" size="96" name="url"/>
             <input type="submit"/>
           </p>
