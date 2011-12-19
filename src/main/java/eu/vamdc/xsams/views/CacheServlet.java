@@ -76,15 +76,16 @@ public class CacheServlet extends HttpServlet {
   public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
     
     try {
-    
-      // Create a new file upload handler
       ServletFileUpload upload = new ServletFileUpload();
-
-      // Parse the request
       FileItemIterator iter = upload.getItemIterator(request);
+      boolean cached = false;
       while (iter.hasNext()) {
         FileItemStream item = iter.next();
         String name = item.getFieldName();
+        if (name.equals("url") && item.isFormField()) {
+          String key = uploadFromUrl(item);
+          redirect(request, key, response);
+        }
         InputStream stream = item.openStream();
         if (item.isFormField()) {
           log("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
@@ -164,9 +165,52 @@ public class CacheServlet extends HttpServlet {
     response.setHeader("Location", location);
     response.setStatus(HttpServletResponse.SC_SEE_OTHER);
   }
-
-    
-    
   
+  
+  /**
+   * Uploads a data set to the cache where the URL is given in the request.
+   * 
+   * @param item The request fragment holding the URL.
+   * @return The key for the cached data.
+   * @throws RequestException If the data cannot be uploaded.
+   */
+  private String uploadFromUrl(FileItemStream item) throws RequestException {
+    try {
+      InputStream i = item.openStream();
+      try {
+        String url = Streams.asString(i);
+        URL u = new URL(url);
+        return cache.put(u);
+      }
+      finally {
+        i.close();
+      }
+    }
+    catch (Exception e) {
+      throw new RequestException("Can't upload from parameter 'url'", e);
+    }
+  }
+
+  /**
+   * Uploads a data set to the cache where the data are given in the request.
+   * 
+   * @param item The request fragment holding the data.
+   * @return The key for the cached data.
+   * @throws RequestException If the data cannot be uploaded.
+   */
+  private String uploadFromRequestBody(FileItemStream item) throws RequestException {
+    try {
+      InputStream i = item.openStream();
+      try {
+        return cache.put(i);
+      }
+      finally {
+        i.close();
+      }
+    }
+    catch (Exception e) {
+      throw new RequestException("Can't upload from request body", e);
+    }
+  }
   
 }
