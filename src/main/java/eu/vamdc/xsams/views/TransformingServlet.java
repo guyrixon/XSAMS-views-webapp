@@ -2,11 +2,12 @@ package eu.vamdc.xsams.views;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
-import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -19,6 +20,37 @@ import javax.xml.transform.stream.StreamSource;
  */
 public abstract class TransformingServlet extends HttpServlet {
   
+  
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException {
+    try {
+      get(request, response);
+    }
+    catch (RequestException e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+    }
+  }
+  
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException {
+    try {
+      get(request, response);
+    }
+    catch (RequestException e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+    }
+  }
+  
+  protected abstract void get(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException;
   
   protected StreamSource getData(String key) throws ServletException, FileNotFoundException {
     DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);

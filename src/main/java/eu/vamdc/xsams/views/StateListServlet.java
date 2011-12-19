@@ -20,31 +20,23 @@ import javax.xml.transform.stream.StreamSource;
 public class StateListServlet extends TransformingServlet {
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+  protected void get(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
-    try {
-      String key = getKey(request);
-      StreamSource in = getData(key);
-      URL reload = getOriginalUrl(key);
-      response.setContentType("text/html");
-      String lineListUrl = "../line-list/" + key;
-      String reloadUrl = "../service?url=";
-      PrintWriter w = response.getWriter();
-      w.println("<html>");
-      w.println("<head>");
-      w.println("<title>Views of XSAMS</title>");
-      w.println("</head>");
-      w.println("<body>");
-      w.println("<p>(<a href='" + lineListUrl + "'>Switch to view of raditive transitions</a>)</p>");
-      StreamResult out = new StreamResult(w);
-      transform(in, out, getStateListDisplayTransformer());
-    }
-    catch (RequestException e) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
-    }
-    catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-    }
+    String key = getKey(request);
+    StreamSource in = getData(key);
+    URL reload = getOriginalUrl(key);
+    response.setContentType("text/html");
+    String lineListUrl = "../line-list/" + key;
+    String reloadUrl = "../service?url=";
+    PrintWriter w = response.getWriter();
+    w.println("<html>");
+    w.println("<head>");
+    w.println("<title>Views of XSAMS</title>");
+    w.println("</head>");
+    w.println("<body>");
+    w.println("<p>(<a href='" + lineListUrl + "'>Switch to view of raditive transitions</a>)</p>");
+    StreamResult out = new StreamResult(w);
+    transform(in, out, getStateListDisplayTransformer());
   }
   
   

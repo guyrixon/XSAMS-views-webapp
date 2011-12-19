@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,34 +22,26 @@ import javax.xml.transform.stream.StreamSource;
 public class LineListServlet extends TransformingServlet {
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+  protected void get(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
-    try {
-      String key = getKey(request);
-      StreamSource in = getData(key);
-      String stateListUrl = "../state-list/" + key;
-      response.setContentType("text/html");
-      PrintWriter w = response.getWriter();
-      w.println("<html>");
-      w.println("<head>");
-      w.println("<title>Views of XSAMS</title>");
-      w.println("</head>");
-      w.println("<body>");
-      w.println("<p>(<a href='" + stateListUrl + "'>Switch to view of states</a>)</p>");
-      File tmp = File.createTempFile("xsams", null);
-      StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
-      StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
-      StreamResult out = new StreamResult(w);
-      transform(in, tmpOut, getLineListTransformer());
-      transform(tmpIn, out, getLineListDisplayTransformer());
-      w.print("</body>");
-    }
-    catch (RequestException e) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
-    }
-    catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-    }
+    String key = getKey(request);
+    StreamSource in = getData(key);
+    String stateListUrl = "../state-list/" + key;
+    response.setContentType("text/html");
+    PrintWriter w = response.getWriter();
+    w.println("<html>");
+    w.println("<head>");
+    w.println("<title>Views of XSAMS</title>");
+    w.println("</head>");
+    w.println("<body>");
+    w.println("<p>(<a href='" + stateListUrl + "'>Switch to view of states</a>)</p>");
+    File tmp = File.createTempFile("xsams", null);
+    StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
+    StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
+    StreamResult out = new StreamResult(w);
+    transform(in, tmpOut, getLineListTransformer());
+    transform(tmpIn, out, getLineListDisplayTransformer());
+    w.print("</body>");
   }
   
   

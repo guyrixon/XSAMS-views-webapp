@@ -21,11 +21,11 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Guy Rixon
  */
-public class SelectedStateServlet extends HttpServlet {
+public class SelectedStateServlet extends TransformingServlet {
 
+  
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-      throws IOException, ServletException {
+  protected void get(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     String stateId = request.getParameter("stateID");
     System.out.println("stateID = " + stateId);
     File tmp = File.createTempFile("xsams", null);
