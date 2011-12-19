@@ -16,5 +16,12 @@
             <input type="submit"/>
           </p>
         </form>
+        <form  action="service" method="post" enctype="multipart/form-data">
+          <p>
+            Visualize data from uploaded file: 
+            <input type="file" name="upload" size="128">
+            <input type="submit"/>
+          </p>
+        </form>
     </body>
 </html>

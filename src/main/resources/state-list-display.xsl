@@ -22,28 +22,6 @@
     <xsl:output method="html" encoding="UTF-8"/>
     
     <xsl:template match="xsams:XSAMSData">
-      <html>
-        <head>
-          <title>VAMDC results: atomic and molecular states</title>
-            <style>table {border-style: solid; border-width: 1px; border-collapse="collapse"}</style>
-            <link rel="stylesheet" href="QN-list.css" type="text/css"/>
-          </head>
-          
-            <body>
-                <h1>Query results: atomic and molecular states</h1>
-                
-                <p>
-                  <a>
-                    <xsl:attribute name="href"><xsl:text>line-list?url=</xsl:text><xsl:value-of select="$xsams-url"/></xsl:attribute>
-                    <xsl:text>(Switch to display of radiative transitions.)</xsl:text>
-                  </a>
-                </p>
-                <p>
-                  <a>
-                    <xsl:attribute name="href"><xsl:text>state-list?reload&amp;url=</xsl:text><xsl:value-of select="$xsams-url"/></xsl:attribute>
-                    <xsl:text>(Reload data from source.)</xsl:text>
-                  </a>
-                </p>
                 
                 <table rules="all">
                     <tr>
@@ -56,8 +34,6 @@
                     </tr>
                     <xsl:apply-templates/>
                 </table>
-            </body>
-        </html>
     </xsl:template>
     
     <xsl:template match="xsams:Molecule">

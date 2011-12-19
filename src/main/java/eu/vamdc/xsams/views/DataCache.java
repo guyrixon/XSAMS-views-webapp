@@ -5,7 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -25,10 +25,13 @@ import java.util.HashMap;
  */
 public class DataCache {
   
-  private HashMap<URL, File> map;
+  private Integer counter;
+  
+  private HashMap<String, CachedDataSet> map;
   
   public DataCache() {
-    map = new HashMap<URL, File>();
+    counter = 0;
+    map = new HashMap<String, CachedDataSet>();
   }
   
   /**
@@ -37,15 +40,15 @@ public class DataCache {
    * @throws IOException If any data-set cannot be deleted.
    */
   public synchronized void empty() throws IOException {
-    for (File f : map.values()) {
-      if (!f.delete()) {
-        throw new IOException("Failed to delete " + f + " from the data cache");
+    for (CachedDataSet x : map.values()) {
+      if (!x.getCacheFile().delete()) {
+        throw new IOException("Failed to delete " + x.getCacheFile() + " from the data cache");
       }
     }
   }
   
   
-  public void put(URL u) throws IOException {
+  public String put(URL u) throws IOException {
     File f = File.createTempFile("cache-", ".xsams.xml");
     
     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
@@ -70,27 +73,50 @@ public class DataCache {
       out.close();
     }
     
-    synchronized(this) {
-      map.put(u, f);
-    }
+    return put(u, f);
   }
   
-  public synchronized URL get(URL u) {
+  public String put(InputStream in) throws IOException {
+    File f = File.createTempFile("cache-", ".xsams.xml");
+    
+    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
     try {
-      return (map.containsKey(u))? map.get(u).toURI().toURL() : null;
-    } catch (MalformedURLException e) {
-      throw new RuntimeException("Cached data for " + u + " did not yield a valid URL", e);
+      while (true) {
+        int c = in.read();
+        if (c == -1) {
+          break;
+        }
+        else {
+          out.write(c);
+        }
+      }
     }
+    finally {
+      out.close();
+    }
+    
+    return put(null, f);
   }
   
-  public synchronized boolean contains(URL u) {
-    return map.containsKey(u);
+  public synchronized String put(URL u, File f) {
+    counter++;
+    String key = counter.toString();
+    map.put(key, new CachedDataSet(u,f));
+    return key;
   }
   
-  public synchronized void remove(URL u) {
-    if (map.containsKey(u)) {
-      map.get(u).delete();
-      map.remove(u);
+  public synchronized CachedDataSet get(String k) {
+    return map.get(k);
+  }
+  
+  public synchronized boolean contains(String k) {
+    return map.containsKey(k);
+  }
+  
+  public synchronized void remove(String k) {
+    if (map.containsKey(k)) {
+      map.get(k).delete();
+      map.remove(k);
     }
   }
   

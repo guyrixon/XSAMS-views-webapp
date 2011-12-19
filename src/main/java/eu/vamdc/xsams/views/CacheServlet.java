@@ -1,16 +1,18 @@
 package eu.vamdc.xsams.views;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
 
 /**
  *
@@ -18,35 +20,116 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CacheServlet extends HttpServlet {
   
-  /**
-   * Handles a request to POST new data.
-   * Caches the data in a file, and redirects to a page to handle the cached
-   * data.
-   * 
-   * @param request The HTTP request
-   * @param response The HTTP response (a redirection).
-   * @throws ServletException
-   * @throws IOException 
-   */
+  public final static String CACHE_ATTRIBUTE = "eu.vamdc.xsams.views.cacheMap";
+  
+  private DataCache cache;
+  
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
+  public void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws ServletException, IOException {
     try {
-      URL originalData = getParameterAsUrl(request, "url");
-      URL cachedData = cacheData(originalData);
+      get(request, response);
     }
     catch (RequestException e) {
+      log(e.toString());
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
-    catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-    }
-    
   }
   
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) 
+      throws ServletException, IOException {
+    try {
+      post(request, response);
+    }
+    catch (RequestException e) {
+      log(e.toString());
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+  }
+  
+  public void get(HttpServletRequest request, HttpServletResponse response) 
+      throws RequestException, IOException {
+    String url = getParameter(request, "url");
+    log("url = " + url);
+    
+    if (url != null) {
+      try {
+        // Cache the data from the URL
+        log("Caching " + url);
+        URL u = new URL(url);
+        String key = cache.put(u);
+        
+        // Redirect to a servlet that reads the cached data.
+        redirect(request, key, response);
+      }
+      catch (MalformedURLException u) {
+        throw new RequestException("Parameter 'url' is not a valid URL");
+      }
+    }
+    
+    else {
+      throw new RequestException("One of 'url' or 'upload' must be set");
+    }
+  }
 
+  public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
+    
+    try {
+    
+      // Create a new file upload handler
+      ServletFileUpload upload = new ServletFileUpload();
+
+      // Parse the request
+      FileItemIterator iter = upload.getItemIterator(request);
+      while (iter.hasNext()) {
+        FileItemStream item = iter.next();
+        String name = item.getFieldName();
+        InputStream stream = item.openStream();
+        if (item.isFormField()) {
+          log("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
+        }
+        else {
+          log("File field " + name + " with file name " + item.getName() + " detected.");
+          String key = cache.put(stream);
+          // Redirect to a servlet that reads the cached data.
+          redirect(request, key, response);
+        }
+        stream.close();
+      }
+    }
+    catch (FileUploadException e) {
+      throw new RequestException(e);
+    }
+  }
+    
   /**
-   * Supplies the value of an HTTP parameter, applying some checks.
+   * Initializes the map of cached data.
+   */
+  @Override
+  public void init() {
+    cache = new DataCache();
+    getServletContext().setAttribute(CACHE_ATTRIBUTE, cache);
+  }
+  
+  /**
+   * Destroys the data cache, deleting the data.  
+   */
+  @Override
+  public void destroy() {
+    try {
+      getServletContext().removeAttribute(CACHE_ATTRIBUTE);
+      cache.empty();
+      cache = null;
+      
+    }
+    catch (Exception e) {
+     log("Failed to delete the data cache: " + e);
+    }
+  }  
+  
+  /**
+   * Supplies the value of a parameter, applying some checks.
    * 
    * @param request The HTTP request containing the parameter.
    * @param name The name of the parameter
@@ -58,70 +141,30 @@ public class CacheServlet extends HttpServlet {
       throws RequestException {
     String value = request.getParameter(name);
     if (value == null) {
-      throw new RequestException("Parameter " + name + " is missing");
+      return null;
     }
-    String trimmedValue = value.trim();
-    if (trimmedValue.length() == 0) {
-      throw new RequestException("Parameter " + name + " is empty");
-    }
-    return trimmedValue;
-  }
-
-  /**
-   * Supplies the value of an HTTP parameter, applying some checks.
-   * 
-   * @param request The HTTP request containing the parameter.
-   * @param name The name of the parameter
-   * @return The URL from the parameter's value.
-   * @throws RequestException If the parameter is not present in the request.
-   * @throws RequestException If the parameter's value is an empty string.
-   * @throws RequesrException If the parameter's value cannot be parsed as a URL.
-   */
-  private URL getParameterAsUrl(HttpServletRequest request, String name) 
-      throws RequestException {
-    try {
-      return new URL(getParameter(request, name));
-    } catch (MalformedURLException ex) {
-      throw new RequestException("Parameter " + name + " is not a URL");
-    }
-  }
-
-  /**
-   * Downloads external data from a URL to a cache. The location returned
-   * for the cached version could be in any scheme, but {@code file} is the
-   * original implementation.
-   * 
-   * @param originalData Location of original data.
-   * @return Location of cached data.
-   */
-  private URL cacheData(URL originalData) 
-      throws IOException {
-    File cache = File.createTempFile(null, ".xsams.xml");
-    
-    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(cache));
-    try {
-      BufferedInputStream in = new BufferedInputStream(originalData.openStream());
-      try {
-        while (true) {
-          int c = in.read();
-          if (c == -1) {
-            break;
-          }
-          else {
-            out.write(c);
-          }
-        }
+    else {
+      String trimmedValue = value.trim();
+      if (trimmedValue.length() == 0) {
+        throw new RequestException("Parameter " + name + " is empty");
       }
-      finally {
-        in.close();
+      else {
+        return trimmedValue;
       }
     }
-    finally {
-      out.close();
-    }
-    
-    return cache.toURI().toURL();
   }
+  
+  
+  private void redirect(HttpServletRequest request, String key, HttpServletResponse response) {
+    String location = String.format("http://%s:%d%s/state-list/%s",
+                                    request.getLocalName(),
+                                    request.getLocalPort(),
+                                    request.getContextPath(),
+                                    key);
+    response.setHeader("Location", location);
+    response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+  }
+
     
     
   

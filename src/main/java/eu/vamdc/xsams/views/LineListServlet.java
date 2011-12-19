@@ -5,10 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.io.PrintWriter;
+import java.io.Writer;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Transformer;
@@ -27,16 +26,22 @@ public class LineListServlet extends TransformingServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
     try {
-      URL remote = getOriginalDataUrl(request);
-      URL local = getDataAccessUrl(remote);
-      getServletContext().log("Taking data from " + local);
+      String key = getKey(request);
+      StreamSource in = getData(key);
+      response.setContentType("text/html");
+      PrintWriter w = response.getWriter();
+      w.println("<html>");
+      w.println("<head>");
+      w.println("<title>Views of XSAMS</title>");
+      w.println("</head>");
+      w.println("<body>");
       File tmp = File.createTempFile("xsams", null);
       StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
       StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
-      StreamSource in = new StreamSource(local.openStream());
-      StreamResult out = new StreamResult(response.getOutputStream());
-      transform(in, tmpOut, getLineListTransformer(), remote);
-      transform(tmpIn, out, getLineListDisplayTransformer(), remote);
+      StreamResult out = new StreamResult(w);
+      transform(in, tmpOut, getLineListTransformer());
+      transform(tmpIn, out, getLineListDisplayTransformer());
+      w.print("</body>");
     }
     catch (RequestException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());

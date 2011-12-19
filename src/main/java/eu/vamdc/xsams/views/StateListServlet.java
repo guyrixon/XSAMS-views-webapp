@@ -2,8 +2,8 @@ package eu.vamdc.xsams.views;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
-import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +23,21 @@ public class StateListServlet extends TransformingServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
     try {
-      URL remote = getOriginalDataUrl(request);
-      URL local = getDataAccessUrl(remote);
-      getServletContext().log("Taking data from " + local);
-      StreamSource in = new StreamSource(local.openStream()); 
-      StreamResult out = new StreamResult(response.getOutputStream());
-      transform(in, out, getStateListDisplayTransformer(), remote);
+      String key = getKey(request);
+      StreamSource in = getData(key);
+      URL reload = getOriginalUrl(key);
+      response.setContentType("text/html");
+      String lineListUrl = "../line-list/" + key;
+      String reloadUrl = "../service?url=";
+      PrintWriter w = response.getWriter();
+      w.println("<html>");
+      w.println("<head>");
+      w.println("<title>Views of XSAMS</title>");
+      w.println("</head>");
+      w.println("<body>");
+      w.println("<p>(<a href='" + lineListUrl + "'>Switch to view of raditive transitions</a>)</p>");
+      StreamResult out = new StreamResult(w);
+      transform(in, out, getStateListDisplayTransformer());
     }
     catch (RequestException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());

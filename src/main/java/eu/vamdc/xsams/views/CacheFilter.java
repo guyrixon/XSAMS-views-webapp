@@ -10,6 +10,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * A JEE filter to cache data obtained from URLs.
@@ -57,27 +59,56 @@ public class CacheFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain chain)
       throws IOException, ServletException {
-    
-    
+    context.log("Cache filter");
+    doHttpFilter((HttpServletRequest) request, (HttpServletResponse) response);
+    chain.doFilter(request, response);
+  }
+  
+  public void doHttpFilter(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     try {
-      URL u = getParameterAsUrl(request, "url");
-      if (request.getParameter("reload") != null) {
-        cache.remove(u);
-      }
-      if (cache.contains(u)) {
-        context.log("Already in the data cache: " + u);
-      }
-      else {
-        context.log("Attempting to cache " + u);
-        cache.put(u);
-        context.log("Cached " + u + " at " + cache.get(u));
-      }
+      filter(request, response);
+    }
+    catch (RequestException re) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, re.toString());
     }
     catch (Exception e) {
-      context.log("Failed to cache data: " + e);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
     }
+      
+  }
+  
+  public void filter(HttpServletRequest request, HttpServletResponse response) throws RequestException, IOException {
+    String url = getParameter(request, "url");
+    String key = getParameter(request, "key");
+    context.log("key = " + key + ", url = " + url);
     
-    chain.doFilter(request, response);
+    if (key != null) {
+      CachedDataSet x = cache.get(key);
+      if (x == null) {
+        throw new RequestException("Nothing is cached for key=" + key);
+      }
+    }
+    else if (url != null) {
+      try {
+        // Cache the data from the URL
+        context.log("Caching " + url);
+        URL u = new URL(url);
+        cache.put(u);
+        
+        // Redirect to a servlet that reads the cached data.
+        StringBuffer redirect = request.getRequestURL();
+        redirect.append("?key=");
+        redirect.append(key);
+        response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        response.setHeader("Location", redirect.toString());
+      }
+      catch (MalformedURLException u) {
+        throw new RequestException("Parameter 'url' is not a valid URL");
+      }
+    }
+    else {
+      throw new RequestException("One of 'url' or 'key' must be set");
+    }
   }
 
   /**
@@ -122,31 +153,16 @@ public class CacheFilter implements Filter {
       throws RequestException {
     String value = request.getParameter(name);
     if (value == null) {
-      throw new RequestException("Parameter " + name + " is missing");
+      return null;
     }
-    String trimmedValue = value.trim();
-    if (trimmedValue.length() == 0) {
-      throw new RequestException("Parameter " + name + " is empty");
-    }
-    return trimmedValue;
-  }
-  
-  /**
-   * Supplies the value of a parameter, applying some checks.
-   * 
-   * @param request The HTTP request containing the parameter.
-   * @param name The name of the parameter
-   * @return The URL from the parameter's value.
-   * @throws RequestException If the parameter is not present in the request.
-   * @throws RequestException If the parameter's value is an empty string.
-   * @throws RequesrException If the parameter's value cannot be parsed as a URL.
-   */
-  private URL getParameterAsUrl(ServletRequest request, String name) 
-      throws RequestException, MalformedURLException {
-    try {
-      return new URL(getParameter(request, name));
-    } catch (MalformedURLException ex) {
-      throw new RequestException("Parameter " + name + " is not a URL");
+    else {
+      String trimmedValue = value.trim();
+      if (trimmedValue.length() == 0) {
+        throw new RequestException("Parameter " + name + " is empty");
+      }
+      else {
+        return trimmedValue;
+      }
     }
   }
 

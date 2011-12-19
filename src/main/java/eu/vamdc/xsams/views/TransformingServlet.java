@@ -1,6 +1,7 @@
 package eu.vamdc.xsams.views;
 
-import java.net.MalformedURLException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import javax.servlet.ServletException;
@@ -19,51 +20,46 @@ import javax.xml.transform.stream.StreamSource;
 public abstract class TransformingServlet extends HttpServlet {
   
   
-  protected URL getOriginalDataUrl(HttpServletRequest request) throws RequestException {
+  protected StreamSource getData(String key) throws ServletException, FileNotFoundException {
+    DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
+    if (cache == null) {
+      throw new ServletException("The data cache is missing");
+    }
+    CachedDataSet x = cache.get(key);
+    if (x == null) {
+      throw new RequestException("Nothing is cached under " + key);
+    }
     try {
-      return new URL(getParameter(request, "url"));
-      
+      FileReader fr = new FileReader(x.getCacheFile());
+      return new StreamSource(fr);
     }
-    catch (MalformedURLException e) {
-      throw new RequestException("Parameter url is not a valid URL");
+    catch (FileNotFoundException e) {
+      throw new ServletException("Cache file " + x.getCacheFile() + " is missing");
     }
   }
   
-  protected URL getDataAccessUrl(URL remote) throws RequestException {
-    DataCache c = 
-        (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
-    return (c == null || !c.contains(remote))? remote : c.get(remote);
+  protected String getKey(HttpServletRequest request) throws RequestException {
+    String q = request.getPathInfo();
+    log("q=" + q);
+    return (q.startsWith("/"))? q.substring(1) : q;
   }
   
-  /**
-   * Supplies the value of an HTTP parameter, applying some checks.
-   * 
-   * @param request The HTTP request containing the parameter.
-   * @param name The name of the parameter
-   * @return The value of the parameter, stripped of leading and trailing white space.
-   * @throws RequestException If the parameter is not present in the request.
-   * @throws RequestException If the parameter's value is an empty string.
-   */
-  protected String getParameter(HttpServletRequest request, String name) 
-      throws RequestException {
-    String value = request.getParameter(name);
-    if (value == null) {
-      throw new RequestException("Parameter " + name + " is missing");
+  protected URL getOriginalUrl(String key) throws RequestException {
+    DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
+    if (cache == null) {
+      throw new RequestException("The data cache is missing");
     }
-    String trimmedValue = value.trim();
-    if (trimmedValue.length() == 0) {
-      throw new RequestException("Parameter " + name + " is empty");
+    CachedDataSet x = cache.get(key);
+    if (x == null) {
+      throw new RequestException("Nothing is cached under " + key);
     }
-    return trimmedValue;
+    return x.getOriginalUrl();
   }
   
   
-  
-  protected void transform(StreamSource in, StreamResult out, Transformer t, URL u)
+  protected void transform(StreamSource in, StreamResult out, Transformer t)
       throws ServletException {
     try {
-      String url = URLEncoder.encode(u.toString(), "UTF-8");
-      t.setParameter("xsams-url", url);
       t.transform(in, out);
     }
     catch (Exception e) {

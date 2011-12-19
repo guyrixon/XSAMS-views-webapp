@@ -8,26 +8,7 @@
     <xsl:output method="html" encoding="UTF-8"/>
     
     <xsl:template match="line-list">
-        <html>
-            <head>
-                <title>VAMDC results: radiative transitions</title>
-                <style>table {border-style: solid; border-width: 1px; border-collapse="collapse"}</style>
-            </head>
-            <body>
-                <h1>Query results: radiative transitions</h1>
-                
-                <p>
-                    <a>
-                        <xsl:attribute name="href">state-list?url=<xsl:value-of select="$xsams-url"/></xsl:attribute>
-                        <xsl:text>(Switch to display of states.)</xsl:text>
-                    </a>
-                </p>
-                <p>
-                  <a>
-                    <xsl:attribute name="href"><xsl:text>line-list?reload&amp;url=</xsl:text><xsl:value-of select="$xsams-url"/></xsl:attribute>
-                    <xsl:text>(Reload data from source.)</xsl:text>
-                  </a>
-                </p>
+       
                 
                 <table rules="all">
                     <tr>
@@ -44,8 +25,6 @@
                         <xsl:call-template name="line"/>
                     </xsl:for-each>
                 </table>
-            </body>
-        </html>
     </xsl:template>
     
     <xsl:template name="line">

@@ -2,6 +2,7 @@ package eu.vamdc.xsams.views;
 
 import javax.servlet.ServletException;
 
+
 /**
  * Exception indicating an error in the parameters of a request.
  * Typically, such an exception would be caught and turned into an HTTP
