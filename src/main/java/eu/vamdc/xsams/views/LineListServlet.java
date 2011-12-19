@@ -28,6 +28,7 @@ public class LineListServlet extends TransformingServlet {
     try {
       String key = getKey(request);
       StreamSource in = getData(key);
+      String stateListUrl = "../state-list/" + key;
       response.setContentType("text/html");
       PrintWriter w = response.getWriter();
       w.println("<html>");
@@ -35,6 +36,7 @@ public class LineListServlet extends TransformingServlet {
       w.println("<title>Views of XSAMS</title>");
       w.println("</head>");
       w.println("<body>");
+      w.println("<p>(<a href='" + stateListUrl + "'>Switch to view of states</a>)</p>");
       File tmp = File.createTempFile("xsams", null);
       StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
       StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
