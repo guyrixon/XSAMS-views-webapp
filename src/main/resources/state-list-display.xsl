@@ -16,8 +16,8 @@
     xmlns:lpos="http://vamdc.org/xml/xsams/0.2/cases/lpos"
     xmlns:nltos="http://vamdc.org/xml/xsams/0.2/cases/nltos">
     
-    <!-- The URL-encoded URL for fetching the XSAMS data. -->
-    <xsl:param name="xsams-url"/>
+    <!-- The key for the cached data. -->
+    <xsl:param name="key"/>
     
     <xsl:output method="html" encoding="UTF-8"/>
     
@@ -128,10 +128,10 @@
         <xsl:param name="state"/>
         <a>
             <xsl:attribute name="href">
-              <xsl:text>state?stateID=</xsl:text>
+              <xsl:text>../state/</xsl:text>
+              <xsl:value-of select="$key"/>
+              <xsl:text>?stateID=</xsl:text>
               <xsl:value-of select="$state/@stateID"/>
-              <xsl:text>&amp;url=</xsl:text>
-              <xsl:value-of select="$xsams-url"/>
             </xsl:attribute>
             <xsl:text>Detail</xsl:text>
         </a>    

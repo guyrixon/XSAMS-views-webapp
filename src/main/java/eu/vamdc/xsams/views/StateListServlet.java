@@ -36,18 +36,20 @@ public class StateListServlet extends TransformingServlet {
     w.println("<body>");
     w.println("<p>(<a href='" + lineListUrl + "'>Switch to view of raditive transitions</a>)</p>");
     StreamResult out = new StreamResult(w);
-    transform(in, out, getStateListDisplayTransformer());
+    transform(in, out, getStateListDisplayTransformer(key));
   }
   
   
-  private Transformer getStateListDisplayTransformer() throws ServletException {
+  private Transformer getStateListDisplayTransformer(String key) throws ServletException {
     InputStream q = this.getClass().getResourceAsStream("/state-list-display.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
     }
     StreamSource transform = new StreamSource(q);
     try {
-      return TransformerFactory.newInstance().newTransformer(transform);
+      Transformer t = TransformerFactory.newInstance().newTransformer(transform);
+      t.setParameter("key", key);
+      return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);
     }

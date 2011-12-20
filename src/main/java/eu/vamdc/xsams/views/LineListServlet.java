@@ -40,7 +40,7 @@ public class LineListServlet extends TransformingServlet {
     StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
     StreamResult out = new StreamResult(w);
     transform(in, tmpOut, getLineListTransformer());
-    transform(tmpIn, out, getLineListDisplayTransformer());
+    transform(tmpIn, out, getLineListDisplayTransformer(key));
     w.print("</body>");
   }
   
@@ -58,14 +58,16 @@ public class LineListServlet extends TransformingServlet {
     }
   }
   
-  private Transformer getLineListDisplayTransformer() throws ServletException {
+  private Transformer getLineListDisplayTransformer(String key) throws ServletException {
     InputStream q = this.getClass().getResourceAsStream("/line-list-display.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
     }
     StreamSource transform = new StreamSource(q);
     try {
-      return TransformerFactory.newInstance().newTransformer(transform);
+      Transformer t = TransformerFactory.newInstance().newTransformer(transform);
+      t.setParameter("key", key);
+      return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);
     }

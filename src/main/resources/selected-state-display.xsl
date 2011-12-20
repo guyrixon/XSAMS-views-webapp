@@ -22,7 +22,6 @@
         <html>
             <head>
                 <title>VAMDC: available data for selected state</title>
-                <link rel="stylesheet" href="QN-list.css" type="text/css"/>
             </head>
             <body>
                 <h1>Available data for selected state</h1>
