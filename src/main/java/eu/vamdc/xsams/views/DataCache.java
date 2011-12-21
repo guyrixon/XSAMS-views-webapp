@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * A put of downloaded data. For each remote data-set, identified by
@@ -24,6 +26,11 @@ import java.util.HashMap;
  * @author Guy Rixon
  */
 public class DataCache {
+  
+  public static final long CACHE_LIFETIME_IN_SECONDS = 24L * 60L * 60L;
+  
+  public static final long CACHE_LIFETIME_IN_MILLISECONDS = 
+      CACHE_LIFETIME_IN_SECONDS * 1000L;
   
   private Integer counter;
   
@@ -118,6 +125,22 @@ public class DataCache {
       map.get(k).delete();
       map.remove(k);
     }
+  }
+  
+  public synchronized void purge() {
+    for (Entry<String,CachedDataSet> q : map.entrySet()) {
+      Date entryTime = q.getValue().getEntryTime();
+      if (isTooOld(entryTime)) {
+        q.getValue().delete();
+        map.remove(q.getKey());
+      }
+    }
+  }
+  
+  private boolean isTooOld(Date then) {
+    Date now = new Date();
+    long age = now.getTime() - then.getTime();
+    return age > CACHE_LIFETIME_IN_MILLISECONDS;
   }
   
   
