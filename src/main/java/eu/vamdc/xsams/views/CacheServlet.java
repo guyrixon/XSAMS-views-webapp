@@ -157,12 +157,7 @@ public class CacheServlet extends HttpServlet {
   
   
   private void redirect(HttpServletRequest request, String key, HttpServletResponse response) {
-    String location = String.format("http://%s:%d%s/state-list/%s",
-                                    request.getLocalName(),
-                                    request.getLocalPort(),
-                                    request.getContextPath(),
-                                    key);
-    response.setHeader("Location", location);
+    response.setHeader("Location", Locations.getStateListLocation(request, key));
     response.setStatus(HttpServletResponse.SC_SEE_OTHER);
   }
   

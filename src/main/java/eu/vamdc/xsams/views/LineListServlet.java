@@ -27,6 +27,8 @@ public class LineListServlet extends TransformingServlet {
     String key = getKey(request);
     StreamSource in = getData(key);
     String stateListUrl = "../state-list/" + key;
+    String u = getOriginalUrlEncoded(key);
+    String reloadUrl = (u == null)? null : Locations.getServiceLocation(request) + "?url=" + u;
     response.setContentType("text/html");
     PrintWriter w = response.getWriter();
     w.println("<html>");
@@ -34,13 +36,18 @@ public class LineListServlet extends TransformingServlet {
     w.println("<title>Views of XSAMS</title>");
     w.println("</head>");
     w.println("<body>");
-    w.println("<p>(<a href='" + stateListUrl + "'>Switch to view of states</a>)</p>");
+    w.println("<p>(<a href='" 
+              + Locations.getStateListLocation(request, key) +
+              "'>Switch to view of states</a>)</p>");
+    if (reloadUrl != null) {
+      w.println("<p>(<a href='" + reloadUrl + "'>Reload orginal data</a>)</p>");
+    }
     File tmp = File.createTempFile("xsams", null);
     StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
     StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
     StreamResult out = new StreamResult(w);
     transform(in, tmpOut, getLineListTransformer());
-    transform(tmpIn, out, getLineListDisplayTransformer(key));
+    transform(tmpIn, out, getLineListDisplayTransformer(Locations.getStateLocation(request, key)));
     w.print("</body>");
   }
   
@@ -58,7 +65,8 @@ public class LineListServlet extends TransformingServlet {
     }
   }
   
-  private Transformer getLineListDisplayTransformer(String key) throws ServletException {
+  private Transformer getLineListDisplayTransformer(String stateLocation) 
+      throws ServletException {
     InputStream q = this.getClass().getResourceAsStream("/line-list-display.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
@@ -66,7 +74,7 @@ public class LineListServlet extends TransformingServlet {
     StreamSource transform = new StreamSource(q);
     try {
       Transformer t = TransformerFactory.newInstance().newTransformer(transform);
-      t.setParameter("key", key);
+      t.setParameter("state-location", stateLocation);
       return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);

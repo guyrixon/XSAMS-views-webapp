@@ -3,7 +3,9 @@ package eu.vamdc.xsams.views;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +59,7 @@ public abstract class TransformingServlet extends HttpServlet {
     if (cache == null) {
       throw new ServletException("The data cache is missing");
     }
+    cache.purge();
     CachedDataSet x = cache.get(key);
     if (x == null) {
       throw new RequestException("Nothing is cached under " + key);
@@ -76,7 +79,7 @@ public abstract class TransformingServlet extends HttpServlet {
     return (q.startsWith("/"))? q.substring(1) : q;
   }
   
-  protected URL getOriginalUrl(String key) throws RequestException {
+  protected String getOriginalUrlEncoded(String key) throws RequestException {
     DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
     if (cache == null) {
       throw new RequestException("The data cache is missing");
@@ -85,7 +88,13 @@ public abstract class TransformingServlet extends HttpServlet {
     if (x == null) {
       throw new RequestException("Nothing is cached under " + key);
     }
-    return x.getOriginalUrl();
+    URL u = x.getOriginalUrl();
+    try {
+      return (u == null)? null : URLEncoder.encode(u.toString(), "UTF-8");
+    }
+    catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   

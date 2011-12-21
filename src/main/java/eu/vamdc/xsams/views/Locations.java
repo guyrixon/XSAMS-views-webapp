@@ -1,0 +1,34 @@
+package eu.vamdc.xsams.views;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ *
+ * @author Guy Rixon
+ */
+public class Locations {
+  
+  public static String getRootLocation(HttpServletRequest request) {
+    return String.format("http://%s:%d%s",
+                         request.getLocalName(),
+                         request.getLocalPort(),
+                         request.getContextPath());
+  }
+  
+  public static String getServiceLocation(HttpServletRequest request) {
+    return getRootLocation(request) + "/service";
+  }
+  
+  public static String getStateListLocation(HttpServletRequest request, String key) {
+    return getRootLocation(request) + "/state-list/" + key;
+  }
+  
+  public static String getLineListLocation(HttpServletRequest request, String key) {
+    return getRootLocation(request) + "/line-list/" + key;
+  }
+  
+  public static String getStateLocation(HttpServletRequest request, String key) {
+    return getRootLocation(request) + "/state/" + key;
+  }
+  
+}

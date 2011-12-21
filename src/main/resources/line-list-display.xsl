@@ -2,8 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:xsams="http://vamdc.org/xml/xsams/0.2">
     
-    <!-- The URL-encoded URL for fetching the XSAMS data. -->
-    <xsl:param name="xsams-url"/>
+    <xsl:param name="state-location"/>
     
     <xsl:output method="html" encoding="UTF-8"/>
     
@@ -115,11 +114,10 @@
         <xsl:param name="state"/>
         <a>
           <xsl:attribute name="href">
-              <xsl:text>state?stateID=</xsl:text>
-              <xsl:value-of select="$state/@stateID"/>
-              <xsl:text>&amp;url=</xsl:text>
-              <xsl:value-of select="$xsams-url"/>
-            </xsl:attribute>
+            <xsl:value-of select="$state-location"/>
+            <xsl:text>?stateID=</xsl:text>
+            <xsl:value-of select="$state/@stateID"/>
+          </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="$state/xsams:Description or $state/xsams:MolecularStateCharacterisation/xsams:StateEnergy">
                     <xsl:value-of select="$state/xsams:Description"/>
@@ -138,12 +136,11 @@
     <xsl:template name="atomic-state">
         <xsl:param name="state"/>
         <a>
-            <xsl:attribute name="href">
-              <xsl:text>state?stateID=</xsl:text>
-              <xsl:value-of select="$state/@stateID"/>
-              <xsl:text>&amp;url=</xsl:text>
-              <xsl:value-of select="$xsams-url"/>
-            </xsl:attribute>
+          <xsl:attribute name="href">
+            <xsl:value-of select="$state-location"/>
+            <xsl:text>?stateID=</xsl:text>
+            <xsl:value-of select="$state/@stateID"/>
+          </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="$state/xsams:Description or $state/xsams:AtomicNumericalData/xsams:StateEnergy">
                     <xsl:value-of select="$state/xsams:Description"/>

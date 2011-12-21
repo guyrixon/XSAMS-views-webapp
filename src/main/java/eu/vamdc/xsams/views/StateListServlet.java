@@ -24,23 +24,28 @@ public class StateListServlet extends TransformingServlet {
       throws IOException, ServletException {
     String key = getKey(request);
     StreamSource in = getData(key);
-    URL reload = getOriginalUrl(key);
     response.setContentType("text/html");
-    String lineListUrl = "../line-list/" + key;
-    String reloadUrl = "../service?url=";
+    String u = getOriginalUrlEncoded(key);
+    String reloadUrl = (u == null)? null : Locations.getServiceLocation(request) + "?url=" + u;
     PrintWriter w = response.getWriter();
     w.println("<html>");
     w.println("<head>");
     w.println("<title>Views of XSAMS</title>");
     w.println("</head>");
     w.println("<body>");
-    w.println("<p>(<a href='" + lineListUrl + "'>Switch to view of raditive transitions</a>)</p>");
+    w.println("<p>(<a href='" + 
+              Locations.getLineListLocation(request, key) + 
+              "'>Switch to view of radiative transitions</a>)</p>");
+    if (reloadUrl != null) {
+      w.println("<p>(<a href='" + reloadUrl + "'>Reload orginal data</a>)</p>");
+    }
     StreamResult out = new StreamResult(w);
-    transform(in, out, getStateListDisplayTransformer(key));
+    transform(in, out, getStateListDisplayTransformer(Locations.getStateLocation(request, key)));
   }
   
   
-  private Transformer getStateListDisplayTransformer(String key) throws ServletException {
+  private Transformer getStateListDisplayTransformer(String stateLocation) 
+      throws ServletException {
     InputStream q = this.getClass().getResourceAsStream("/state-list-display.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
@@ -48,7 +53,7 @@ public class StateListServlet extends TransformingServlet {
     StreamSource transform = new StreamSource(q);
     try {
       Transformer t = TransformerFactory.newInstance().newTransformer(transform);
-      t.setParameter("key", key);
+      t.setParameter("state-location", stateLocation);
       return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);
