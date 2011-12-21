@@ -17,6 +17,10 @@
         <servlet-name>CacheServlet</servlet-name>
         <servlet-class>eu.vamdc.xsams.views.CacheServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CapabilitiesServlet</servlet-name>
+        <servlet-class>eu.vamdc.xsams.views.CapabilitiesServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CacheServlet</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -32,6 +36,10 @@
     <servlet-mapping>
         <servlet-name>SelectedStateServlet</servlet-name>
         <url-pattern>/state/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CapabilitiesServlet</servlet-name>
+        <url-pattern>/capabilities</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
