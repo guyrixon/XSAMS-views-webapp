@@ -30,6 +30,7 @@ public class LineListServlet extends TransformingServlet {
     String u = getOriginalUrlEncoded(key);
     String reloadUrl = (u == null)? null : Locations.getServiceLocation(request) + "?url=" + u;
     response.setContentType("text/html");
+    response.setCharacterEncoding("UTF-8");
     PrintWriter w = response.getWriter();
     w.println("<html>");
     w.println("<head>");
@@ -43,6 +44,7 @@ public class LineListServlet extends TransformingServlet {
       w.println("<p>(<a href='" + reloadUrl + "'>Reload orginal data</a>)</p>");
     }
     File tmp = File.createTempFile("xsams", null);
+    System.out.println("Intermediate XML for line-list cached at " + tmp);
     StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
     StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
     StreamResult out = new StreamResult(w);
