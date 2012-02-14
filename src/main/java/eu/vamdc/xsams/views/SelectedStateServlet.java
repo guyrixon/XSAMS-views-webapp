@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,13 +29,18 @@ public class SelectedStateServlet extends TransformingServlet {
     File tmp = File.createTempFile("xsams", null);
     log("Intermediate data cached at " + tmp);
     try {
+      response.setContentType("text/xml");
+      response.setCharacterEncoding("UTF-8");
+      PrintWriter w = response.getWriter();
+      startXhtmlUtf8Document(w, "Single-state view of XSAMS");
       String key = getKey(request);
       StreamSource in = getData(key);
       StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
       StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
-      StreamResult out = new StreamResult(response.getOutputStream());
+      StreamResult out = new StreamResult(w);
       transform(in, tmpOut, getSelectedStateTransformer(stateId));
       transform(tmpIn, out, getSelectedStateDisplayTransformer());
+      w.print("</html>");
     }
     finally {
       tmp.delete();

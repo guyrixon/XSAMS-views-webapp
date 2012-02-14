@@ -26,16 +26,12 @@ public class LineListServlet extends TransformingServlet {
       throws IOException, ServletException {
     String key = getKey(request);
     StreamSource in = getData(key);
-    String stateListUrl = "../state-list/" + key;
     String u = getOriginalUrlEncoded(key);
     String reloadUrl = (u == null)? null : Locations.getServiceLocation(request) + "?url=" + u;
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
     PrintWriter w = response.getWriter();
-    w.println("<html>");
-    w.println("<head>");
-    w.println("<title>Views of XSAMS</title>");
-    w.println("</head>");
+    startXhtmlUtf8Document(w, "Line-list view of XSAMS");
     w.println("<body>");
     w.println("<p>(<a href='" 
               + Locations.getStateListLocation(request, key) +
@@ -51,6 +47,7 @@ public class LineListServlet extends TransformingServlet {
     transform(in, tmpOut, getLineListTransformer());
     transform(tmpIn, out, getLineListDisplayTransformer(Locations.getStateLocation(request, key)));
     w.print("</body>");
+    w.print("</html>");
   }
   
   

@@ -3,7 +3,6 @@ package eu.vamdc.xsams.views;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,13 +24,11 @@ public class StateListServlet extends TransformingServlet {
     String key = getKey(request);
     StreamSource in = getData(key);
     response.setContentType("text/html");
+    response.setCharacterEncoding("UTF-8");
     String u = getOriginalUrlEncoded(key);
     String reloadUrl = (u == null)? null : Locations.getServiceLocation(request) + "?url=" + u;
     PrintWriter w = response.getWriter();
-    w.println("<html>");
-    w.println("<head>");
-    w.println("<title>Views of XSAMS</title>");
-    w.println("</head>");
+    startXhtmlUtf8Document(w, "State-list view of XSAMS");
     w.println("<body>");
     w.println("<p>(<a href='" + 
               Locations.getLineListLocation(request, key) + 
@@ -41,6 +38,8 @@ public class StateListServlet extends TransformingServlet {
     }
     StreamResult out = new StreamResult(w);
     transform(in, out, getStateListDisplayTransformer(Locations.getStateLocation(request, key)));
+    w.println("</body>");
+    w.println("</html>");
   }
   
   
