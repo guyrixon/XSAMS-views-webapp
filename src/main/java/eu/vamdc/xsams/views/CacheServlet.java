@@ -75,32 +75,53 @@ public class CacheServlet extends HttpServlet {
 
   public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
     
-    try {
-      ServletFileUpload upload = new ServletFileUpload();
-      FileItemIterator iter = upload.getItemIterator(request);
-      boolean cached = false;
-      while (iter.hasNext()) {
-        FileItemStream item = iter.next();
-        String name = item.getFieldName();
-        if (name.equals("url") && item.isFormField()) {
-          String key = uploadFromUrl(item);
-          redirect(request, key, response);
-        }
-        InputStream stream = item.openStream();
-        if (item.isFormField()) {
-          log("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
-        }
-        else {
-          log("File field " + name + " with file name " + item.getName() + " detected.");
-          String key = cache.put(stream);
+    if ("application/x-www-form-urlencoded".equals(request.getContentType())) {
+      String url = getParameter(request, "url");
+      if (url != null) {
+        try {
+          // Cache the data from the URL
+          log("Caching " + url);
+          URL u = new URL(url);
+          String key = cache.put(u);
+        
           // Redirect to a servlet that reads the cached data.
           redirect(request, key, response);
         }
-        stream.close();
+        catch (MalformedURLException u) {
+          throw new RequestException("Parameter 'url' is not a valid URL");
+        }
+      }
+      else {
+        throw new RequestException("Please set the url parameter or upload a file");
       }
     }
-    catch (FileUploadException e) {
-      throw new RequestException(e);
+    else {
+      try {
+        ServletFileUpload upload = new ServletFileUpload();
+        FileItemIterator iter = upload.getItemIterator(request);
+        boolean cached = false;
+        while (iter.hasNext()) {
+          FileItemStream item = iter.next();
+          String name = item.getFieldName();
+          if (name.equals("url") && item.isFormField()) {
+            String key = uploadFromUrl(item);
+            redirect(request, key, response);
+          }
+          InputStream stream = item.openStream();
+          if (item.isFormField()) {
+            log("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
+          }
+          else {
+            log("File field " + name + " with file name " + item.getName() + " detected.");
+            String key = cache.put(stream);
+            redirect(request, key, response);
+          }
+          stream.close();
+        }
+      }
+      catch (FileUploadException e) {
+        throw new RequestException(e);
+      }
     }
   }
     
