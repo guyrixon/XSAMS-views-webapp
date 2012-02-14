@@ -15,8 +15,8 @@
                         <th>Ion charge</th>
                         <th>&#955;/&#957;/n/E</th>
                         <th>Probability</th>
-                        <th>Initial state</th>
-                        <th>Final state</th>
+                        <th>Upper state</th>
+                        <th>Lower state</th>
                         <th>Broadening</th>
                     </tr>
                     <xsl:for-each select="line">
