@@ -31,7 +31,7 @@
     Comments and source references are discarded in this transformation.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
-    xmlns:xsams="http://vamdc.org/xml/xsams/0.2">
+    xmlns:xsams="http://vamdc.org/xml/xsams/0.3">
     
     <xsl:output method="xml"/>
     

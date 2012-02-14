@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
-    xmlns:xsams="http://vamdc.org/xml/xsams/0.2">
+    xmlns:xsams="http://vamdc.org/xml/xsams/0.3">
     
     <xsl:param name="state-location"/>
     
