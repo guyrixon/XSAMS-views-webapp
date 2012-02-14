@@ -19,15 +19,10 @@
     <xsl:output method="html"/>
     
     <xsl:template match="xsams:XSAMSData">
-        <html>
-            <head>
-                <title>VAMDC: available data for selected state</title>
-            </head>
-            <body>
-                <h1>Available data for selected state</h1>
-                <xsl:apply-templates/>
-            </body>
-        </html>
+        <body>
+          <h1>Available data for selected state</h1>
+          <xsl:apply-templates/>
+        </body>
     </xsl:template>
     
     <xsl:template match="xsams:Molecule">
