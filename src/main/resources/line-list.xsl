@@ -49,8 +49,8 @@
     <!-- Matches transitions. -->
     <xsl:template match="xsams:RadiativeTransition">
         <!-- These variables hold ID strings for the states. -->
-        <xsl:variable name="initialStateId" select="xsams:InitialStateRef"/>
-        <xsl:variable name="finalStateId" select="xsams:FinalStateRef"/>
+        <xsl:variable name="upperStateId" select="xsams:UpperStateRef"/>
+        <xsl:variable name="lowerStateId" select="xsams:LowerStateRef"/>
         
         <line>
             <sort-key>
@@ -63,44 +63,44 @@
             <!-- The transition itself. -->
             <xsl:copy-of select="."/>
                 
-            <xsl:if test="key('atomicState', $initialStateId)">
+            <xsl:if test="key('atomicState', $lowerStateId)">
                 <kind>atomic</kind>
               
             <!-- These variables contain the node-sets for the XML representing the states. -->  
-                <xsl:variable name="initialState" select="key('atomicState', $initialStateId)"/>
-                <xsl:variable name="finalState" select="key('atomicState', $finalStateId)"/>
+                <xsl:variable name="lowerState" select="key('atomicState', $lowerStateId)"/>
+                <xsl:variable name="upperState" select="key('atomicState', $upperStateId)"/>
                 
-                <xsl:copy-of select="$initialState"/>
+                <xsl:copy-of select="$upperState"/>
                 
-                <xsl:copy-of select="$finalState"/>
+                <xsl:copy-of select="$lowerState"/>
                 
                 <!-- Metadata from the Ion containing the states -->
-                <xsl:copy-of select="$initialState/../xsams:IonCharge"/>
-                <xsl:copy-of select="$initialState/../xsams:IsoelectronicSequence"/>
-                <xsl:copy-of select="$initialState/../xsams:Inchi"/>
-                <xsl:copy-of select="$initialState/../xsams:InchiKey"/>
+                <xsl:copy-of select="$upperState/../xsams:IonCharge"/>
+                <xsl:copy-of select="$upperState/../xsams:IsoelectronicSequence"/>
+                <xsl:copy-of select="$upperState/../xsams:Inchi"/>
+                <xsl:copy-of select="$upperState/../xsams:InchiKey"/>
                         
                 <!-- Metadata from the Isotope containing the Ion -->
-                <xsl:copy-of select="$initialState/../../xsams:IsotopeParameters"/>
+                <xsl:copy-of select="$upperState/../../xsams:IsotopeParameters"/>
                         
                 <!-- Metadata from the Atom containing the Isotope -->
-                <xsl:copy-of select="$initialState/../../../xsams:ChemicalElement"/>
+                <xsl:copy-of select="$upperState/../../../xsams:ChemicalElement"/>
                 
             </xsl:if>
             
-            <xsl:if test="key('molecularState', $initialStateId)">
+            <xsl:if test="key('molecularState', $upperStateId)">
                 <kind>molecular</kind>
               
                 <!-- These variables contain the node-sets for the XML representing the states. -->
-                <xsl:variable name="initialState" select="key('molecularState', $initialStateId)"/>
-                <xsl:variable name="finalState" select="key('molecularState', $finalStateId)"/>
+                <xsl:variable name="upperState" select="key('molecularState', $upperStateId)"/>
+                <xsl:variable name="lowerState" select="key('molecularState', $upperStateId)"/>
                 
-                <xsl:copy-of select="$initialState"/>
+                <xsl:copy-of select="$upperState"/>
                 
-                <xsl:copy-of select="$finalState"/>
+                <xsl:copy-of select="$lowerState"/>
                 
                 <!-- Metadata from the Molecule containing the states -->
-                <xsl:copy-of select="$initialState/../xsams:MolecularChemicalSpecies"/>
+                <xsl:copy-of select="$upperState/../xsams:MolecularChemicalSpecies"/>
               
             </xsl:if>
                 
