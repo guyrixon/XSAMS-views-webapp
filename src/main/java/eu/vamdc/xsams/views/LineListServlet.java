@@ -31,6 +31,7 @@ public class LineListServlet extends TransformingServlet {
     try {
       Transformer t = TransformerFactory.newInstance().newTransformer(transform);
       t.setParameter("state-location", selectedStateUrl);
+      t.setParameter("state-list-location", stateListUrl);
       return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);
@@ -38,21 +39,5 @@ public class LineListServlet extends TransformingServlet {
   }
   
   
-  protected void writeContent(String lineListUrl,
-                              String stateListUrl,
-                              String selectedStateUrl,
-                              String reloadUrl,
-                              String stateId,
-                              StreamSource in,
-                              PrintWriter w) throws ServletException, IOException {
-    log("***" + selectedStateUrl + "***");
-    w.println("<body>");
-    w.println("<p>(<a href='" + stateListUrl + "'>Switch to view of states</a>)</p>");
-    w.println("<p>(<a href='" + reloadUrl + "'>Reload orginal data</a>)</p>");
-    StreamResult out = new StreamResult(w);
-    transform(in, out, getTransformer(lineListUrl, stateListUrl, selectedStateUrl, reloadUrl, stateId));
-    w.print("</body>");
-    w.print("</html>");
-  }
   
 }

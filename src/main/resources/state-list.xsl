@@ -32,7 +32,7 @@
         <p>
           <xsl:text>(</xsl:text>
           <a>
-            <xsl:attribute name="href">$line-list-locationm</xsl:attribute>
+            <xsl:attribute name="href"><xsl:value-of select="$line-list-location"/></xsl:attribute>
             <xsl:text>Switch to view of radiative transitions</xsl:text>
           </a>
           <xsl:text>)</xsl:text>

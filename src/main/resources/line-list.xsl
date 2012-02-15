@@ -54,7 +54,7 @@
         <p>
           <xsl:text>(</xsl:text>
           <a>
-            <xsl:attribute name="href">$state-list-location</xsl:attribute>
+            <xsl:attribute name="href"><xsl:value-of select="$state-list-location"/></xsl:attribute>
             <xsl:text>Switch to view of states</xsl:text>
           </a>
           <xsl:text>)</xsl:text>
