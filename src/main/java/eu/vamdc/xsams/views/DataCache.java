@@ -55,14 +55,15 @@ public class DataCache {
   }
   
   
-  public String put(URL u) throws IOException {
+  public String put(URL u) throws IOException, RequestException {
     File f = File.createTempFile("cache-", ".xsams.xml");
     
     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
     try {
       BufferedInputStream in = new BufferedInputStream(u.openStream());
+      int n = 0;
       try {
-        while (true) {
+        for (n = 0; true; n++) {
           int c = in.read();
           if (c == -1) {
             break;
@@ -73,6 +74,10 @@ public class DataCache {
         }
       }
       finally {
+        System.out.println(n + " bytes read from " + u);
+        if (n == 0) {
+          throw new RequestException("No data was read from " + u);
+        }
         in.close();
       }
     }
