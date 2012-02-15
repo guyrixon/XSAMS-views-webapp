@@ -27,6 +27,7 @@ public class CacheServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws ServletException, IOException {
+    System.out.println("GET " + request.getContentType());
     try {
       get(request, response);
     }
@@ -39,6 +40,7 @@ public class CacheServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) 
       throws ServletException, IOException {
+    System.out.println("POST " + request.getContentType());
     try {
       post(request, response);
     }
@@ -46,56 +48,31 @@ public class CacheServlet extends HttpServlet {
       log(e.toString());
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
+    catch (Exception e) {
+      e.printStackTrace();
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
+    }
   }
   
   public void get(HttpServletRequest request, HttpServletResponse response) 
       throws RequestException, IOException {
-    String url = getParameter(request, "url");
-    log("url = " + url);
     
-    if (url != null) {
-      try {
-        // Cache the data from the URL
-        log("Caching " + url);
-        URL u = new URL(url);
-        String key = cache.put(u);
-        
-        // Redirect to a servlet that reads the cached data.
-        redirect(request, key, response);
-      }
-      catch (MalformedURLException u) {
-        throw new RequestException("Parameter 'url' is not a valid URL");
-      }
-    }
-    
-    else {
-      throw new RequestException("One of 'url' or 'upload' must be set");
-    }
+    URL u = getUrl(request);
+    String key = cache.put(u);
+    log("Cached at " + cache.get(key).getCacheFile());
+    redirect(request, key, response);
   }
 
   public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
-    
     if ("application/x-www-form-urlencoded".equals(request.getContentType())) {
-      String url = getParameter(request, "url");
-      if (url != null) {
-        try {
-          // Cache the data from the URL
-          log("Caching " + url);
-          URL u = new URL(url);
-          String key = cache.put(u);
-        
-          // Redirect to a servlet that reads the cached data.
-          redirect(request, key, response);
-        }
-        catch (MalformedURLException u) {
-          throw new RequestException("Parameter 'url' is not a valid URL");
-        }
-      }
-      else {
-        throw new RequestException("Please set the url parameter or upload a file");
-      }
+      System.out.println("Handling application/x-www-form-urlencoded");
+      URL u = getUrl(request);
+      String key = cache.put(u);
+      System.out.println("Cached at " + cache.get(key).getCacheFile());
+      redirect(request, key, response);
     }
     else {
+      System.out.println("Handling multipart");
       try {
         ServletFileUpload upload = new ServletFileUpload();
         FileItemIterator iter = upload.getItemIterator(request);
@@ -120,6 +97,7 @@ public class CacheServlet extends HttpServlet {
         }
       }
       catch (FileUploadException e) {
+        e.printStackTrace();
         throw new RequestException(e);
       }
     }
@@ -174,6 +152,28 @@ public class CacheServlet extends HttpServlet {
         return trimmedValue;
       }
     }
+  }
+  
+  private URL getUrl(HttpServletRequest request) throws RequestException {
+    String[] values = request.getParameterValues("url");
+    if (values == null) {
+      throw new RequestException("Please set the url parameter or upload a file"); 
+    }
+    else if (values.length > 1) {
+      throw new RequestException("This application reads only one URL at a time");
+    }
+    else {
+      String value = values[0].trim();
+      try {
+        URL u = new URL(value);
+        System.out.println("Accepted URL " + u + " as a data source");
+        return u;
+      }
+      catch (MalformedURLException e) {
+        throw new RequestException("'" + value + "' is not a valid URL");
+      }
+    }
+
   }
   
   
