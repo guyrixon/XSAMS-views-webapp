@@ -2,6 +2,8 @@
 <%@page contentType="application/xml" pageEncoding="UTF-8"
         import="eu.vamdc.xsams.views.Locations"%>
 
+<?xml-stylesheet type="text/xsl" href="<%=Locations.getCapabilitiesCssLocation(request)%>"?>
+
 <cap:capabilities
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:cap="http://www.ivoa.net/xml/VOSICapabilities/v1.0"

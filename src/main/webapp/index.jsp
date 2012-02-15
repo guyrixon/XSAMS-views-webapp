@@ -9,19 +9,23 @@
     </head>
     <body>
         <h1>Views of an XSAMS document</h1>
+        This application tabulates the states and transitions in an XSAMS documents.
+        It can read data from a URL (e.g. direct from a VAMDC database-service)
+        or from a file uploaded from your desktop.
         <form  action="service" method="get">
           <p>
-            Visualize data from URL: 
+            Read from this URL: 
             <input type="text" size="96" name="url"/>
             <input type="submit"/>
           </p>
         </form>
         <form  action="service" method="post" enctype="multipart/form-data">
           <p>
-            Visualize data from uploaded file: 
+            Read this file: 
             <input type="file" name="upload" size="128">
             <input type="submit"/>
           </p>
         </form>
+        <p><a href="capabilities">Service capabilities (for the VAMDC registry).</a></p>
     </body>
 </html>
