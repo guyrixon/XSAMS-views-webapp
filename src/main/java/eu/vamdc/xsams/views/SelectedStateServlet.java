@@ -49,7 +49,7 @@ public class SelectedStateServlet extends TransformingServlet {
   
   
   private Transformer getSelectedStateTransformer(String stateId) throws ServletException {
-    InputStream q = this.getClass().getResourceAsStream("/selected-state.xsl");
+    InputStream q = this.getClass().getResourceAsStream("/selected-state-display-2.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
     }
@@ -64,7 +64,7 @@ public class SelectedStateServlet extends TransformingServlet {
   }
   
   private Transformer getSelectedStateDisplayTransformer() throws ServletException {
-    InputStream q = this.getClass().getResourceAsStream("/selected-state-display.xsl");
+    InputStream q = this.getClass().getResourceAsStream("/selected-state-display-2.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
     }
@@ -93,11 +93,8 @@ public class SelectedStateServlet extends TransformingServlet {
     File tmp = File.createTempFile("xsams", null);
     log("Intermediate data cached at " + tmp);
     try {
-      StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
-      StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
       StreamResult out = new StreamResult(w);
-      transform(in, tmpOut, getSelectedStateTransformer(stateId));
-      transform(tmpIn, out, getSelectedStateDisplayTransformer());
+      transform(in, out, getSelectedStateTransformer(stateId));
     }
     finally {
       tmp.delete();
