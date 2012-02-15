@@ -68,8 +68,6 @@ public abstract class TransformingServlet extends HttpServlet {
     }
   }
   
-  protected abstract void get(HttpServletRequest request, HttpServletResponse response) 
-      throws IOException, ServletException;
   
   protected StreamSource getData(String key) throws ServletException, FileNotFoundException {
     DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
