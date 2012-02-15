@@ -12,7 +12,7 @@
         This application tabulates the states and transitions in an XSAMS documents.
         It can read data from a URL (e.g. direct from a VAMDC database-service)
         or from a file uploaded from your desktop.
-        <form  action="service" method="get">
+        <form  action="service" method="post" enctype="application/x-www-form-urlencoded">
           <p>
             Read from this URL: 
             <input type="text" size="96" name="url"/>
