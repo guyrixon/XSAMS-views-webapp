@@ -10,7 +10,7 @@ public class Locations {
   
   public static String getRootLocation(HttpServletRequest request) {
     return String.format("http://%s:%d%s",
-                         request.getLocalName(),
+                         request.getServerName(),
                          request.getLocalPort(),
                          request.getContextPath());
   }
@@ -33,6 +33,10 @@ public class Locations {
   
   public static String getCapabilitiesLocation(HttpServletRequest request) {
     return getRootLocation(request) + "/capabilities";
+  }
+  
+  public static String getCapabilitiesCssLocation(HttpServletRequest request) {
+    return getRootLocation(request) + "/Capabilities.xsl";
   }
   
 }

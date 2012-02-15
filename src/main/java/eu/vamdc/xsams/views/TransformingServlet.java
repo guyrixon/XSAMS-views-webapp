@@ -23,7 +23,7 @@ import javax.xml.transform.stream.StreamSource;
  */
 public abstract class TransformingServlet extends HttpServlet {
   
-  
+  /*
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
@@ -37,12 +37,28 @@ public abstract class TransformingServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
     }
   }
+   * 
+   */
+  
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException {
+    try {
+      produceDocument(request, response);
+    }
+    catch (RequestException e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+    }
+  }
   
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
     try {
-      get(request, response);
+      produceDocument(request, response);
     }
     catch (RequestException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
@@ -135,6 +151,38 @@ public abstract class TransformingServlet extends HttpServlet {
     out.println("<meta http-equiv='Content-type' content='text/html;charset=UTF-8' />");
     out.println("<title>" + title + "</title>");
     out.println("</head>");
+  }
+  
+  
+  
+  protected abstract String getDocumentTitle();
+  
+  protected abstract void writeContent(String lineListUrl,
+                                       String stateListUrl,
+                                       String selectedStateUrl,
+                                       String reloadUrl,
+                                       String stateId,
+                                       StreamSource in,
+                                       PrintWriter out) throws ServletException, IOException;
+  
+  protected void produceDocument(HttpServletRequest request, HttpServletResponse response) throws RequestException, ServletException, FileNotFoundException, IOException {
+    String key = getKey(request);
+    StreamSource in = getData(key);
+    response.setContentType("text/html");
+    response.setCharacterEncoding("UTF-8");
+    String u = getOriginalUrlEncoded(key);
+    String reloadUrl = (u == null)? "" : Locations.getServiceLocation(request) + "?url=" + u;
+    PrintWriter w = response.getWriter();
+    startXhtmlUtf8Document(w, getDocumentTitle());
+    w.println("<body>");
+    writeContent(Locations.getLineListLocation(request, key),
+                 Locations.getStateListLocation(request, key),
+                 Locations.getStateLocation(request, key),
+                 reloadUrl,
+                 request.getParameter("stateID"),
+                 getData(key),
+                 response.getWriter());
+    w.println("</body>");
   }
   
 }

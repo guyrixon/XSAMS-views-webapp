@@ -42,6 +42,31 @@ public class StateListServlet extends TransformingServlet {
     w.println("</html>");
   }
   
+  @Override
+  protected String getDocumentTitle() {
+    return "State-list view of XSAMS";
+  }
+  
+  @Override
+  protected void writeContent(String lineListUrl,
+                              String stateListUrl,
+                              String selectedStateUrl,
+                              String reloadUrl,
+                              String stateId,
+                              StreamSource in,
+                              PrintWriter w) throws ServletException {
+    
+    w.println("<h1>State-list view of XSAMS</h1>");
+    w.println("<p>(<a href='" + lineListUrl + "'>Switch to view of radiative transitions</a>)</p>");
+    w.println("<p>(<a href='" + reloadUrl + "'>Reload orginal data</a>)</p>");
+    
+    StreamResult out = new StreamResult(w);
+    transform(in, out, getStateListDisplayTransformer(selectedStateUrl));
+  }
+  
+  
+  
+  
   
   private Transformer getStateListDisplayTransformer(String stateLocation) 
       throws ServletException {

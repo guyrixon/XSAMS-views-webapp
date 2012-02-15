@@ -77,4 +77,31 @@ public class SelectedStateServlet extends TransformingServlet {
     }
   }
   
+  @Override
+  protected String getDocumentTitle() {
+    return "Single-state view of XSAMS";
+  }
+  
+  @Override
+  protected void writeContent(String lineListUrl,
+                              String stateListUrl,
+                              String reloadUrl,
+                              String selectedStateUrl,
+                              String stateId,
+                              StreamSource in,
+                              PrintWriter w) throws ServletException, IOException {
+    File tmp = File.createTempFile("xsams", null);
+    log("Intermediate data cached at " + tmp);
+    try {
+      StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
+      StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
+      StreamResult out = new StreamResult(w);
+      transform(in, tmpOut, getSelectedStateTransformer(stateId));
+      transform(tmpIn, out, getSelectedStateDisplayTransformer());
+    }
+    finally {
+      tmp.delete();
+    }
+  }
+  
 }

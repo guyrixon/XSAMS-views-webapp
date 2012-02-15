@@ -24,6 +24,7 @@ public class LineListServlet extends TransformingServlet {
   @Override
   protected void get(HttpServletRequest request, HttpServletResponse response) 
       throws IOException, ServletException {
+    log("***** MUST NOT HAPPEN****");
     String key = getKey(request);
     StreamSource in = getData(key);
     String u = getOriginalUrlEncoded(key);
@@ -80,6 +81,33 @@ public class LineListServlet extends TransformingServlet {
     }
   }
   
+  @Override
+  protected String getDocumentTitle() {
+    return "Line-list view of XSAMS";
+  }
   
+  
+  @Override
+  protected void writeContent(String lineListUrl,
+                              String stateListUrl,
+                              String selectedStateUrl,
+                              String reloadUrl,
+                              String stateId,
+                              StreamSource in,
+                              PrintWriter w) throws ServletException, IOException {
+    log("***" + selectedStateUrl + "***");
+    w.println("<body>");
+    w.println("<p>(<a href='" + stateListUrl + "'>Switch to view of states</a>)</p>");
+    w.println("<p>(<a href='" + reloadUrl + "'>Reload orginal data</a>)</p>");
+    File tmp = File.createTempFile("xsams", null);
+    System.out.println("Intermediate XML for line-list cached at " + tmp);
+    StreamResult tmpOut = new StreamResult(new FileOutputStream(tmp));
+    StreamSource tmpIn = new StreamSource(new FileInputStream(tmp));
+    StreamResult out = new StreamResult(w);
+    transform(in, tmpOut, getLineListTransformer());
+    transform(tmpIn, out, getLineListDisplayTransformer(selectedStateUrl));
+    w.print("</body>");
+    w.print("</html>");
+  }
   
 }
