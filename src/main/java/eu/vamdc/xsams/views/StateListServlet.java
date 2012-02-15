@@ -44,7 +44,7 @@ public class StateListServlet extends TransformingServlet {
                                        String reloadUrl,
                                        String stateId)  
       throws ServletException {
-    InputStream q = this.getClass().getResourceAsStream("/state-list-display.xsl");
+    InputStream q = this.getClass().getResourceAsStream("/state-list.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
     }
