@@ -115,6 +115,17 @@
         </tr>
         
       </xsl:if>
+      
+      <xsl:if test="not(xsams:UpperStateRef)">
+        <tr>
+          <td/>
+          <td/>
+          <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
+          <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:Probability"></xsl:with-param></xsl:call-template></td>
+          <td/>
+          <td/>
+        </tr>
+      </xsl:if>
         
     </xsl:template>
   
