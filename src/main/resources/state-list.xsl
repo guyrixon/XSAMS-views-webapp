@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" 
     xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
     xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
     xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"
@@ -16,206 +16,103 @@
     xmlns:lpos="http://vamdc.org/xml/xsams/0.3/cases/lpos"
     xmlns:nltos="http://vamdc.org/xml/xsams/0.3/cases/nltos">
     
+  <xsl:param name="line-list-location"/>
+  <xsl:param name="state-location"/>
+    
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
-  
-  <xsl:param name="stateID"/>
     
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-        <title>Single-state view of XSAMS</title>    
+        <title>State-list view of XSAMS</title>    
       </head>
       <body>
-        <h1>Single-state view of XSAMS</h1>
-        <xsl:apply-templates/>
+        <h1>State-list view of XSAMS</h1>
+        <p>
+          <xsl:text>(</xsl:text>
+          <a>
+            <xsl:attribute name="href">$line-list-locationm</xsl:attribute>
+            <xsl:text>Switch to view of radiative transitions</xsl:text>
+          </a>
+          <xsl:text>)</xsl:text>
+        </p>
+        <table rules="all">
+          <tr>
+            <th>Species</th>
+            <th>Ion charge</th>
+            <th>State energy</th>
+            <th>Description</th>
+            <th>Quantum numbers</th>
+            <th>More information</th>
+          </tr>
+          <xsl:apply-templates/>
+        </table>
       </body>
     </html>
   </xsl:template>
     
     <xsl:template match="xsams:Molecule">
-      <xsl:if test="xsams:MolecularState[@stateID=$stateID]">
-        <h2>Species</h2>
-        <p>
-          <xsl:text>InChI: </xsl:text>
-          <xsl:value-of select="descendant::xsams:InChI"/>
-          <xsl:text> (</xsl:text>
-          <xsl:value-of select="descendant::xsams:InChIKey"/>
-          <xsl:text>)</xsl:text>
-        </p>
-        <xsl:apply-templates/>
-      </xsl:if>
-    </xsl:template>
-   
-    
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:ChemicalName/xsams:Value">
-        <p>
-            <xsl:text>Molecule name: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula/xsams:Value">
-        <p>
-            <xsl:text>Structural formula: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:StoichiometricFormula">
-        <p>
-            <xsl:text>Stoichiometric formula: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Atom">
-      <xsl:if test="xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$stateID]">
-        <h2>Species</h2>
-        <p>
-            <xsl:choose>
-                <xsl:when test="xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber">
-                    <xsl:text>Isotope: </xsl:text>
-                    <sup><xsl:value-of select="xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber"/></sup>
-                    <xsl:value-of select="xsams:ChemicalElement/xsams:ElementSymbol"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text>Element: </xsl:text>
-                    <xsl:value-of select="xsams:ChemicalElement/xsams:ElementSymbol"/>
-                    <xsl:text> (isotope unspecified)</xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
-        </p>
-        <p>
-          <xsl:text>InChI: </xsl:text>
-          <xsl:value-of select="descendant::xsams:InChI"/>
-          <xsl:if test="descendant::xsams:InChIKey">
-            <xsl:text> (</xsl:text>
-            <xsl:value-of select="descendant::xsams:InChIKey"/>
-            <xsl:text>)</xsl:text>
-          </xsl:if>
-        </p>
-        <xsl:if test="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin">
-          <p>
-            <xsl:text> Nuclear spin: </xsl:text>
-           <xsl:value-of select="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin"/>
-          </p>
-        </xsl:if>
-        <xsl:apply-templates/>
-      </xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Isotope">
-      <xsl:apply-templates/>
+        <xsl:variable name="specie">
+            <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:ChemicalName"/>
+            <xsl:text> - </xsl:text>
+            <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+        </xsl:variable>
+        
+        <xsl:for-each select="xsams:MolecularState">
+            <xsl:sort select="MolecularStateCharacterisation/StateEnergy/Value"/>
+            <xsl:call-template name="molecular-state">
+                <xsl:with-param name="specie" select="$specie"/>
+                <xsl:with-param name="state" select="."/>
+                <xsl:with-param name="charge" select="xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
+            </xsl:call-template>
+        </xsl:for-each>
+        
     </xsl:template>
     
     <xsl:template match="xsams:Ion">
-      <xsl:apply-templates/>
-    </xsl:template>
-    
-    <xsl:template match="xsams:IonCharge">
-        <p>
-            <xsl:text>Ion charge: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:AtomicState|xsams:MolecularState">
-      <xsl:if test="@stateID=$stateID">
-        <h2>State</h2>
-        <p>
-            <xsl:text>State description: </xsl:text>
-            <xsl:value-of select="xsams:Description"/>
-        </p>
-        <xsl:apply-templates/>
-      </xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="xsams:StateEnergy">
-        <p>
-            <xsl:text>State energy above ground state: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
+        <xsl:variable name="specie">
+            <sup><xsl:value-of select="ancestor::xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber"/></sup>
+            <xsl:value-of select="ancestor::xsams:Atom/xsams:ChemicalElement/xsams:ElementSymbol"/>
+        </xsl:variable>
+        
+        <xsl:for-each select="xsams:AtomicState">
+            <xsl:call-template name="atomic-state">
+                <xsl:with-param name="specie" select="$specie"/>
+                <xsl:with-param name="state" select="."/>
+                <xsl:with-param name="charge" select="xsams:IonCharge"/>
             </xsl:call-template>
-        </p>
+        </xsl:for-each>
     </xsl:template>
     
-    <xsl:template match="xsams:IonizationEnergy">
-        <p>
-            <xsl:text>Ionization energy: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
+    <xsl:template name="molecular-state">
+        <xsl:param name="specie"/>
+        <xsl:param name="state"/>
+        <xsl:param name="charge"/>
+        <tr>
+            <td><xsl:value-of select="$specie"/></td>
+            <td><xsl:value-of select="$charge"/></td>
+            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
+            <td><xsl:value-of select="$state/Description"/></td>
+            <td><xsl:apply-templates/></td>
+            <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
+        </tr>
     </xsl:template>
     
-    <xsl:template match="xsams:LandeFactor">
-        <p>
-            <xsl:text>LandeFactor: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
+    <xsl:template name="atomic-state">
+        <xsl:param name="specie"/>
+        <xsl:param name="state"/>
+        <xsl:param name="charge"/>
+        <tr>
+            <td><xsl:value-of select="$specie"/></td>
+            <td><xsl:value-of select="$charge"/></td>
+            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
+            <td><xsl:value-of select="$state/Description"/></td>
+            <td><dl class="QN-list"><xsl:apply-templates/></dl></td>
+            <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
+        </tr>
     </xsl:template>
     
-    <xsl:template match="xsams:QuantumDefect">
-        <p>
-            <xsl:text>Quantum defect: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Lifetime">
-        <p>
-            <xsl:text>Lifetime: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Polarizability">
-        <p>
-            <xsl:text>Polarizability: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:StatisticalWeight">
-        <p>
-            <xsl:text>Statistical weight: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:HyperfineConstantA">
-        <p>
-            <xsl:text>Hyperfine constant A: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:HyperfineConstantB">
-        <p>
-            <xsl:text>Hyperfine constant B: </xsl:text>
-            <xsl:call-template name="quantity-with-unit">
-                <xsl:with-param name="quantity" select="."/>
-            </xsl:call-template>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:AtomicQuantumNumbers">
-        <h3>Atomic quantum numbers</h3>
-        <dl class="QN-list">
-          <xsl:apply-templates/>
-        </dl>
-    </xsl:template>
     
     <xsl:template match="xsams:TotalAngularMomentum">
       <dt>J</dt>
@@ -241,41 +138,23 @@
     <dt>m</dt>
     <dd><xsl:value-of select="."/></dd>
   </xsl:template>
-  
     
-  <xsl:template match="xsams:AtomicComposition">
-    <h3>Components of state wave-function</h3>
-    <ul>
-      <xsl:for-each select="xsams:Component/xsams:Configuration/xsams:ConfigurationLabel">
-        <li><xsl:value-of select="."/></li>
-      </xsl:for-each>
-    </ul>     
-  </xsl:template>
-    
-    <xsl:template match="xsams:TotalStatisticalWeight">
-        <p>
-            <xsl:text>Total statistical weight: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
+    <!-- Writes a hyperlink to the page for the given state. -->
+    <xsl:template name="state-link">
+        <xsl:param name="state"/>
+        <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="$state-location"/>
+            <xsl:text>?stateID=</xsl:text>
+            <xsl:value-of select="$state/@stateID"/>
+          </xsl:attribute>
+          <xsl:text>Detail</xsl:text>
+        </a>    
     </xsl:template>
     
-    <xsl:template match="xsams:NuclearStatisticalWeight">
-        <p>
-            <xsl:text>Nuclear statistical weight: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:NuclearSpinIsomer">
-        <p>
-            <xsl:text>Nuclear-spin isomer: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='nltcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/nltcs-0.2.1.html">Quantum description of state as closed-shell, non-linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/>
             <xsl:text>, v1=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v1"/>
             <xsl:text>, v2=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v2"/>
@@ -293,7 +172,6 @@
     
     <xsl:template match="xsams:Case[@caseID='ltcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/nltcs-0.2.1.html">Quantum description of state as closed-shell, linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:ElecStateLabel"/>
             <xsl:text>, v1=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v1"/>
             <xsl:text>, v2=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v2"/>
@@ -313,7 +191,6 @@
     
     <xsl:template match="xsams:Case[@caseID='dcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/dcs-0.2.1.html">Quantum description of state as closed-shell, diatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="dcs:QNs/dcs:ElecStateLabel"/>
             <xsl:text>, v=</xsl:text><xsl:value-of select="dcs:QNs/dcs:v"/>
             <xsl:text>, J=</xsl:text><xsl:value-of select="dcs:QNs/dcs:J"/>
@@ -326,7 +203,6 @@
     
     <xsl:template match="xsams:Case[@caseID='hunda']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/hunda-0.2.1.html">Quantum description of state as open shell, Hund's case (a) diatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="hunda:QNs/hunda:ElecStateLabel"/>
             <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:elecInv"/>
             <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:reflecInv"/>
@@ -346,7 +222,6 @@
     
     <xsl:template match="xsams:Case[@caseID='hundb']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/hundb-0.2.1.html">Quantum description of state as open shell, Hund's case (b) diatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="hundb:QNs/hundb:ElecStateLabel"/>
             <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:elecInv"/>
             <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:reflecInv"/>
@@ -367,7 +242,6 @@
     
     <xsl:template match="xsams:Case[@caseID='stcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/stcs-0.2.1.html">Quantum description of state as closed-shell, symmetric top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="stcs:QNs/stcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="stcs:QNs/stcs:vi"/>
             <xsl:text>, li=</xsl:text><xsl:value-of select="stcs:QNs/stcs:li"/>
@@ -385,7 +259,6 @@
     
     <xsl:template match="xsams:Case[@caseID='lpcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/lpcs-0.2.1.html">Quantum description of state as closed-shell, linear, polyatomic  molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:vi"/>
             <xsl:text>, li=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:li"/>
@@ -404,7 +277,6 @@
     
     <xsl:template match="xsams:Case[@caseID='asymcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/asymcs-0.2.1.html">Quantum description of state as closed-shell, asymmetric top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vi"/>
             <xsl:text>, vibrational inversion-partity =</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vibInv"/>
@@ -422,7 +294,6 @@
     
     <xsl:template match="xsams:Case[@caseID='asymos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/asymos-0.2.1.html">Quantum description of state as open-shell, asymmetric top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="asymos:QNs/asymos:ElecStateLabel"/>
             <xsl:text>, electronic symmetry=</xsl:text><xsl:value-of select="asymos:QNs/asymos:elecSym"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="asymos:QNs/asymos:elecInv"/>
@@ -443,7 +314,6 @@
     
     <xsl:template match="xsams:Case[@caseID='sphcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/sphcs-0.2.1.html">Quantum description of state as closed-shell, spherical top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:vi"/>
             <xsl:text>, li=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:li"/>
@@ -459,7 +329,6 @@
     
     <xsl:template match="xsams:Case[@caseID='sphos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/sphos-0.2.1.html">Quantum description of state as open-shell, spherical top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="sphos:QNs/sphos:ElecStateLabel"/>
             <xsl:text>, electronic symmetry=</xsl:text><xsl:value-of select="sphos:QNs/sphos:elecSym"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="sphos:QNs/sphos:elecInv"/>
@@ -479,7 +348,6 @@
     
     <xsl:template match="xsams:Case[@caseID='ltos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/ltos-0.2.1.html">Quantum description of state as open-shell, linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="ltos:QNs/ltos:ElecStateLabel"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:elecInv"/>
             <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:elecRefl"/>
@@ -505,7 +373,6 @@
     
     <xsl:template match="xsams:Case[@caseID='lpos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/lpos-0.2.1.html">Quantum description of state as open-shell, linear, polyatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="lpos:QNs/lpos:ElecStateLabel"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="lpos:QNs/lpos:elecInv"/>
             <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="lpos:QNs/lpos:elecRefl"/>
@@ -529,7 +396,6 @@
     
     <xsl:template match="xsams:Case[@caseID='nltos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/nltos-0.2.1.html">Quantum description of state as open-shell, non-linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="nltos:QNs/nltos:ElecStateLabel"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="nltos:QNs/nltos:elecInv"/>
             <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="nltos:QNs/nltos:elecRefl"/>
@@ -549,23 +415,11 @@
         </p>
     </xsl:template>
     
-    <xsl:template match="xsams:PartitionFunction">
-        <p>
-            <xsl:text>Partitionfunction: &#xa;</xsl:text>
-            <xsl:text>T: </xsl:text>
-            <xsl:value-of select="xsams:T/xsams:DataList"/>
-            <xsl:text>&#xa;Q: </xsl:text>
-            <xsl:value-of select="xsams:Q/xsams:DataList"/>
-            <xsl:text>&#xa;</xsl:text>
-        </p>
-    </xsl:template>
-    
-    
-    <xsl:template name="quantity-with-unit">
+    <xsl:template name="value-with-unit">
         <xsl:param name="quantity"/>
-        <xsl:value-of select="xsams:Value"/>
+        <xsl:value-of select="$quantity/xsams:Value"/>
         <xsl:text> </xsl:text>
-        <xsl:value-of select="xsams:Value/@units"/>
+        <xsl:value-of select="$quantity/xsams:Value/@units"/>
     </xsl:template>
     
     <xsl:template match="@*|text()"/>

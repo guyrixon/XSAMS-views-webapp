@@ -3,7 +3,6 @@ package eu.vamdc.xsams.views;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -22,23 +21,6 @@ import javax.xml.transform.stream.StreamSource;
  * @author Guy Rixon
  */
 public abstract class TransformingServlet extends HttpServlet {
-  
-  /*
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-      throws IOException, ServletException {
-    try {
-      get(request, response);
-    }
-    catch (RequestException e) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
-    }
-    catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-    }
-  }
-   * 
-   */
   
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -113,6 +95,24 @@ public abstract class TransformingServlet extends HttpServlet {
   }
   
   
+  
+  
+  protected void produceDocument(HttpServletRequest request, HttpServletResponse response) throws RequestException, ServletException, FileNotFoundException, IOException {
+    String key = getKey(request);
+    StreamSource in = getData(key);
+    response.setContentType("text/html");
+    response.setCharacterEncoding("UTF-8");
+    String u = getOriginalUrlEncoded(key);
+    String reloadUrl = (u == null)? "" : Locations.getServiceLocation(request) + "?url=" + u;
+    StreamResult out = new StreamResult(response.getWriter());
+    Transformer t = getTransformer(Locations.getLineListLocation(request, key),
+                                   Locations.getStateListLocation(request, key),
+                                   Locations.getStateLocation(request, key),
+                                   reloadUrl,
+                                   request.getParameter("stateID"));
+    transform(in, out, t);
+  }
+  
   protected void transform(StreamSource in, StreamResult out, Transformer t)
       throws ServletException {
     try {
@@ -123,64 +123,11 @@ public abstract class TransformingServlet extends HttpServlet {
     }
   }
   
-  /**
-   * Writes the opening of an XHTML-1 (strict) document in UTF-8 encoding.
-   * Writes the following text to the given writer:
-   * <ul>
-   * <li>the DOCTYPE;</li>
-   * <li>the opening of the head element;
-   * <li>the opening of the html element, with namespace declaration;</li>
-   * <li>the content-type meta-element (giving the type as text.html and the encoding as UTF-8;</li>
-   * <li>the title;</li>
-   * <li>the closing of the head element.</li>
-   * </ul>
-   * The caller must write the body of the document, starting with the opening
-   * tag of the body element, and the closing tag of the html element. The
-   * caller must arrange for the output encodign to be UTF-8 before calling
-   * this method.
-   * 
-   * @param out The writer to which the document is written.
-   * @param title The title text of the document.
-   */
-  protected void startXhtmlUtf8Document(PrintWriter out, String title) {
-    out.println("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>");
-    out.println("<html xmlns='http://www.w3.org/1999/xhtml'>");
-    out.println("<head>");
-    out.println("<meta http-equiv='Content-type' content='text/html;charset=UTF-8' />");
-    out.println("<title>" + title + "</title>");
-    out.println("</head>");
-  }
   
-  
-  
-  protected abstract String getDocumentTitle();
-  
-  protected abstract void writeContent(String lineListUrl,
-                                       String stateListUrl,
-                                       String selectedStateUrl,
-                                       String reloadUrl,
-                                       String stateId,
-                                       StreamSource in,
-                                       PrintWriter out) throws ServletException, IOException;
-  
-  protected void produceDocument(HttpServletRequest request, HttpServletResponse response) throws RequestException, ServletException, FileNotFoundException, IOException {
-    String key = getKey(request);
-    StreamSource in = getData(key);
-    response.setContentType("text/html");
-    response.setCharacterEncoding("UTF-8");
-    String u = getOriginalUrlEncoded(key);
-    String reloadUrl = (u == null)? "" : Locations.getServiceLocation(request) + "?url=" + u;
-    PrintWriter w = response.getWriter();
-    startXhtmlUtf8Document(w, getDocumentTitle());
-    w.println("<body>");
-    writeContent(Locations.getLineListLocation(request, key),
-                 Locations.getStateListLocation(request, key),
-                 Locations.getStateLocation(request, key),
-                 reloadUrl,
-                 request.getParameter("stateID"),
-                 getData(key),
-                 response.getWriter());
-    w.println("</body>");
-  }
+  protected abstract Transformer getTransformer(String lineListUrl,
+                                                String stateListUrl,
+                                                String selectedStateUrl,
+                                                String reloadUrl,
+                                                String stateId) throws ServletException;
   
 }

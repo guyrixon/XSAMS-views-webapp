@@ -34,8 +34,9 @@
     xmlns:xsams="http://vamdc.org/xml/xsams/0.3">
   
   <xsl:param name="state-location"/>
+  <xsl:param name="state-list-location"/>
     
-  <xsl:output method="xml" encoding="UTF-8"/>
+  <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
     
   <xsl:key name="atomicState" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState" use="@stateID"/>
   <xsl:key name="molecularState" match="/xsams:XSAMSData/xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState" use="@stateID"/>
@@ -43,19 +44,36 @@
     <!-- On finding the start of the XSAMs, write the shell of the HTML page.
          The page contains one table. Other templates fill in rows of the table -->
   <xsl:template match="/xsams:XSAMSData/xsams:Processes/xsams:Radiative">
-    <table rules="all">
-      <tr>
-        <th>Species</th>
-        <th>Ion charge</th>
-        <th>&#955;/&#957;/n/E</th>
-        <th>Probability</th>
-        <th>Upper state</th>
-        <th>Lower state</th>
-      </tr>
-      <xsl:text>
-      </xsl:text>
-      <xsl:apply-templates/>
-    </table>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+        <title>Line-list view of XSAMS</title>    
+      </head>
+      <body>
+        <h1>Line-list view of XSAMS</h1>
+        <p>
+          <xsl:text>(</xsl:text>
+          <a>
+            <xsl:attribute name="href">$state-list-location</xsl:attribute>
+            <xsl:text>Switch to view of states</xsl:text>
+          </a>
+          <xsl:text>)</xsl:text>
+        </p>
+        <table rules="all">
+          <tr>
+            <th>Species</th>
+            <th>Ion charge</th>
+            <th>&#955;/&#957;/n/E</th>
+            <th>Probability</th>
+            <th>Upper state</th>
+            <th>Lower state</th>
+          </tr>
+          <xsl:text>
+          </xsl:text>
+          <xsl:apply-templates/>
+        </table>
+      </body>
+    </html>
   </xsl:template>
   
   
