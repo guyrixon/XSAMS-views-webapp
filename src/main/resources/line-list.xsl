@@ -35,6 +35,7 @@
   
   <xsl:param name="state-location"/>
   <xsl:param name="state-list-location"/>
+  <xsl:param name="broadening-location"/>
     
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
     
@@ -67,6 +68,7 @@
             <th>Probability</th>
             <th>Upper state</th>
             <th>Lower state</th>
+            <th>Broadening</th>
           </tr>
           <xsl:text>
           </xsl:text>
@@ -97,6 +99,7 @@
           <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:Probability"></xsl:with-param></xsl:call-template></td>
           <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="$upperState"/></xsl:call-template></td>
           <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="$lowerState"/></xsl:call-template></td>
+          <td><xsl:call-template name="broadening"><xsl:with-param name="transition" select="."/></xsl:call-template></td>
         </tr>
       </xsl:if>
       
@@ -112,6 +115,7 @@
           <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:Probability"></xsl:with-param></xsl:call-template></td>
           <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="$upperState"/></xsl:call-template></td>
           <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="$lowerState"/></xsl:call-template></td>
+          <td><xsl:call-template name="broadening"><xsl:with-param name="transition" select="."/></xsl:call-template></td>
         </tr>
         
       </xsl:if>
@@ -124,6 +128,7 @@
           <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:Probability"></xsl:with-param></xsl:call-template></td>
           <td/>
           <td/>
+          <td><xsl:call-template name="broadening"><xsl:with-param name="transition" select="."/></xsl:call-template></td>
         </tr>
       </xsl:if>
         
@@ -198,7 +203,7 @@
     <a>
       <xsl:attribute name="href">
         <xsl:value-of select="$state-location"/>
-        <xsl:text>?stateID=</xsl:text>
+        <xsl:text>?id=</xsl:text>
         <xsl:value-of select="$state/@stateID"/>
       </xsl:attribute>
       <xsl:choose>
@@ -239,23 +244,20 @@
   
   
   <xsl:template name="broadening">
-    <xsl:param name="line"/>
-    <xsl:for-each select="$line/Broadening">
-      <xsl:value-of select="@name"/>
-      <xsl:text>: </xsl:text>
-      <xsl:for-each select="xsams:Lineshape">
-        <xsl:value-of select="@name"/>
-        <xsl:text>(</xsl:text>
-        <xsl:for-each select="xsams:LineshapeParameter[xsams:Value]">
+    <xsl:param name="transition"/>
+    <xsl:if test="$transition/xsams:Broadening">
+      <a>
+        <xsl:attribute name="href">
+          <xsl:value-of select="$broadening-location"/>
+          <xsl:text>?id=</xsl:text>
+          <xsl:value-of select="$transition/@id"/>
+        </xsl:attribute>
+        <xsl:for-each select="$transition/xsams:Broadening">
           <xsl:value-of select="@name"/>
-          <xsl:text>=</xsl:text>
-          <xsl:value-of select="Value"/>
-          <xsl:text>, </xsl:text>
+          <xsl:text> </xsl:text>
         </xsl:for-each>
-        <xsl:text>) </xsl:text>
-      </xsl:for-each>
-      <xsl:text>; </xsl:text>
-    </xsl:for-each>
+      </a>
+    </xsl:if>
   </xsl:template>
   
   

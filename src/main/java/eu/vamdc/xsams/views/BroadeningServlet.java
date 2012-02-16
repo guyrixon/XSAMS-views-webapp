@@ -11,7 +11,7 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Guy Rixon
  */
-public class StateListServlet extends TransformingServlet {
+public class BroadeningServlet extends TransformingServlet {
   
   @Override
   protected Transformer getTransformer(String lineListUrl,
@@ -21,15 +21,15 @@ public class StateListServlet extends TransformingServlet {
                                        String reloadUrl,
                                        String id)  
       throws ServletException {
-    InputStream q = this.getClass().getResourceAsStream("/state-list.xsl");
+    System.out.println("Broadening for transition " + id);
+    InputStream q = this.getClass().getResourceAsStream("/broadening.xsl");
     if (q == null) {
       throw new ServletException("Can't find the stylesheet");
     }
     StreamSource transform = new StreamSource(q);
     try {
       Transformer t = TransformerFactory.newInstance().newTransformer(transform);
-      t.setParameter("line-list-location", lineListUrl);
-      t.setParameter("state-location", selectedStateUrl);
+      t.setParameter("id", id);
       return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);

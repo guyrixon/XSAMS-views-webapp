@@ -145,7 +145,7 @@
         <a>
           <xsl:attribute name="href">
             <xsl:value-of select="$state-location"/>
-            <xsl:text>?stateID=</xsl:text>
+            <xsl:text>?id=</xsl:text>
             <xsl:value-of select="$state/@stateID"/>
           </xsl:attribute>
           <xsl:text>Detail</xsl:text>

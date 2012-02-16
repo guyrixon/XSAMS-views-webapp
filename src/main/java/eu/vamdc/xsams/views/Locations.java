@@ -31,6 +31,10 @@ public class Locations {
     return getRootLocation(request) + "/state/" + key;
   }
   
+  public static String getBroadeningLocation(HttpServletRequest request, String key) {
+    return getRootLocation(request) + "/broadening/" + key;
+  }
+  
   public static String getCapabilitiesLocation(HttpServletRequest request) {
     return getRootLocation(request) + "/capabilities";
   }

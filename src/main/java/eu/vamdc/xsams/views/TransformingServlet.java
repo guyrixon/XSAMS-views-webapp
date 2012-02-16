@@ -108,8 +108,9 @@ public abstract class TransformingServlet extends HttpServlet {
     Transformer t = getTransformer(Locations.getLineListLocation(request, key),
                                    Locations.getStateListLocation(request, key),
                                    Locations.getStateLocation(request, key),
+                                   Locations.getBroadeningLocation(request, key),
                                    reloadUrl,
-                                   request.getParameter("stateID"));
+                                   request.getParameter("id"));
     transform(in, out, t);
   }
   
@@ -127,7 +128,8 @@ public abstract class TransformingServlet extends HttpServlet {
   protected abstract Transformer getTransformer(String lineListUrl,
                                                 String stateListUrl,
                                                 String selectedStateUrl,
+                                                String broadeningUrl,
                                                 String reloadUrl,
-                                                String stateId) throws ServletException;
+                                                String id) throws ServletException;
   
 }

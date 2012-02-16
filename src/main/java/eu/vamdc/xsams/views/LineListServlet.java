@@ -1,13 +1,10 @@
 package eu.vamdc.xsams.views;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 /**
@@ -20,6 +17,7 @@ public class LineListServlet extends TransformingServlet {
   protected Transformer getTransformer(String lineListUrl,
                                        String stateListUrl,
                                        String selectedStateUrl,
+                                       String broadeningUrl,
                                        String reloadUrl,
                                        String stateId) 
       throws ServletException {
@@ -32,6 +30,7 @@ public class LineListServlet extends TransformingServlet {
       Transformer t = TransformerFactory.newInstance().newTransformer(transform);
       t.setParameter("state-location", selectedStateUrl);
       t.setParameter("state-list-location", stateListUrl);
+      t.setParameter("broadening-location", broadeningUrl);
       return t;
     } catch (TransformerConfigurationException ex) {
       throw new ServletException(ex);

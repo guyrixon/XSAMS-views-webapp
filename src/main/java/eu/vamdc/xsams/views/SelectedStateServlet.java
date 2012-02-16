@@ -22,6 +22,7 @@ public class SelectedStateServlet extends TransformingServlet {
   protected Transformer getTransformer(String lineListUrl,
                                        String stateListUrl,
                                        String selectedStateUrl,
+                                       String broadeningUrl,
                                        String reloadUrl,
                                        String stateId) throws ServletException {
     InputStream q = this.getClass().getResourceAsStream("/selected-state.xsl");
