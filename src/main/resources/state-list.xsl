@@ -83,7 +83,7 @@
           <xsl:with-param name="element" select="ancestor::xsams:Atom/xsams:ChemicalElement/xsams:ElementSymbol"/>
           <xsl:with-param name="mass-number" select="ancestor::xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber"/>
           <xsl:with-param name="state" select="."/>
-          <xsl:with-param name="charge" select="xsams:IonCharge"/>
+          <xsl:with-param name="charge" select="../xsams:IonCharge"/>
         </xsl:call-template>
       </xsl:for-each>
     </xsl:template>
