@@ -70,6 +70,7 @@ public class CacheServlet extends HttpServlet {
       String key = cache.put(u);
       System.out.println("Cached at " + cache.get(key).getCacheFile());
       redirect(request, key, response);
+      System.out.println("Redirection committed.");
     }
     else {
       System.out.println("Handling multipart");
