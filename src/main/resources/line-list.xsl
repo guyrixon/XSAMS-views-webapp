@@ -44,7 +44,7 @@
     
     <!-- On finding the start of the XSAMs, write the shell of the HTML page.
          The page contains one table. Other templates fill in rows of the table -->
-  <xsl:template match="/xsams:XSAMSData/xsams:Processes/xsams:Radiative">
+  <xsl:template match="/xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
@@ -60,22 +60,30 @@
           </a>
           <xsl:text>)</xsl:text>
         </p>
-        <table rules="all">
-          <tr>
-            <th>Species</th>
-            <th>Ion charge</th>
-            <th>&#955;/&#957;/n/E</th>
-            <th>Probability</th>
-            <th>Upper state</th>
-            <th>Lower state</th>
-            <th>Broadening</th>
-          </tr>
-          <xsl:text>
-          </xsl:text>
-          <xsl:apply-templates/>
-        </table>
+        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
+          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
+        </xsl:if>
+        <xsl:apply-templates/>
       </body>
     </html>
+  </xsl:template>       
+         
+  <xsl:template match="/xsams:XSAMSData/xsams:Processes/xsams:Radiative">
+    <table rules="all">
+      <tr>
+        <th>Species</th>
+        <th>Ion charge</th>
+        <th>&#955;/&#957;/n/E</th>
+        <th>Probability</th>
+        <th>Upper state</th>
+        <th>Lower state</th>
+        <th>Broadening</th>
+      </tr>
+      <xsl:text>
+      </xsl:text>
+      <xsl:apply-templates/>
+    </table>
+        
   </xsl:template>
   
   
@@ -226,7 +234,7 @@
     <a>
       <xsl:attribute name="href">
         <xsl:value-of select="$state-location"/>
-        <xsl:text>?stateID=</xsl:text>
+        <xsl:text>?id=</xsl:text>
         <xsl:value-of select="$state/@stateID"/>
       </xsl:attribute>
       <xsl:choose>

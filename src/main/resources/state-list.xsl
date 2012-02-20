@@ -37,6 +37,12 @@
           </a>
           <xsl:text>)</xsl:text>
         </p>
+        
+        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
+          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
+        </xsl:if>
+        
+        
         <table rules="all">
           <tr>
             <th>Species</th>

@@ -28,6 +28,9 @@
       </head>
       <body>
         <h1>Single-state view of XSAMS</h1>
+        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
+          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
+        </xsl:if>
         <xsl:apply-templates/>
       </body>
     </html>
