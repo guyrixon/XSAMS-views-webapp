@@ -7,8 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map.Entry;
 
 /**
@@ -34,11 +36,11 @@ public class DataCache {
   
   private Integer counter;
   
-  private HashMap<String, CachedDataSet> map;
+  private Hashtable<String, CachedDataSet> map;
   
   public DataCache() {
     counter = 0;
-    map = new HashMap<String, CachedDataSet>();
+    map = new Hashtable<String, CachedDataSet>();
   }
   
   /**
@@ -60,7 +62,11 @@ public class DataCache {
     
     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
     try {
-      BufferedInputStream in = new BufferedInputStream(u.openStream());
+      URLConnection uc = u.openConnection();
+      uc.setConnectTimeout(60000);
+      uc.setReadTimeout(60000);
+      
+      BufferedInputStream in = new BufferedInputStream(uc.getInputStream());
       int n = 0;
       try {
         for (n = 0; true; n++) {
