@@ -260,10 +260,7 @@
           <xsl:text>?id=</xsl:text>
           <xsl:value-of select="$transition/@id"/>
         </xsl:attribute>
-        <xsl:for-each select="$transition/xsams:Broadening">
-          <xsl:value-of select="@name"/>
-          <xsl:text> </xsl:text>
-        </xsl:for-each>
+        <xsl:text>Detail </xsl:text>
       </a>
     </xsl:if>
   </xsl:template>
