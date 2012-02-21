@@ -9,9 +9,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+import java.util.zip.GZIPInputStream;
 
 /**
  * A put of downloaded data. For each remote data-set, identified by
@@ -65,8 +65,15 @@ public class DataCache {
       URLConnection uc = u.openConnection();
       uc.setConnectTimeout(60000);
       uc.setReadTimeout(60000);
+      uc.setRequestProperty("Accept-Encoding", "gzip");
       
-      BufferedInputStream in = new BufferedInputStream(uc.getInputStream());
+      uc.connect();
+      
+      String encoding = uc.getContentEncoding();
+      System.out.println("Transfer encoding is " + encoding);
+      BufferedInputStream in = (encoding != null && encoding.equalsIgnoreCase("gzip"))?
+                               new BufferedInputStream(new GZIPInputStream(uc.getInputStream())) :
+                               new BufferedInputStream(uc.getInputStream());
       int n = 0;
       try {
         for (n = 0; true; n++) {
