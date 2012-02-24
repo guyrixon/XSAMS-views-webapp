@@ -29,9 +29,11 @@ public abstract class TransformingServlet extends HttpServlet {
       produceDocument(request, response);
     }
     catch (RequestException e) {
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
     catch (Exception e) {
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
     }
   }
@@ -43,9 +45,11 @@ public abstract class TransformingServlet extends HttpServlet {
       produceDocument(request, response);
     }
     catch (RequestException e) {
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
     catch (Exception e) {
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
     }
   }

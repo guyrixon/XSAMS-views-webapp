@@ -13,12 +13,16 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author Guy Rixon
  */
 public class CacheServlet extends HttpServlet {
+  
+  private static final Log LOG = LogFactory.getLog(CacheServlet.class);
   
   public final static String CACHE_ATTRIBUTE = "eu.vamdc.xsams.views.cacheMap";
   
@@ -32,7 +36,8 @@ public class CacheServlet extends HttpServlet {
       get(request, response);
     }
     catch (RequestException e) {
-      log(e.toString());
+      LOG.error(e);
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
   }
@@ -45,10 +50,12 @@ public class CacheServlet extends HttpServlet {
       post(request, response);
     }
     catch (RequestException e) {
-      log(e.toString());
+      LOG.error(e);
+      e.printStackTrace();
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
     catch (Exception e) {
+      LOG.error(e);
       e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
     }
@@ -59,18 +66,18 @@ public class CacheServlet extends HttpServlet {
     
     URL u = getUrl(request);
     String key = cache.put(u);
-    log("Cached at " + cache.get(key).getCacheFile());
+    LOG.info("Cached at " + cache.get(key).getCacheFile());
     redirect(request, key, response);
   }
 
   public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
     if ("application/x-www-form-urlencoded".equals(request.getContentType())) {
-      System.out.println("Handling application/x-www-form-urlencoded");
+      LOG.debug("Handling application/x-www-form-urlencoded");
       URL u = getUrl(request);
       String key = cache.put(u);
-      System.out.println("Cached at " + cache.get(key).getCacheFile());
+      LOG.debug("Cached at " + cache.get(key).getCacheFile());
       redirect(request, key, response);
-      System.out.println("Redirection committed.");
+      LOG.debug("Redirection committed.");
     }
     else {
       System.out.println("Handling multipart");
@@ -87,10 +94,10 @@ public class CacheServlet extends HttpServlet {
           }
           InputStream stream = item.openStream();
           if (item.isFormField()) {
-            log("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
+            LOG.debug("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
           }
           else {
-            log("File field " + name + " with file name " + item.getName() + " detected.");
+            LOG.debug("File field " + name + " with file name " + item.getName() + " detected.");
             String key = cache.put(stream);
             redirect(request, key, response);
           }
@@ -98,6 +105,7 @@ public class CacheServlet extends HttpServlet {
         }
       }
       catch (FileUploadException e) {
+        LOG.error(e);
         e.printStackTrace();
         throw new RequestException(e);
       }

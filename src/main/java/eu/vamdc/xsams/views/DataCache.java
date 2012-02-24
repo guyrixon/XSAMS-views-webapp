@@ -11,7 +11,12 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A put of downloaded data. For each remote data-set, identified by
@@ -28,6 +33,8 @@ import java.util.zip.GZIPInputStream;
  * @author Guy Rixon
  */
 public class DataCache {
+  
+  private static final Log LOG = LogFactory.getLog(DataCache.class);
   
   public static final long CACHE_LIFETIME_IN_SECONDS = 24L * 60L * 60L;
   
@@ -65,15 +72,25 @@ public class DataCache {
       URLConnection uc = u.openConnection();
       uc.setConnectTimeout(60000);
       uc.setReadTimeout(60000);
-      uc.setRequestProperty("Accept-Encoding", "gzip");
+      uc.setRequestProperty("Accept-Encoding", "gzip, deflate");
       
       uc.connect();
       
       String encoding = uc.getContentEncoding();
-      System.out.println("Transfer encoding is " + encoding);
-      BufferedInputStream in = (encoding != null && encoding.equalsIgnoreCase("gzip"))?
-                               new BufferedInputStream(new GZIPInputStream(uc.getInputStream())) :
-                               new BufferedInputStream(uc.getInputStream());
+      LOG.info("Transfer encoding is " + encoding);
+      
+      InputStream q;
+      if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+        q = new GZIPInputStream(uc.getInputStream());
+      }
+      else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+        q = new InflaterInputStream(uc.getInputStream(), new Inflater(true));
+      }
+      else {
+        q = uc.getInputStream();
+      }
+      BufferedInputStream in = new BufferedInputStream(q);
+      
       int n = 0;
       try {
         for (n = 0; true; n++) {
@@ -87,7 +104,7 @@ public class DataCache {
         }
       }
       finally {
-        System.out.println(n + " bytes read from " + u);
+        LOG.info(n + " bytes read from " + u);
         if (n == 0) {
           throw new RequestException("No data was read from " + u);
         }
@@ -146,11 +163,12 @@ public class DataCache {
   }
   
   public synchronized void purge() {
-    for (Entry<String,CachedDataSet> q : map.entrySet()) {
+    Set<Entry<String,CachedDataSet>> s = map.entrySet();
+    for (Entry<String,CachedDataSet> q : s) {
       Date entryTime = q.getValue().getEntryTime();
       if (isTooOld(entryTime)) {
         q.getValue().delete();
-        map.remove(q.getKey());
+        s.remove(q);
       }
     }
   }
