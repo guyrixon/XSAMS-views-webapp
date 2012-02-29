@@ -1,25 +1,53 @@
 /*
- * Display of quantum numbers as a command-separated list of name=value pairs.
- * In the HTML, the list must be a dl of class QN-list.
+ * Display of quantum numbers as a comm-separated list of name=value pairs,
+ * the entire list to appear on one line.
+ * In the HTML, the list must be a dl of class QN-list-inline.
  */
-dl.QN-list dt {
+dl.QN-list-inline {
+  display: inline;
+}
+dl.QN-list-inline dt {
   display: inline;
   font-style: italic;
 }
-dl.QN-list dt:after {
+dl.QN-list-inline dt:after {
   content: " = ";
 }
 
-dl.QN-list dd {
+dl.QN-list-inline dd {
   display: inline;
   padding: 0;
   margin: 0;
 }
 
-dl.QN-list dd:after {
+dl.QN-list-inline dd:after {
   content: ', ';
 }
 
-dl.QN-list dd:last-child:after {
+dl.QN-list-inline dd:last-child:after {
     content: ""
+}
+
+/*
+ * Display of quantum numbers as a list of name=value pairs, each pair to
+ * appear on its own line.
+ * In the HTML, the list must be a dl of class QN-list.
+ */
+dl.QN-list dd:before {
+  content: ' = ';
+}
+
+dl.QN-list dt, dl.QN-list dd {
+    float: left;
+    margin: 0 0.5em 0 0;
+}
+dl.QN-list dd + dt, dl.QN-list dd + dd {
+    clear: left;
+}
+dl.QN-list dd + dd {
+    float: none;
+}
+dl.QN-list dt {
+    font-weight: bold;
+    font-style: italic;
 }

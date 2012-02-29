@@ -24,7 +24,8 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-        <title>Single-state view of XSAMS</title>    
+        <title>Single-state view of XSAMS</title>
+        <link rel="stylesheet" href="../QN-list.css" type="text/css"/>
       </head>
       <body>
         <h1>Single-state view of XSAMS</h1>
@@ -277,21 +278,21 @@
     </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='nltcs']">
-        <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/nltcs-0.2.1.html">Quantum description of state as closed-shell, non-linear, triatomic molecule: </a>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/>
-            <xsl:text>, v1=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v1"/>
-            <xsl:text>, v2=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v2"/>
-            <xsl:text>, v3=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v3"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:J"/>
-            <xsl:text>, Ka=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:Ka"/>
-            <xsl:text>, Kc=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:Kc"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:F2"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:parity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:asSym"/>
-        </p>
+      <p><a href="http://www.vamdc.eu/documents/cbc-0.2/nltcs-0.2.1.html">Quantum description of state as closed-shell, non-linear, triatomic molecule: </a></p>
+      <dl class="QN-list">
+        <dt>Label</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/></dd>
+        <dt>v<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v1"/></dd>
+        <dt>v<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v2"/></dd>
+        <dt>v<sub>3</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v3"/></dd>
+        <dt>J</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:J"/></dd>
+        <dt>K<sub>a</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Ka"/></dd>
+        <dt>K<sub>c</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Kc"/></dd>
+        <dt>F<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F1"/></dd>
+        <dt>F<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F2"/></dd>
+        <dt>F</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F"/></dd>
+        <dt>parity</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:parity"/></dd>
+        <dt>symmetry</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:asSym"/></dd>
+      </dl>
     </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='ltcs']">

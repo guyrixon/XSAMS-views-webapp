@@ -48,9 +48,8 @@
           <tr>
             <th>Species</th>
             <th>Ion charge</th>
-            <th>State energy</th>
             <th>Description</th>
-            <th>Quantum numbers</th>
+            <th>State energy</th>
             <th>More information</th>
           </tr>
           <xsl:apply-templates/>
@@ -93,12 +92,15 @@
         <xsl:param name="state"/>
         <xsl:param name="charge"/>
         <tr>
-            <td><xsl:value-of select="$specie"/></td>
-            <td><xsl:value-of select="$charge"/></td>
-            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
-            <td><xsl:value-of select="$state/Description"/></td>
-            <td><xsl:apply-templates/></td>
-            <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
+          <td><xsl:value-of select="$specie"/></td>
+          <td><xsl:value-of select="$charge"/></td>
+          <td>
+            <xsl:value-of select="$state/xsams:Description"/>
+            <xsl:text> </xsl:text>
+            <xsl:apply-templates/>
+          </td>
+          <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>  
+          <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
         </tr>
     </xsl:template>
     
@@ -114,10 +116,14 @@
             </xsl:if>
             <xsl:value-of select="$element"/>
           </td>
-            <td><xsl:value-of select="$charge"/></td>
+          <td><xsl:value-of select="$charge"/></td>
+          <td>
+            <xsl:value-of select="$state/xsams:Description"/>
+            <xsl:text> </xsl:text>
+            <dl class="QN-list-inline"><xsl:apply-templates/></dl>
+          </td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
-            <td><xsl:value-of select="$state/Description"/></td>
-            <td><dl class="QN-list"><xsl:apply-templates/></dl></td>
+            
             <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
         </tr>
     </xsl:template>
@@ -163,20 +169,20 @@
     
     
     <xsl:template match="xsams:Case[@caseID='nltcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/>
-            <xsl:text>, v1=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v1"/>
-            <xsl:text>, v2=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v2"/>
-            <xsl:text>, v3=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:v3"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:J"/>
-            <xsl:text>, Ka=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:Ka"/>
-            <xsl:text>, Kc=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:Kc"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:F2"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:parity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="nltcs:QNs/nltcs:asSym"/>
-        </p>
+      <dl class="QN-list-inline">
+        <dt>Label</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/></dd>
+        <dt>v<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v1"/></dd>
+        <dt>v<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v2"/></dd>
+        <dt>v<sub>3</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v3"/></dd>
+        <dt>J</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:J"/></dd>
+        <dt>K<sub>a</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Ka"/></dd>
+        <dt>K<sub>c</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Kc"/></dd>
+        <dt>F<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F1"/></dd>
+        <dt>F<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F2"/></dd>
+        <dt>F</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F"/></dd>
+        <dt>parity</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:parity"/></dd>
+        <dt>symmetry</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:asSym"/></dd>
+      </dl>
     </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='ltcs']">
