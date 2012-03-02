@@ -36,6 +36,8 @@ public class DataCache {
   
   private static final Log LOG = LogFactory.getLog(DataCache.class);
   
+  public final static String CACHE_ATTRIBUTE = "eu.vamdc.xsams.views.cacheMap";
+  
   public static final long CACHE_LIFETIME_IN_SECONDS = 24L * 60L * 60L;
   
   public static final long CACHE_LIFETIME_IN_MILLISECONDS = 

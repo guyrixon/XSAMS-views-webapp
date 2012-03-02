@@ -24,8 +24,6 @@ public class CacheServlet extends HttpServlet {
   
   private static final Log LOG = LogFactory.getLog(CacheServlet.class);
   
-  public final static String CACHE_ATTRIBUTE = "eu.vamdc.xsams.views.cacheMap";
-  
   private DataCache cache;
   
   @Override
@@ -118,7 +116,7 @@ public class CacheServlet extends HttpServlet {
   @Override
   public void init() {
     cache = new DataCache();
-    getServletContext().setAttribute(CACHE_ATTRIBUTE, cache);
+    getServletContext().setAttribute(DataCache.CACHE_ATTRIBUTE, cache);
   }
   
   /**
@@ -127,7 +125,7 @@ public class CacheServlet extends HttpServlet {
   @Override
   public void destroy() {
     try {
-      getServletContext().removeAttribute(CACHE_ATTRIBUTE);
+      getServletContext().removeAttribute(DataCache.CACHE_ATTRIBUTE);
       cache.empty();
       cache = null;
       
