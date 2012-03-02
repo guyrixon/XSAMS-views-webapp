@@ -3,6 +3,7 @@ package eu.vamdc.xsams.views;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -10,7 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -20,7 +23,7 @@ import javax.xml.transform.stream.StreamSource;
  * 
  * @author Guy Rixon
  */
-public abstract class TransformingServlet extends HttpServlet {
+public class TransformingServlet extends HttpServlet {
   
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -56,7 +59,7 @@ public abstract class TransformingServlet extends HttpServlet {
   
   
   protected StreamSource getData(String key) throws ServletException, FileNotFoundException {
-    DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
+    DataCache cache = (DataCache) getServletContext().getAttribute(DataCache.CACHE_ATTRIBUTE);
     if (cache == null) {
       throw new ServletException("The data cache is missing");
     }
@@ -81,7 +84,7 @@ public abstract class TransformingServlet extends HttpServlet {
   }
   
   protected String getOriginalUrlEncoded(String key) throws RequestException {
-    DataCache cache = (DataCache) getServletContext().getAttribute(CacheFilter.CACHE_ATTRIBUTE);
+    DataCache cache = (DataCache) getServletContext().getAttribute(DataCache.CACHE_ATTRIBUTE);
     if (cache == null) {
       throw new RequestException("The data cache is missing");
     }
@@ -106,21 +109,18 @@ public abstract class TransformingServlet extends HttpServlet {
     StreamSource in = getData(key);
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
-    String u = getOriginalUrlEncoded(key);
-    String reloadUrl = (u == null)? "" : Locations.getServiceLocation(request) + "?url=" + u;
     StreamResult out = new StreamResult(response.getWriter());
-    Transformer t = getTransformer(Locations.getLineListLocation(request, key),
-                                   Locations.getStateListLocation(request, key),
-                                   Locations.getStateLocation(request, key),
-                                   Locations.getBroadeningLocation(request, key),
-                                   reloadUrl,
-                                   request.getParameter("id"));
-    transform(in, out, t);
-  }
-  
-  protected void transform(StreamSource in, StreamResult out, Transformer t)
-      throws ServletException {
+    
     try {
+      Transformer t = TransformerFactory.newInstance().newTransformer(getXslt());
+      t.setParameter("line-list-location", Locations.getLineListLocation(request, key));
+      t.setParameter("state-list-location", Locations.getStateListLocation(request, key));
+      t.setParameter("state-location", Locations.getStateLocation(request, key));
+      t.setParameter("broadening-location", Locations.getBroadeningLocation(request, key));
+      String id = request.getParameter("id");
+      if (id != null) {
+        t.setParameter("id", id);
+      }
       t.transform(in, out);
     }
     catch (Exception e) {
@@ -128,12 +128,13 @@ public abstract class TransformingServlet extends HttpServlet {
     }
   }
   
-  
-  protected abstract Transformer getTransformer(String lineListUrl,
-                                                String stateListUrl,
-                                                String selectedStateUrl,
-                                                String broadeningUrl,
-                                                String reloadUrl,
-                                                String id) throws ServletException;
+  protected Source getXslt() throws Exception {
+    String stylesheetName = getInitParameter("stylesheet");
+    InputStream in = this.getClass().getResourceAsStream("/"+stylesheetName);
+    if (in == null) {
+      throw new Exception("Can't find the stylesheet " + stylesheetName);
+    }
+    return new StreamSource(in);
+  }
   
 }

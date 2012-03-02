@@ -3,15 +3,27 @@
     <display-name>xsams-views-webapp</display-name>
     <servlet>
         <servlet-name>LineListServlet</servlet-name>
-        <servlet-class>eu.vamdc.xsams.views.LineListServlet</servlet-class>
+        <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>line-list.xsl</param-value>
+        </init-param>
     </servlet>
     <servlet>
         <servlet-name>StateListServlet</servlet-name>
-        <servlet-class>eu.vamdc.xsams.views.StateListServlet</servlet-class>
+        <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>state-list.xsl</param-value>
+        </init-param>
     </servlet>
     <servlet>
         <servlet-name>SelectedStateServlet</servlet-name>
-        <servlet-class>eu.vamdc.xsams.views.SelectedStateServlet</servlet-class>
+        <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>selected-state.xsl</param-value>
+        </init-param>
     </servlet>
     <servlet>
         <servlet-name>CacheServlet</servlet-name>
@@ -23,7 +35,11 @@
     </servlet>
     <servlet>
         <servlet-name> BroadeningServlet</servlet-name>
-        <servlet-class>eu.vamdc.xsams.views.BroadeningServlet</servlet-class>
+        <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>broadening.xsl</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>CacheServlet</servlet-name>
