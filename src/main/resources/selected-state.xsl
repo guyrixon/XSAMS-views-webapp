@@ -18,7 +18,7 @@
     
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
   
-  <xsl:param name="stateID"/>
+  <xsl:param name="id"/>
     
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -38,7 +38,7 @@
   </xsl:template>
     
     <xsl:template match="xsams:Molecule">
-      <xsl:if test="xsams:MolecularState[@stateID=$stateID]">
+      <xsl:if test="xsams:MolecularState[@stateID=$id]">
         <h2>Species</h2>
         <p>
           <xsl:text>InChI: </xsl:text>
@@ -74,7 +74,7 @@
     </xsl:template>
     
     <xsl:template match="xsams:Atom">
-      <xsl:if test="xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$stateID]">
+      <xsl:if test="xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$id]">
         <h2>Species</h2>
         <p>
             <xsl:choose>
@@ -125,7 +125,7 @@
     </xsl:template>
     
     <xsl:template match="xsams:AtomicState|xsams:MolecularState">
-      <xsl:if test="@stateID=$stateID">
+      <xsl:if test="@stateID=$id">
         <h2>State</h2>
         <p>
             <xsl:text>State description: </xsl:text>
