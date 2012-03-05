@@ -22,6 +22,12 @@ public class CachedDataSet {
     entryTime = new Date();
   }
   
+  protected CachedDataSet(URL u, File f, Date d) {
+    cacheFile = f;
+    originalUrl = u;
+    entryTime = d;
+  }
+  
   public File getCacheFile() {
     return cacheFile;
   }

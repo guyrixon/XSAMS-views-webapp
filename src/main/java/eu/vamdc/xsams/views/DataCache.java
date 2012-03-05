@@ -9,9 +9,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -19,9 +19,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * A put of downloaded data. For each remote data-set, identified by
- * its URL, the put may hold zero or one local copies. The local data are
- * made accessible via URLs, returned by {@link #get}. 
+ * A map of downloaded data. For each remote data-set, identified by
+ * its URL, the map may hold zero or one local copies. The local data are
+ * made accessible via keys, returned by {@link #get}. 
  * <p>
  * Cache mappings may be removed by calling  {#remove} (putting a null value 
  * for a mapping is <em>not</em> equivalent to removing the mapping and should 
@@ -29,6 +29,13 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * Calling {@link #empty} empties the cache and deletes the associated data.
  * After this, new mappings may be entered.
+ * <p>
+ * Thread safety is important. The contents of the cache are catalogued in 
+ * a private HashMap, with a private counter to hold the last-issued key. 
+ * Access to the map and counter is via synchronized, protected methods called
+ * from the public methods. The lock on the instance is held for a short a time
+ * as possible. In particular, the lock is not held while data are being
+ * read in to the cache, but only while they are added in the map.
  * 
  * @author Guy Rixon
  */
@@ -45,11 +52,11 @@ public class DataCache {
   
   private Integer counter;
   
-  private Hashtable<String, CachedDataSet> map;
+  private HashMap<String, CachedDataSet> map;
   
   public DataCache() {
     counter = 0;
-    map = new Hashtable<String, CachedDataSet>();
+    map = new HashMap<String, CachedDataSet>();
   }
   
   /**
@@ -65,7 +72,14 @@ public class DataCache {
     }
   }
   
-  
+  /**
+   * Reads the given URL and caches the data there obtained.
+   * 
+   * @param u The URL for the data.
+   * @return The key for the cached data.
+   * @throws IOException
+   * @throws RequestException 
+   */
   public String put(URL u) throws IOException, RequestException {
     File f = File.createTempFile("cache-", ".xsams.xml");
     
@@ -120,6 +134,13 @@ public class DataCache {
     return put(u, f);
   }
   
+  /**
+   * Reads the given stream and caches the data there obtained.
+   * 
+   * @param in The stream of data.
+   * @return The key for the cached data.
+   * @throws IOException 
+   */
   public String put(InputStream in) throws IOException {
     File f = File.createTempFile("cache-", ".xsams.xml");
     
@@ -142,10 +163,30 @@ public class DataCache {
     return put(null, f);
   }
   
-  public synchronized String put(URL u, File f) {
+  /**
+   * Caches the data in a given file, associated with a given URL.
+   * 
+   * @param u The URL of origin of the data.
+   * @param f The file in which the data are cached.
+   * @return A key for the cached data.
+   */
+  protected String put(URL u, File f) {
+    return put(new CachedDataSet(u,f));
+  }
+  
+  /**
+   * Adds a given data-set to the shared view of the cache.
+   * This is the only point in the class where data are shared. The other put
+   * methods store data but have to class this method to share them. By extension,
+   * this is the only method where new keys are allocated.
+   * 
+   * @param x The data-set to be shared.
+   * @return The key to the stored data.
+   */
+  protected synchronized String put(CachedDataSet x) {
     counter++;
     String key = counter.toString();
-    map.put(key, new CachedDataSet(u,f));
+    map.put(key, x);
     return key;
   }
   
@@ -164,17 +205,27 @@ public class DataCache {
     }
   }
   
+  /**
+   * Removes from the cache all data older than a time specified by the
+   * constant {@link ACHE_LIFETIME_IN_MILLISECONDS}.
+   */
   public synchronized void purge() {
-    Set<Entry<String,CachedDataSet>> s = map.entrySet();
-    for (Entry<String,CachedDataSet> q : s) {
-      Date entryTime = q.getValue().getEntryTime();
-      if (isTooOld(entryTime)) {
+    Iterator<Entry<String,CachedDataSet>> i = map.entrySet().iterator();
+    while (i.hasNext()) {
+      Entry<String,CachedDataSet> q = i.next();
+      if (isTooOld(q.getValue().getEntryTime())) {
         q.getValue().delete();
-        s.remove(q);
+        i.remove();
       }
     }
   }
   
+  /**
+   * Determines whether a data set is old enough to be purged from the cache.
+   * 
+   * @param then The timestamp for the data.
+   * @return True if the data are old enough to be purged.
+   */
   private boolean isTooOld(Date then) {
     Date now = new Date();
     long age = now.getTime() - then.getTime();
