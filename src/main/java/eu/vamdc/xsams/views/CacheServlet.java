@@ -29,32 +29,31 @@ public class CacheServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws ServletException, IOException {
-    System.out.println("GET " + request.getContentType());
     try {
       get(request, response);
     }
     catch (RequestException e) {
-      LOG.error(e);
-      e.printStackTrace();
+      LOG.error("Request rejected", e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (Exception e) {
+      LOG.error("Request failed", e);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
     }
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) 
       throws ServletException, IOException {
-    System.out.println("POST " + request.getContentType());
     try {
       post(request, response);
     }
     catch (RequestException e) {
-      LOG.error(e);
-      e.printStackTrace();
+      LOG.error("Request rejected", e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
     catch (Exception e) {
-      LOG.error(e);
-      e.printStackTrace();
+      LOG.error("Request failed", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
     }
   }
@@ -78,7 +77,7 @@ public class CacheServlet extends HttpServlet {
       LOG.debug("Redirection committed.");
     }
     else {
-      System.out.println("Handling multipart");
+      LOG.debug("Handling multipart");
       try {
         ServletFileUpload upload = new ServletFileUpload();
         FileItemIterator iter = upload.getItemIterator(request);
@@ -103,8 +102,6 @@ public class CacheServlet extends HttpServlet {
         }
       }
       catch (FileUploadException e) {
-        LOG.error(e);
-        e.printStackTrace();
         throw new RequestException(e);
       }
     }
@@ -131,7 +128,7 @@ public class CacheServlet extends HttpServlet {
       
     }
     catch (Exception e) {
-     log("Failed to delete the data cache: " + e);
+     LOG.error("Failed to delete the data cache", e);
     }
   }  
   
