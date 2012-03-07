@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItemIterator;
@@ -13,51 +11,30 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
- *
+ * An abstract parent for all servlets in the application. This parent just
+ * deals with logging and reporting of errors. It provides the following
+ * support to its subclasses.
+ * <ul>
+ * <li>An inheritable commons-logging {@link #Log}.
+ * <li>All Exception instances from the sub-class caught (including
+ * runtime exceptions that inherit from Exception, but not those that inherit
+ * from Error).
+ * <li>All caught exceptions logged with stack traces.
+ * <li>Instances of RequestException reported as 400 errors.
+ * <li>All other caught exceptions reported as 500 errors.
+ * </ul>
+ * The above provisions apply to GET and POST requests only.
+ * 
  * @author Guy Rixon
  */
-public class CacheServlet extends HttpServlet {
-  
-  private static final Log LOG = LogFactory.getLog(CacheServlet.class);
+public class CacheServlet extends ErrorReportingServlet {
   
   private DataCache cache;
   
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) 
-      throws ServletException, IOException {
-    try {
-      get(request, response);
-    }
-    catch (RequestException e) {
-      LOG.error("Request rejected", e);
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
-    }
-    catch (Exception e) {
-      LOG.error("Request failed", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
-    }
-  }
   
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) 
-      throws ServletException, IOException {
-    try {
-      post(request, response);
-    }
-    catch (RequestException e) {
-      LOG.error("Request rejected", e);
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
-    }
-    catch (Exception e) {
-      LOG.error("Request failed", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
-    }
-  }
-  
   public void get(HttpServletRequest request, HttpServletResponse response) 
       throws RequestException, IOException {
     
@@ -67,6 +44,7 @@ public class CacheServlet extends HttpServlet {
     redirect(request, key, response);
   }
 
+  @Override
   public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
     if ("application/x-www-form-urlencoded".equals(request.getContentType())) {
       LOG.debug("Handling application/x-www-form-urlencoded");
