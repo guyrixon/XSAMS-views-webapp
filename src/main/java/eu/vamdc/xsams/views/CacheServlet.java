@@ -36,7 +36,7 @@ public class CacheServlet extends ErrorReportingServlet {
   
   @Override
   public void get(HttpServletRequest request, HttpServletResponse response) 
-      throws RequestException, IOException {
+      throws RequestException, IOException, DownloadException {
     
     URL u = getUrl(request);
     String key = cache.put(u);
@@ -45,7 +45,7 @@ public class CacheServlet extends ErrorReportingServlet {
   }
 
   @Override
-  public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException {
+  public void post(HttpServletRequest request, HttpServletResponse response) throws IOException, RequestException, DownloadException {
     if ("application/x-www-form-urlencoded".equals(request.getContentType())) {
       LOG.debug("Handling application/x-www-form-urlencoded");
       URL u = getUrl(request);

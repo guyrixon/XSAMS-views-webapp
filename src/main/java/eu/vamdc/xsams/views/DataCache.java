@@ -3,9 +3,11 @@ package eu.vamdc.xsams.views;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
@@ -77,76 +79,87 @@ public class DataCache {
    * 
    * @param u The URL for the data.
    * @return The key for the cached data.
-   * @throws IOException
+   * @throws DownloadException If the URL cannot be read.
+   * @throws DownloadException If the URL is read but gives no bytes.
+   * @throws IOException If the cache file cannot be created.
    * @throws RequestException 
    */
-  public String put(URL u) throws IOException, RequestException {
+  public String put(URL u) throws DownloadException, IOException {
     File f = File.createTempFile("cache-", ".xsams.xml");
-    
-    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
     try {
-      URLConnection uc = u.openConnection();
-      uc.setConnectTimeout(60000);
-      uc.setReadTimeout(60000);
-      uc.setRequestProperty("Accept-Encoding", "gzip, deflate");
-      
-      uc.connect();
-      
-      String encoding = uc.getContentEncoding();
-      LOG.info("Transfer encoding is " + encoding);
-      
-      InputStream q;
-      if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
-        q = new GZIPInputStream(uc.getInputStream());
-      }
-      else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
-        q = new InflaterInputStream(uc.getInputStream(), new Inflater(true));
-      }
-      else {
-        q = uc.getInputStream();
-      }
-      BufferedInputStream in = new BufferedInputStream(q);
-      
-      int n = 0;
-      try {
-        for (n = 0; true; n++) {
-          int c = in.read();
-          if (c == -1) {
-            break;
-          }
-          else {
-            out.write(c);
-          }
-        }
-      }
-      finally {
-        LOG.info(n + " bytes read from " + u);
-        if (n == 0) {
-          throw new RequestException("No data was read from " + u);
-        }
-        in.close();
-      }
+      readFromUrl(u, f);
     }
-    finally {
-      out.close();
+    catch (SocketTimeoutException e) {
+      throw new DownloadTimeoutException("Timed out while reading from " + u, e);
     }
-    
+    catch (Exception e) {
+      f.delete();
+      throw new DownloadException("Failed to download from " + u, e);
+    }
     return put(u, f);
   }
   
   /**
-   * Reads the given stream and caches the data there obtained.
+   * Downloads the data from a URL and copies them to a file. If the URL supports
+   * "gzip" or "deflate" compression then the download is compressed in transfer
+   * and the data are decompressed before filing.
    * 
-   * @param in The stream of data.
-   * @return The key for the cached data.
-   * @throws IOException 
+   * @param u The URL to read.
+   * @param f The file to receive the data.
+   * @throws IOException If the URL cannot be read.
+   * @throws IOException If the file cannot be written.
+   * @throws FileNotFoundException If the file does not exist.
+   * @throws DownloadException If the URL is read but gives no bytes.
    */
-  public String put(InputStream in) throws IOException {
-    File f = File.createTempFile("cache-", ".xsams.xml");
-    
+  private void readFromUrl(URL u, File f) 
+      throws IOException, FileNotFoundException, DownloadException {
+    URLConnection uc = u.openConnection();
+    uc.setConnectTimeout(60000);
+    uc.setReadTimeout(60000);
+    uc.setRequestProperty("Accept-Encoding", "gzip, deflate");
+      
+    uc.connect();
+      
+    String encoding = uc.getContentEncoding();
+    LOG.debug("Transfer encoding is " + encoding);
+      
+    InputStream q;
+    if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+      q = new GZIPInputStream(uc.getInputStream());
+    }
+    else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+      q = new InflaterInputStream(uc.getInputStream(), new Inflater(true));
+    }
+    else {
+      q = uc.getInputStream();
+    }
+    BufferedInputStream in = new BufferedInputStream(q);
+    long n;
+    try {
+      readFromStream(in, f);
+    }
+    finally {
+      in.close();
+    }
+  }
+  
+  
+  /**
+   * Reads data from a stream and writes them to a file.
+   * 
+   * @param in The data to be read.
+   * @param f The file to receive the data.
+   * @return The number of bytes read.
+   * @throws FileNotFoundException If the given file does not exist.
+   * @throws IOException If the stream cannot be read.
+   * @throws IOException If the the file cannot be written.
+   * @throws DownloadException if the stream gave no bytes.
+   */
+  private void readFromStream(InputStream in, File f) throws FileNotFoundException, IOException, DownloadException {
     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
     try {
-      while (true) {
+      long n;
+      for (n = 0; true; n++) {
         int c = in.read();
         if (c == -1) {
           break;
@@ -155,12 +168,32 @@ public class DataCache {
           out.write(c);
         }
       }
+      if (n == 0L) {
+        throw new DownloadException("No data were read");
+      }
     }
     finally {
       out.close();
     }
-    
-    return put(null, f);
+  }
+  
+  /**
+   * Reads the given stream and caches the data there obtained.
+   * 
+   * @param in The stream of data.
+   * @return The key for the cached data.
+   * @throws IOException If the data cannot be cached.
+   * @throws RequestException If the stream gives no bytes.
+   */
+  public String put(InputStream in) throws RequestException {
+    try {
+      File f = File.createTempFile("cache-", ".xsams.xml");
+      readFromStream(in, f);
+      return put(null, f);
+    }
+    catch (Exception e) {
+      throw new RequestException("Failed to read data from the request", e);
+    }
   }
   
   /**

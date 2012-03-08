@@ -26,6 +26,14 @@ public abstract class ErrorReportingServlet extends HttpServlet {
       LOG.error("Request rejected", e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
     }
+    catch (DownloadTimeoutException e) {
+      LOG.error("Request failed", e);
+      response.sendError(HttpServletResponse.SC_GATEWAY_TIMEOUT, e.toString());
+    }
+    catch (DownloadException e) {
+      LOG.error("Request failed", e);
+      response.sendError(HttpServletResponse.SC_BAD_GATEWAY, e.toString());
+    }
     catch (Exception e) {
       LOG.error("Request failed", e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
@@ -41,6 +49,14 @@ public abstract class ErrorReportingServlet extends HttpServlet {
     catch (RequestException e) {
       LOG.error("Request rejected", e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.toString());
+    }
+    catch (DownloadTimeoutException e) {
+      LOG.error("Request failed", e);
+      response.sendError(HttpServletResponse.SC_GATEWAY_TIMEOUT, e.toString());
+    }
+    catch (DownloadException e) {
+      LOG.error("Request failed", e);
+      response.sendError(HttpServletResponse.SC_BAD_GATEWAY, e.toString());
     }
     catch (Exception e) {
       LOG.error("Request failed", e);

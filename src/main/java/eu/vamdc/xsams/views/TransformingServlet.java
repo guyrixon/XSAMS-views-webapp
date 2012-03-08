@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Source;
@@ -30,9 +29,10 @@ import javax.xml.transform.stream.StreamSource;
  * @throws TransformerException If the XSAMS cannot be transformed to HTML.
  * @author Guy Rixon
  */
-public class TransformingServlet extends HttpServlet {
+public class TransformingServlet extends ErrorReportingServlet {
   
-  protected void get(HttpServletRequest request, HttpServletResponse response) 
+  @Override
+  public void get(HttpServletRequest request, HttpServletResponse response) 
       throws RequestException, IllegalStateException, FileNotFoundException, IOException, TransformerException, Exception {
     String key = getKey(request);
     StreamSource in = getData(key);
@@ -52,7 +52,8 @@ public class TransformingServlet extends HttpServlet {
     t.transform(in, out);
   }
   
-  protected void post(HttpServletRequest request, HttpServletResponse response) 
+  @Override
+  public void post(HttpServletRequest request, HttpServletResponse response) 
       throws RequestException, IllegalStateException, FileNotFoundException, IOException, TransformerException, Exception {
     get(request, response);
   }
