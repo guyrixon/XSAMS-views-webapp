@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Source;
@@ -33,8 +34,28 @@ public class TransformingServlet extends ErrorReportingServlet {
   
   @Override
   public void get(HttpServletRequest request, HttpServletResponse response) 
-      throws RequestException, IllegalStateException, FileNotFoundException, IOException, TransformerException, Exception {
+      throws RequestException, IllegalStateException, FileNotFoundException, 
+             IOException, TransformerException, DownloadException, ServletException {
     String key = getKey(request);
+    
+    CachedDataSet x = getCache().get(key);
+    if (x.isReady()) {
+      transformXsams(request, key, response);
+    }
+    else {
+      writeDeferral(request, response);
+    }
+  }
+  
+  @Override
+  public void post(HttpServletRequest request, HttpServletResponse response) 
+      throws RequestException, IllegalStateException, FileNotFoundException, 
+             IOException, TransformerException, DownloadException, ServletException {
+    get(request, response);
+  }
+  
+  public void transformXsams(HttpServletRequest request, String key, HttpServletResponse response) 
+      throws RequestException, IllegalStateException, FileNotFoundException, IOException, TransformerException {
     StreamSource in = getData(key);
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
@@ -52,12 +73,6 @@ public class TransformingServlet extends ErrorReportingServlet {
     t.transform(in, out);
   }
   
-  @Override
-  public void post(HttpServletRequest request, HttpServletResponse response) 
-      throws RequestException, IllegalStateException, FileNotFoundException, IOException, TransformerException, Exception {
-    get(request, response);
-  }
-  
   
   
   protected StreamSource getData(String key) 
@@ -66,8 +81,8 @@ public class TransformingServlet extends ErrorReportingServlet {
     if (cache == null) {
       throw new IllegalStateException("The data cache is missing");
     }
-    cache.purge();
-    CachedDataSet x = cache.get(key);
+    getCache().purge();
+    CachedDataSet x = getCache().get(key);
     if (x == null) {
       throw new RequestException("Nothing is cached under " + key);
     }
@@ -87,11 +102,7 @@ public class TransformingServlet extends ErrorReportingServlet {
   }
   
   protected String getOriginalUrlEncoded(String key) throws RequestException {
-    DataCache cache = (DataCache) getServletContext().getAttribute(DataCache.CACHE_ATTRIBUTE);
-    if (cache == null) {
-      throw new RequestException("The data cache is missing");
-    }
-    CachedDataSet x = cache.get(key);
+    CachedDataSet x = getCache().get(key);
     if (x == null) {
       throw new RequestException("Nothing is cached under " + key);
     }
@@ -112,5 +123,20 @@ public class TransformingServlet extends ErrorReportingServlet {
     }
     return new StreamSource(in);
   }
+  
+  
+  protected DataCache getCache() throws IllegalStateException {
+    DataCache cache = (DataCache) getServletContext().getAttribute(DataCache.CACHE_ATTRIBUTE);
+    if (cache == null) {
+      throw new IllegalStateException("The data cache is missing");
+    }
+    return cache;
+  }
+
+  private void writeDeferral(HttpServletRequest request, HttpServletResponse response) 
+      throws ServletException, IOException {
+    request.getRequestDispatcher("/later.jsp").forward(request, response);
+  }
+  
   
 }
