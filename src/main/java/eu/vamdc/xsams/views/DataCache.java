@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -92,7 +93,23 @@ public class DataCache {
     File f = File.createTempFile("cache-", ".xsams.xml");
     Download d = new Download(u, f);
     Future<Object> v = executor.submit(d);
-    return put(new CachedDataSet(u, f, v));
+    AtomicLong p = d.getByteCounter();
+    return put(new CachedDataSet(u, f, v, p));
+  }
+  
+  /**
+   * Reads the given stream and caches the data there obtained.
+   * 
+   * @param in The stream of data.
+   * @return The key for the cached data.
+   * @throws IOException If the data cannot be cached.
+   * @throws RequestException If the stream gives no bytes.
+   * @throws IOException If the cache file cannot be created.
+   */
+  public String put(InputStream in) throws RequestException, IOException, FileNotFoundException, DownloadException {
+    File f = File.createTempFile("cache-", ".xsams.xml");
+    readFromStream(in, f);
+    return put(new CachedDataSet(null, f, null, null));
   }
   
   /**
@@ -126,32 +143,6 @@ public class DataCache {
     finally {
       out.close();
     }
-  }
-  
-  /**
-   * Reads the given stream and caches the data there obtained.
-   * 
-   * @param in The stream of data.
-   * @return The key for the cached data.
-   * @throws IOException If the data cannot be cached.
-   * @throws RequestException If the stream gives no bytes.
-   * @throws IOException If the cache file cannot be created.
-   */
-  public String put(InputStream in) throws RequestException, IOException, FileNotFoundException, DownloadException {
-    File f = File.createTempFile("cache-", ".xsams.xml");
-    readFromStream(in, f);
-    return put(new CachedDataSet(null, f, null));
-  }
-  
-  /**
-   * Caches the data in a given file, associated with a given URL.
-   * 
-   * @param u The URL of origin of the data.
-   * @param f The file in which the data are cached.
-   * @return A key for the cached data.
-   */
-  protected String put(URL u, File f, Future<Object> v) {
-    return put(new CachedDataSet(u, f, v));
   }
   
   /**

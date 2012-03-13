@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Date;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -19,18 +20,26 @@ public class CachedDataSet {
   
   private final Future<Object> future;
   
-  public CachedDataSet(URL u, File file, Future<Object> f) {
-    cacheFile = file;
-    originalUrl = u;
-    future = f;
-    entryTime = new Date();
+  private AtomicLong progress;
+  
+  public CachedDataSet(URL u, File f, Future<Object> v, AtomicLong p) {
+    this(u, f, v, p, new Date());
   }
   
-  protected CachedDataSet(URL u, File file, Future<Object> f, Date d) {
+  public CachedDataSet(File f) {
+    this(null, f, null, new AtomicLong(), new Date());
+  }
+  
+  protected CachedDataSet(URL u, File file, Future<Object> f, AtomicLong p, Date d) {
     cacheFile = file;
     originalUrl = u;
     future = f;
     entryTime = d;
+    progress = p;
+  }
+  
+  public AtomicLong getByteCounter() {
+    return progress;
   }
   
   public File getCacheFile() {

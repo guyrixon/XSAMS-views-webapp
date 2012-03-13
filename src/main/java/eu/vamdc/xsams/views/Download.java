@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -48,6 +49,8 @@ public class Download implements Callable<Object> {
    */
   private File file;
   
+  private AtomicLong bytesDownloaded;
+  
   /**
    * Constructs a Download for a given URL and cache file.
    * 
@@ -61,6 +64,11 @@ public class Download implements Callable<Object> {
     if (!f.exists()) {
       throw new FileNotFoundException("Cache file does not exist: " + f);
     }
+    bytesDownloaded = new AtomicLong();
+  }
+  
+  public AtomicLong getByteCounter() {
+    return bytesDownloaded;
   }
 
   /**
@@ -111,7 +119,6 @@ public class Download implements Callable<Object> {
       q = uc.getInputStream();
     }
     BufferedInputStream in = new BufferedInputStream(q);
-    long n;
     try {
       readFromStream(in, f);
     }
@@ -138,8 +145,7 @@ public class Download implements Callable<Object> {
     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), UTF8));
     LOG.info("Caching to " + f);
     try {
-      long n;
-      for (n = 0; true; n++) {
+      while (true) {
         int c = in.read();
         if (c == -1) {
           break;
@@ -147,8 +153,9 @@ public class Download implements Callable<Object> {
         else {
           out.write(c);
         }
+        bytesDownloaded.incrementAndGet();
       }
-      if (n == 0L) {
+      if (bytesDownloaded.get() == 0L) {
         throw new DownloadException("No data were read");
       }
     }

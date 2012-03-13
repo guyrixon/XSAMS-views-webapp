@@ -20,12 +20,12 @@ public class DataCachTest {
     File f1 = File.createTempFile("junk", ".dat");
     URL u = new URL("http://foo/bar");
     Date d = new Date(System.currentTimeMillis() - 30*60*60*1000); // 30 hrs ago
-    CachedDataSet x1 = new CachedDataSet(u, f1, null, d);
+    CachedDataSet x1 = new CachedDataSet(u, f1, null, null, d);
     String k1 = sut.put(x1);
     
     // Make another entry for a new file.
     File f2 = File.createTempFile("junk", ".dat");
-    CachedDataSet x2 = new CachedDataSet(u, f2, null);
+    CachedDataSet x2 = new CachedDataSet(u, f2, null, null);
     String k2 = sut.put(x2);
     
     sut.purge();

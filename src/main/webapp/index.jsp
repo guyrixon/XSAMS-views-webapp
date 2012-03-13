@@ -19,6 +19,7 @@
             <input type="submit"/>
           </p>
         </form>
+        <p><strong>or</strong></p>
         <form  action="service" method="post" enctype="multipart/form-data">
           <p>
             Read this file: 

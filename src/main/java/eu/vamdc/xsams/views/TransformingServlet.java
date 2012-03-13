@@ -43,7 +43,7 @@ public class TransformingServlet extends ErrorReportingServlet {
       transformXsams(request, key, response);
     }
     else {
-      writeDeferral(request, response);
+      writeDeferral(request, x, response);
     }
   }
   
@@ -133,8 +133,10 @@ public class TransformingServlet extends ErrorReportingServlet {
     return cache;
   }
 
-  private void writeDeferral(HttpServletRequest request, HttpServletResponse response) 
+  private void writeDeferral(HttpServletRequest request, CachedDataSet x, HttpServletResponse response) 
       throws ServletException, IOException {
+    long bytesDownloaded = x.getByteCounter().get();
+    request.setAttribute("eu.vamdc.xsams.views.bytesdownloaded", bytesDownloaded);
     request.getRequestDispatcher("/later.jsp").forward(request, response);
   }
   
