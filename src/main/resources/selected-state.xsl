@@ -278,7 +278,7 @@
     </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='nltcs']">
-      <p><a href="http://www.vamdc.eu/documents/cbc-0.2/nltcs-0.2.1.html">Quantum description of state as closed-shell, non-linear, triatomic molecule: </a></p>
+      <p><a href="http://www.vamdc.eu/documents/cbc-0.3/nltcs-0.3.html">Quantum description of state as closed-shell, non-linear, triatomic molecule: </a></p>
       <dl class="QN-list">
         <dt>Label</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/></dd>
         <dt>v<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v1"/></dd>
@@ -297,7 +297,7 @@
     
     <xsl:template match="xsams:Case[@caseID='ltcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/nltcs-0.2.1.html">Quantum description of state as closed-shell, linear, triatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/nltcs-0.3.html">Quantum description of state as closed-shell, linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:ElecStateLabel"/>
             <xsl:text>, v1=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v1"/>
             <xsl:text>, v2=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v2"/>
@@ -317,7 +317,7 @@
     
     <xsl:template match="xsams:Case[@caseID='dcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/dcs-0.2.1.html">Quantum description of state as closed-shell, diatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/dcs-0.3.html">Quantum description of state as closed-shell, diatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="dcs:QNs/dcs:ElecStateLabel"/>
             <xsl:text>, v=</xsl:text><xsl:value-of select="dcs:QNs/dcs:v"/>
             <xsl:text>, J=</xsl:text><xsl:value-of select="dcs:QNs/dcs:J"/>
@@ -330,7 +330,7 @@
     
     <xsl:template match="xsams:Case[@caseID='hunda']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/hunda-0.2.1.html">Quantum description of state as open shell, Hund's case (a) diatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/hunda-0.3.html">Quantum description of state as open shell, Hund's case (a) diatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="hunda:QNs/hunda:ElecStateLabel"/>
             <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:elecInv"/>
             <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:reflecInv"/>
@@ -350,7 +350,7 @@
     
     <xsl:template match="xsams:Case[@caseID='hundb']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/hundb-0.2.1.html">Quantum description of state as open shell, Hund's case (b) diatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/hundb-0.3.html">Quantum description of state as open shell, Hund's case (b) diatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="hundb:QNs/hundb:ElecStateLabel"/>
             <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:elecInv"/>
             <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:reflecInv"/>
@@ -371,7 +371,7 @@
     
     <xsl:template match="xsams:Case[@caseID='stcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/stcs-0.2.1.html">Quantum description of state as closed-shell, symmetric top molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/stcs-0.3.html">Quantum description of state as closed-shell, symmetric top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="stcs:QNs/stcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="stcs:QNs/stcs:vi"/>
             <xsl:text>, li=</xsl:text><xsl:value-of select="stcs:QNs/stcs:li"/>
@@ -389,7 +389,7 @@
     
     <xsl:template match="xsams:Case[@caseID='lpcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/lpcs-0.2.1.html">Quantum description of state as closed-shell, linear, polyatomic  molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/lpcs-0.3.html">Quantum description of state as closed-shell, linear, polyatomic  molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:vi"/>
             <xsl:text>, li=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:li"/>
@@ -408,7 +408,7 @@
     
     <xsl:template match="xsams:Case[@caseID='asymcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/asymcs-0.2.1.html">Quantum description of state as closed-shell, asymmetric top molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/asymcs-0.3.html">Quantum description of state as closed-shell, asymmetric top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vi"/>
             <xsl:text>, vibrational inversion-partity =</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vibInv"/>
@@ -426,7 +426,7 @@
     
     <xsl:template match="xsams:Case[@caseID='asymos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/asymos-0.2.1.html">Quantum description of state as open-shell, asymmetric top molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/asymos-0.3.html">Quantum description of state as open-shell, asymmetric top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="asymos:QNs/asymos:ElecStateLabel"/>
             <xsl:text>, electronic symmetry=</xsl:text><xsl:value-of select="asymos:QNs/asymos:elecSym"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="asymos:QNs/asymos:elecInv"/>
@@ -447,7 +447,7 @@
     
     <xsl:template match="xsams:Case[@caseID='sphcs']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/sphcs-0.2.1.html">Quantum description of state as closed-shell, spherical top molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/sphcs-0.3.html">Quantum description of state as closed-shell, spherical top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:ElecStateLabel"/>
             <xsl:text>, vi=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:vi"/>
             <xsl:text>, li=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:li"/>
@@ -463,7 +463,7 @@
     
     <xsl:template match="xsams:Case[@caseID='sphos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/sphos-0.2.1.html">Quantum description of state as open-shell, spherical top molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/sphos-0.3.html">Quantum description of state as open-shell, spherical top molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="sphos:QNs/sphos:ElecStateLabel"/>
             <xsl:text>, electronic symmetry=</xsl:text><xsl:value-of select="sphos:QNs/sphos:elecSym"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="sphos:QNs/sphos:elecInv"/>
@@ -483,7 +483,7 @@
     
     <xsl:template match="xsams:Case[@caseID='ltos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/ltos-0.2.1.html">Quantum description of state as open-shell, linear, triatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/ltos-0.3.html">Quantum description of state as open-shell, linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="ltos:QNs/ltos:ElecStateLabel"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:elecInv"/>
             <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:elecRefl"/>
@@ -509,7 +509,7 @@
     
     <xsl:template match="xsams:Case[@caseID='lpos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/lpos-0.2.1.html">Quantum description of state as open-shell, linear, polyatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/lpos-0.3.html">Quantum description of state as open-shell, linear, polyatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="lpos:QNs/lpos:ElecStateLabel"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="lpos:QNs/lpos:elecInv"/>
             <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="lpos:QNs/lpos:elecRefl"/>
@@ -533,7 +533,7 @@
     
     <xsl:template match="xsams:Case[@caseID='nltos']">
         <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.2/nltos-0.2.1.html">Quantum description of state as open-shell, non-linear, triatomic molecule: </a>
+            <a href="http://www.vamdc.eu/documents/cbc-0.3/nltos-0.3.html">Quantum description of state as open-shell, non-linear, triatomic molecule: </a>
             <xsl:text>Label=</xsl:text><xsl:value-of select="nltos:QNs/nltos:ElecStateLabel"/>
             <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="nltos:QNs/nltos:elecInv"/>
             <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="nltos:QNs/nltos:elecRefl"/>
