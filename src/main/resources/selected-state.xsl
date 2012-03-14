@@ -41,7 +41,6 @@
       <xsl:if test="xsams:MolecularState[@stateID=$id]">
         <h2>Species</h2>
         <p>
-          <xsl:text>InChI: </xsl:text>
           <xsl:value-of select="descendant::xsams:InChI"/>
           <xsl:text> (</xsl:text>
           <xsl:value-of select="descendant::xsams:InChIKey"/>
@@ -91,7 +90,6 @@
             </xsl:choose>
         </p>
         <p>
-          <xsl:text>InChI: </xsl:text>
           <xsl:value-of select="descendant::xsams:InChI"/>
           <xsl:if test="descendant::xsams:InChIKey">
             <xsl:text> (</xsl:text>
@@ -137,7 +135,7 @@
     
     <xsl:template match="xsams:StateEnergy">
         <p>
-            <xsl:text>State energy above ground state: </xsl:text>
+            <xsl:text>Energy above ground state: </xsl:text>
             <xsl:call-template name="quantity-with-unit">
                 <xsl:with-param name="quantity" select="."/>
             </xsl:call-template>
@@ -155,7 +153,7 @@
     
     <xsl:template match="xsams:LandeFactor">
         <p>
-            <xsl:text>LandeFactor: </xsl:text>
+            <xsl:text>Lande factor: </xsl:text>
             <xsl:call-template name="quantity-with-unit">
                 <xsl:with-param name="quantity" select="."/>
             </xsl:call-template>
@@ -214,46 +212,59 @@
         </p>
     </xsl:template>
     
-    <xsl:template match="xsams:AtomicQuantumNumbers">
-        <h3>Atomic quantum numbers</h3>
-        <dl class="QN-list">
-          <xsl:apply-templates/>
-        </dl>
-    </xsl:template>
-    
-    <xsl:template match="xsams:TotalAngularMomentum">
-      <dt>J</dt>
-      <dd><xsl:value-of select="."/></dd>
-    </xsl:template>
-  
-    <xsl:template match="xsams:Kappa">
-      <dt>&#954;</dt>
-      <dd><xsl:value-of select="."/></dd>
-    </xsl:template>
-  
-  <xsl:template match="xsams:Parity">
-    <dt>parity</dt>
-    <dd><xsl:value-of select="."/></dd>
-  </xsl:template>
-  
-  <xsl:template match="xsams:HyperfineMomentum">
-    <dt>F</dt>
-    <dd><xsl:value-of select="."/></dd>
-  </xsl:template>
-  
-  <xsl:template match="xsams:MagneticQuantumNumber">
-    <dt>m</dt>
-    <dd><xsl:value-of select="."/></dd>
+  <xsl:template match="xsams:AtomicQuantumNumbers">
+    <p>
+      <xsl:text>Quantum numbers for entire state: </xsl:text>
+      <xsl:for-each select="xsams:TotalAngularMomentum"><i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
+      <xsl:for-each select="xsams:Kappa"><i>&#954;</i>=<xsams:value-of select="."/> </xsl:for-each>
+      <xsl:for-each select="xsams:Kappa">parity>=<xsams:value-of select="."/> </xsl:for-each>
+      <xsl:for-each select="xsams:Kappa"><i>F</i>=<xsams:value-of select="."/> </xsl:for-each>
+      <xsl:for-each select="xsams:Kappa"><i>m</i>=<xsams:value-of select="."/> </xsl:for-each>
+    </p>  
   </xsl:template>
   
     
-  <xsl:template match="xsams:AtomicComposition">
-    <h3>Components of state wave-function</h3>
-    <ul>
-      <xsl:for-each select="xsams:Component/xsams:Configuration/xsams:ConfigurationLabel">
-        <li><xsl:value-of select="."/></li>
+  <xsl:template match="xsams:AtomicComposition/xsams:Component">
+    <p>
+      <xsl:text>Electronic composition: </xsl:text>
+      <xsl:for-each select="xsams:Configuration/xsams:ConfigurationLabel"><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
+      <xsl:for-each select="xsams:Configuration/xsams:AtomicCore/xsams:ElementCore"><xsl:text>[</xsl:text><xsl:value-of select="."/><xsl:text>] </xsl:text></xsl:for-each>
+      <xsl:for-each select="xsams:Configuration/xsams:Shells/xsams:Shell">
+        <xsl:value-of select="xsams:PrincipalQuantumNumber"/>
+        <xsl:choose>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=0"><xsl:text>s</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=1"><xsl:text>p</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=2"><xsl:text>d</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=3"><xsl:text>f</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=4"><xsl:text>g</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=5"><xsl:text>h</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=6"><xsl:text>i</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=7"><xsl:text>k</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=8"><xsl:text>l</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=9"><xsl:text>m</xsl:text></xsl:when>
+          <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=10"><xsl:text>n</xsl:text></xsl:when>
+        </xsl:choose>
+        <sup><xsl:value-of select="xsams:NumberOfElectrons"/></sup>
+        <xsl:text> </xsl:text>
       </xsl:for-each>
-    </ul>     
+      <xsl:for-each select="xsams:Term/xsams:LS">
+        <sup><xsl:value-of select="(xsams:S*2)+1"/></sup>
+        <xsl:choose>
+          <xsl:when test="xsams:L/xsams:Value=0"><xsl:text>S</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=1"><xsl:text>P</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=2"><xsl:text>D</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=3"><xsl:text>F</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=4"><xsl:text>G</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=5"><xsl:text>H</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=6"><xsl:text>I</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=7"><xsl:text>K</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=8"><xsl:text>L</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=9"><xsl:text>M</xsl:text></xsl:when>
+          <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
+        </xsl:choose>
+        <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
+      </xsl:for-each>
+    </p>
   </xsl:template>
     
     <xsl:template match="xsams:TotalStatisticalWeight">
