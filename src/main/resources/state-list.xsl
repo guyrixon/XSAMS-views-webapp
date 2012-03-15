@@ -132,7 +132,6 @@
             <xsl:value-of select="$state/@stateID"/>
           </xsl:attribute>
           <xsl:text>detail</xsl:text>
-          
         </a>    
       </td>
       <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$energy"/></xsl:call-template></td>
@@ -582,6 +581,7 @@
         <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
       </xsl:choose>
       <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
+      <xsl:text> </xsl:text>
     </xsl:for-each>
   </xsl:template>
     
