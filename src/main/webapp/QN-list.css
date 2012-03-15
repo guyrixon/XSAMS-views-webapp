@@ -51,3 +51,17 @@ dl.QN-list dt {
     font-weight: bold;
     font-style: italic;
 }
+
+dl.QN-list:after {
+  clear: left;
+}
+
+
+
+ul.atomic-composition-list, ul.atomic-composition-list li {
+  display: inline;
+}
+
+td{
+  padding:30px;
+}

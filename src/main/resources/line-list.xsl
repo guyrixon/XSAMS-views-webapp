@@ -62,7 +62,8 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-        <title>Line-list view of XSAMS</title>    
+        <title>Line-list view of XSAMS</title>
+        <link rel="stylesheet" href="../QN-list.css" type="text/css"/>
       </head>
       <body>
         <h1>Line-list view of XSAMS</h1>
