@@ -47,7 +47,6 @@
         <table rules="all">
           <tr>
             <th>Species</th>
-            <th>Ion charge</th>
             <th>Description</th>
             <th>State energy</th>
             <th>More information</th>
@@ -58,22 +57,23 @@
     </html>
   </xsl:template>
     
-    <xsl:template match="xsams:Molecule">
-        <xsl:variable name="specie">
-            <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:ChemicalName"/>
-            <xsl:text> - </xsl:text>
-            <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
-        </xsl:variable>
-        
-        <xsl:for-each select="xsams:MolecularState">
-            <xsl:sort select="MolecularStateCharacterisation/StateEnergy/Value"/>
-            <xsl:call-template name="molecular-state">
-                <xsl:with-param name="specie" select="$specie"/>
-                <xsl:with-param name="state" select="."/>
-                <xsl:with-param name="charge" select="xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
-            </xsl:call-template>
-        </xsl:for-each>
-        
+  <xsl:template match="xsams:Molecule">
+    <xsl:variable name="specie">
+      <xsl:if test="xsams:MolecularChemicalSpecies/xsams:ChemicalName">
+        <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:ChemicalName"/>
+        <xsl:text> - </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+    </xsl:variable>
+    <xsl:variable name="charge"><xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:IonCharge"/></xsl:variable>
+    <xsl:for-each select="xsams:MolecularState">
+      <xsl:sort select="MolecularStateCharacterisation/StateEnergy/Value"/>
+      <xsl:call-template name="molecular-state">
+        <xsl:with-param name="specie" select="$specie"/>
+        <xsl:with-param name="charge" select="$charge"/>
+        <xsl:with-param name="state" select="."/>
+      </xsl:call-template>
+    </xsl:for-each>
     </xsl:template>
     
     <xsl:template match="xsams:Ion">
@@ -86,14 +86,26 @@
         </xsl:call-template>
       </xsl:for-each>
     </xsl:template>
+  
+   <xsl:template name="ion-charge">
+     <xsl:param name="charge"/>
+     <xsl:choose>
+       <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+       <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+       <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+       <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+     </xsl:choose>
+   </xsl:template>
     
     <xsl:template name="molecular-state">
         <xsl:param name="specie"/>
-        <xsl:param name="state"/>
         <xsl:param name="charge"/>
+        <xsl:param name="state"/>
         <tr>
-          <td><xsl:value-of select="$specie"/></td>
-          <td><xsl:value-of select="$charge"/></td>
+          <td>
+            <xsl:value-of select="$specie"/>
+            <xsl:call-template name="ion-charge"><xsl:with-param name="charge"><xsl:value-of select="$charge"/></xsl:with-param></xsl:call-template>
+          </td>
           <td>
             <xsl:value-of select="$state/xsams:Description"/>
             <xsl:text> </xsl:text>
@@ -115,8 +127,8 @@
               <sup><xsl:value-of select="$mass-number"/></sup>
             </xsl:if>
             <xsl:value-of select="$element"/>
+            <xsl:call-template name="ion-charge"><xsl:with-param name="charge"><xsl:value-of select="$charge"/></xsl:with-param></xsl:call-template>
           </td>
-          <td><xsl:value-of select="$charge"/></td>
           <td>
             <xsl:value-of select="$state/xsams:Description"/>
             <xsl:text> </xsl:text>
