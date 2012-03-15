@@ -47,9 +47,8 @@
         <table rules="all">
           <tr>
             <th>Species</th>
-            <th>Description</th>
-            <th>State energy</th>
-            <th>More information</th>
+            <th>State</th>
+            <th>Energy</th>
           </tr>
           <xsl:apply-templates/>
         </table>
@@ -67,205 +66,309 @@
     </xsl:variable>
     <xsl:variable name="charge"><xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:IonCharge"/></xsl:variable>
     <xsl:for-each select="xsams:MolecularState">
-      <xsl:sort select="MolecularStateCharacterisation/StateEnergy/Value"/>
-      <xsl:call-template name="molecular-state">
+      <xsl:sort select="xsams:MolecularStateCharacterisation/xsams:StateEnergy/xsams:Value"/>
+      <xsl:call-template name="state">
         <xsl:with-param name="specie" select="$specie"/>
         <xsl:with-param name="charge" select="$charge"/>
         <xsl:with-param name="state" select="."/>
+        <xsl:with-param name="energy" select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/>
       </xsl:call-template>
     </xsl:for-each>
     </xsl:template>
     
     <xsl:template match="xsams:Ion">
       <xsl:for-each select="xsams:AtomicState">
-        <xsl:call-template name="atomic-state">
-          <xsl:with-param name="element" select="ancestor::xsams:Atom/xsams:ChemicalElement/xsams:ElementSymbol"/>
+        <xsl:sort select="xsams:AtomicNumericalData/xsams:StateEnergy/xsams:value"/>
+        <xsl:call-template name="state">
+          <xsl:with-param name="specie" select="ancestor::xsams:Atom/xsams:ChemicalElement/xsams:ElementSymbol"/>
           <xsl:with-param name="mass-number" select="ancestor::xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber"/>
           <xsl:with-param name="state" select="."/>
           <xsl:with-param name="charge" select="../xsams:IonCharge"/>
+          <xsl:with-param name="energy" select="xsams:AtomicNumericalData/xsams:StateEnergy"/>
         </xsl:call-template>
       </xsl:for-each>
     </xsl:template>
   
-   <xsl:template name="ion-charge">
-     <xsl:param name="charge"/>
-     <xsl:choose>
-       <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
-       <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
-       <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
-       <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
-     </xsl:choose>
-   </xsl:template>
-    
-    <xsl:template name="molecular-state">
-        <xsl:param name="specie"/>
-        <xsl:param name="charge"/>
-        <xsl:param name="state"/>
-        <tr>
-          <td>
-            <xsl:value-of select="$specie"/>
-            <xsl:call-template name="ion-charge"><xsl:with-param name="charge"><xsl:value-of select="$charge"/></xsl:with-param></xsl:call-template>
-          </td>
-          <td>
-            <xsl:value-of select="$state/xsams:Description"/>
-            <xsl:text> </xsl:text>
-            <xsl:apply-templates/>
-          </td>
-          <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>  
-          <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
-        </tr>
-    </xsl:template>
-    
-    <xsl:template name="atomic-state">
-      <xsl:param name="element"/>
-      <xsl:param name="mass-number"/>
-      <xsl:param name="state"/>
-      <xsl:param name="charge"/>
-        <tr>
-          <td>
-            <xsl:if test="$mass-number">
-              <sup><xsl:value-of select="$mass-number"/></sup>
-            </xsl:if>
-            <xsl:value-of select="$element"/>
-            <xsl:call-template name="ion-charge"><xsl:with-param name="charge"><xsl:value-of select="$charge"/></xsl:with-param></xsl:call-template>
-          </td>
-          <td>
-            <xsl:value-of select="$state/xsams:Description"/>
-            <xsl:text> </xsl:text>
-            <dl class="QN-list-inline"><xsl:apply-templates/></dl>
-          </td>
-            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template></td>
-            
-            <td><xsl:call-template name="state-link"><xsl:with-param name="state" select="$state"></xsl:with-param></xsl:call-template></td>
-        </tr>
-    </xsl:template>
-    
-    
-    <xsl:template match="xsams:TotalAngularMomentum">
-      <dt>J</dt>
-      <dd><xsl:value-of select="."/></dd>
-    </xsl:template>
-  
-    <xsl:template match="xsams:Kappa">
-      <dt>&#954;</dt>
-      <dd><xsl:value-of select="."/></dd>
-    </xsl:template>
-  
-  <xsl:template match="xsams:Parity">
-    <dt>parity</dt>
-    <dd><xsl:value-of select="."/></dd>
+  <!-- Write the ionic charge as a super-scripted string: ... 3-, 2-, -, +, 2+, 3+ etc.
+       Nothing is written for neutral ions. -->
+  <xsl:template name="ion-charge">
+    <xsl:param name="charge"/>
+    <xsl:choose>
+      <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+      <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+      <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+      <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+    </xsl:choose>
   </xsl:template>
   
-  <xsl:template match="xsams:HyperfineMomentum">
-    <dt>F</dt>
-    <dd><xsl:value-of select="."/></dd>
-  </xsl:template>
-  
-  <xsl:template match="xsams:MagneticQuantumNumber">
-    <dt>m</dt>
-    <dd><xsl:value-of select="."/></dd>
-  </xsl:template>
-    
-    <!-- Writes a hyperlink to the page for the given state. -->
-    <xsl:template name="state-link">
-        <xsl:param name="state"/>
+  <!-- Writes a table row for an atomic or molecular state.
+       The species column covers the given species-name, isotope (for atomic ions) and charge.
+       The state column includes the description from the XSAMS and a Q-M summary generated by other templates.
+       The energy column includes the value and unit of the state energy.
+       The state column is hyperlinked to the page for the state details. -->
+  <xsl:template name="state">
+    <xsl:param name="specie"/>
+    <xsl:param name="mass-number"/>
+    <xsl:param name="charge"/>
+    <xsl:param name="state"/>
+    <xsl:param name="energy"/>
+    <tr>
+      <td>
+        <xsl:if test="$mass-number">
+          <sup><xsl:value-of select="$mass-number"/></sup>
+        </xsl:if>
+        <xsl:value-of select="$specie"/>
+        <xsl:call-template name="ion-charge"><xsl:with-param name="charge"><xsl:value-of select="$charge"/></xsl:with-param></xsl:call-template>
+      </td>
+      <td>
+        <xsl:value-of select="$state/xsams:Description"/>
+        <xsl:text> &#8212; </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text> &#8212; </xsl:text>
         <a>
           <xsl:attribute name="href">
             <xsl:value-of select="$state-location"/>
             <xsl:text>?id=</xsl:text>
             <xsl:value-of select="$state/@stateID"/>
           </xsl:attribute>
-          <xsl:text>Detail</xsl:text>
+          <xsl:text>detail</xsl:text>
+          
         </a>    
-    </xsl:template>
+      </td>
+      <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$energy"/></xsl:call-template></td>
+    </tr>
+  </xsl:template>
     
-    
-    <xsl:template match="xsams:Case[@caseID='nltcs']">
-      <dl class="QN-list-inline">
-        <dt>Label</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/></dd>
-        <dt>v<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v1"/></dd>
-        <dt>v<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v2"/></dd>
-        <dt>v<sub>3</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v3"/></dd>
-        <dt>J</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:J"/></dd>
-        <dt>K<sub>a</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Ka"/></dd>
-        <dt>K<sub>c</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Kc"/></dd>
-        <dt>F<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F1"/></dd>
-        <dt>F<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F2"/></dd>
-        <dt>F</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F"/></dd>
-        <dt>parity</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:parity"/></dd>
-        <dt>symmetry</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:asSym"/></dd>
-      </dl>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='ltcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:ElecStateLabel"/>
-            <xsl:text>, v1=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v1"/>
-            <xsl:text>, v2=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v2"/>
-            <xsl:text>, v3=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:v3"/>
-            <xsl:text>, l=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:l"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:J"/>
-            <xsl:text>, Ka=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:Ka"/>
-            <xsl:text>, Kc=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:Kc"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:F2"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:kronigParity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='dcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="dcs:QNs/dcs:ElecStateLabel"/>
-            <xsl:text>, v=</xsl:text><xsl:value-of select="dcs:QNs/dcs:v"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="dcs:QNs/dcs:J"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="dcs:QNs/dcs:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="dcs:QNs/dcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="dcs:QNs/dcs:parity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="dcs:QNs/dcs:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='hunda']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="hunda:QNs/hunda:ElecStateLabel"/>
-            <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:elecInv"/>
-            <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:reflecInv"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="hunda:QNs/hunda:J"/>
-            <xsl:text>, |Λ|=</xsl:text><xsl:value-of select="hunda:QNs/hunda:Lambda"/>
-            <xsl:text>, |Σ|=</xsl:text><xsl:value-of select="hunda:QNs/hunda:Sigma"/>
-            <xsl:text>, Ω=</xsl:text><xsl:value-of select="hunda:QNs/hunda:Omega"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="hunda:QNs/hunda:S"/>
-            <xsl:text>, v=</xsl:text><xsl:value-of select="hunda:QNs/hunda:v"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="hunda:QNs/hunda:F"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="hunda:QNs/hunda:F1"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:kronigParity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="hunda:QNs/hunda:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='hundb']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="hundb:QNs/hundb:ElecStateLabel"/>
-            <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:elecInv"/>
-            <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:reflecInv"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="hundb:QNs/hundb:J"/>
-            <xsl:text>, |Λ|=</xsl:text><xsl:value-of select="hundb:QNs/hundb:Lambda"/>
-            <xsl:text>, Ω=</xsl:text><xsl:value-of select="hundb:QNs/hundb:Omega"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="hundb:QNs/hundb:S"/>
-            <xsl:text>, v=</xsl:text><xsl:value-of select="hundb:QNs/hundb:v"/>
-            <xsl:text>, N=</xsl:text><xsl:value-of select="hundb:QNs/hundb:N"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="hundb:QNs/hundb:F"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="hundb:QNs/hundb:F1"/>
-            <xsl:text>, spin component=</xsl:text><xsl:value-of select="hundb:QNs/hundb:SpinComponentLabel"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:kronigParity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="hundb:QNs/hundb:asSym"/>
-        </p>
-    </xsl:template>
+  <xsl:template match="xsams:TotalAngularMomentum">
+    <i>J</i>
+    <xsl:text> = </xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Kappa">
+    <i>&#954;</i>
+    <xsl:text> = </xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Parity">
+    <xsl:text>parity = </xsl:text>
+    <dd><xsl:value-of select="."/></dd>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:HyperfineMomentum">
+    <i>F</i>
+    <xsl:text> = </xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:MagneticQuantumNumber">
+    <i>m</i>
+    <xsl:text> = </xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:v1">
+    <i>v</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:v2">
+    <i>v</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:v3">
+    <i>v</i><sub>3</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:ka">
+    <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:kc">
+    <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:F2">
+    <i>F</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:v1">
+    <i>v</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:v2">
+    <i>v</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:v3">
+    <i>v</i><sub>3</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:l">
+    <i>l</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:ka">
+    <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:kc">
+    <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:F2">
+    <i>F</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:kronigParity">
+    <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:v">
+    <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:l">
+    <i>l</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/dcs:QNs/dcs:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:v">
+    <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:Lambda">
+    <xsl:text>|Λ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:Sigma">
+    <xsl:text>|Σ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:Omega">
+    <xsl:text>Ω</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:S">
+    <i>S</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:K">
+    <i>K</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:kronigParity">
+    <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:elecInv">
+    <xsl:text>inversion parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:reflectInv">
+    <xsl:text>reflection parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hunda:QNs/hunda:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:v">
+    <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:Lambda">
+    <xsl:text>|Λ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:Omega">
+    <xsl:text>Ω</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:S">
+    <i>S</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:K">
+    <i>K</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:N">
+    <i>N</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:SpinComponentLabel">
+    <xsl:text>spin component</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:kronigParity">
+    <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:elecInv">
+    <xsl:text>inversion parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:reflectInv">
+    <xsl:text>reflection parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="xsams:Case/hundb:QNs/hundb:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='stcs']">
         <p>
@@ -441,6 +544,46 @@
             <xsl:text>, as-symmetry=</xsl:text><xsl:value-of select="nltos:QNs/nltos:asSym"/>
         </p>
     </xsl:template>
+  
+  <xsl:template match="xsams:AtomicComposition/xsams:Component">
+    <xsl:for-each select="xsams:Configuration/xsams:ConfigurationLabel"><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
+    <xsl:for-each select="xsams:Configuration/xsams:AtomicCore/xsams:ElementCore"><xsl:text>[</xsl:text><xsl:value-of select="."/><xsl:text>] </xsl:text></xsl:for-each>
+    <xsl:for-each select="xsams:Configuration/xsams:Shells/xsams:Shell">
+      <xsl:value-of select="xsams:PrincipalQuantumNumber"/>
+      <xsl:choose>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=0"><xsl:text>s</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=1"><xsl:text>p</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=2"><xsl:text>d</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=3"><xsl:text>f</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=4"><xsl:text>g</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=5"><xsl:text>h</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=6"><xsl:text>i</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=7"><xsl:text>k</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=8"><xsl:text>l</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=9"><xsl:text>m</xsl:text></xsl:when>
+        <xsl:when test="xsams:OrbitalAngularMomentum/xsams:Value=10"><xsl:text>n</xsl:text></xsl:when>
+      </xsl:choose>
+      <sup><xsl:value-of select="xsams:NumberOfElectrons"/></sup>
+      <xsl:text> </xsl:text>
+    </xsl:for-each>
+    <xsl:for-each select="xsams:Term/xsams:LS">
+      <sup><xsl:value-of select="(xsams:S*2)+1"/></sup>
+      <xsl:choose>
+        <xsl:when test="xsams:L/xsams:Value=0"><xsl:text>S</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=1"><xsl:text>P</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=2"><xsl:text>D</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=3"><xsl:text>F</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=4"><xsl:text>G</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=5"><xsl:text>H</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=6"><xsl:text>I</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=7"><xsl:text>K</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=8"><xsl:text>L</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=9"><xsl:text>M</xsl:text></xsl:when>
+        <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
+      </xsl:choose>
+      <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
+    </xsl:for-each>
+  </xsl:template>
     
     <xsl:template name="value-with-unit">
         <xsl:param name="quantity"/>
