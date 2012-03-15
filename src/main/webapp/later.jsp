@@ -11,6 +11,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="refresh" content="5"/>
     <title>Download in progress</title>
+    <link rel="stylesheet" href="xsams-views.css" type="text/css"/>
   </head>
   <body>
     <h1>Download in progress</h1>

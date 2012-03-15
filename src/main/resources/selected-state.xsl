@@ -26,6 +26,7 @@
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>Single-state view of XSAMS</title>
         <link rel="stylesheet" href="../QN-list.css" type="text/css"/>
+        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
       </head>
       <body>
         <h1>Single-state view of XSAMS</h1>

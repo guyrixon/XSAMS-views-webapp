@@ -26,7 +26,7 @@
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>State-list view of XSAMS</title>
-        <link rel="stylesheet" href="../QN-list.css" type="text/css"/>
+        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
       </head>
       <body>
         <h1>State-list view of XSAMS</h1>

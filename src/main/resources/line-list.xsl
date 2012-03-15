@@ -63,7 +63,7 @@
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>Line-list view of XSAMS</title>
-        <link rel="stylesheet" href="../QN-list.css" type="text/css"/>
+        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
       </head>
       <body>
         <h1>Line-list view of XSAMS</h1>
@@ -235,17 +235,15 @@
     The text of the link shows the description and state energy. -->
   <xsl:template name="molecular-state">
     <xsl:param name="state"/>
-    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
-    <xsl:text> &#8212; </xsl:text>
-    <xsl:apply-templates select="$state/xsams:Case"/>
-    <xsl:text> &#8212; </xsl:text>
     <a>
       <xsl:attribute name="href">
         <xsl:value-of select="$state-location"/>
         <xsl:text>?id=</xsl:text>
         <xsl:value-of select="$state/@stateID"/>
       </xsl:attribute>
-      <xsl:text>detail</xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:MolecularStateCharacterisation/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
+      <xsl:text> &#8212; </xsl:text>
+      <xsl:apply-templates select="$state/xsams:Case"/>
     </a>
   </xsl:template>
   
@@ -253,21 +251,16 @@
     The text of the link shows the description and state energy. -->
   <xsl:template name="atomic-state">
     <xsl:param name="state"/>
-    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
-    <xsl:text> &#8212; </xsl:text>
-    <xsl:apply-templates select="xsams:case"/>
-    <xsl:text> </xsl:text>
-    <xsl:apply-templates select="$state/xsams:AtomicComposition/xsams:Component"/>
-    <xsl:text> </xsl:text>
-    <xsl:apply-templates select="$state/xsams:AtomicQuantumNumbers"/>
-    <xsl:text> &#8212; </xsl:text>
     <a>
       <xsl:attribute name="href">
         <xsl:value-of select="$state-location"/>
         <xsl:text>?id=</xsl:text>
         <xsl:value-of select="$state/@stateID"/>
       </xsl:attribute>
-      <xsl:text>detail</xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
+      <xsl:text> &#8212; </xsl:text>
+      <xsl:apply-templates select="$state/xsams:AtomicComposition/xsams:Component"/>
+      <xsl:apply-templates select="$state/xsams:AtomicQuantumNumbers"/>
     </a>  
   </xsl:template>
   
