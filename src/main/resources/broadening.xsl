@@ -13,7 +13,8 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-        <title>Broadening view of XSAMS</title>    
+        <title>Broadening view of XSAMS</title>
+        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
       </head>
       <body>
         <h1>Broadening of a single radiative-transition in XSAMS</h1>
