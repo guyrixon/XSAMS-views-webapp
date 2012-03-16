@@ -4,6 +4,7 @@
     Author     : Guy Rixon
 --%>
 
+<%@page import="eu.vamdc.xsams.views.Locations"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -11,7 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="refresh" content="5"/>
     <title>Download in progress</title>
-    <link rel="stylesheet" href="xsams-views.css" type="text/css"/>
+    <link rel="stylesheet" href="<%=Locations.getResultsCssLocation(request)%>" type="text/css"/>
   </head>
   <body>
     <h1>Download in progress</h1>

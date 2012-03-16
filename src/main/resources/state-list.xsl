@@ -18,6 +18,7 @@
     
   <xsl:param name="line-list-location"/>
   <xsl:param name="state-location"/>
+  <xsl:param name="css-location"/>
     
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
     
@@ -26,7 +27,9 @@
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>State-list view of XSAMS</title>
-        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
+        <link rel="stylesheet" type="text/css">
+          <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
+        </link>
       </head>
       <body>
         <h1>State-list view of XSAMS</h1>
@@ -154,7 +157,7 @@
   
   <xsl:template match="xsams:Parity">
     <xsl:text>parity = </xsl:text>
-    <dd><xsl:value-of select="."/></dd>
+    <xsl:value-of select="."/>
     <xsl:text> </xsl:text>
   </xsl:template>
   

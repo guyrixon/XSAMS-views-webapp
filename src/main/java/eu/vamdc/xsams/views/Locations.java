@@ -43,4 +43,8 @@ public class Locations {
     return getRootLocation(request) + "/Capabilities.xsl";
   }
   
+  public static String getResultsCssLocation(HttpServletRequest request) {
+    return getRootLocation(request) + "/xsams-views.css";
+  }
+  
 }

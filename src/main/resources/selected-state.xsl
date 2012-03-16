@@ -19,14 +19,16 @@
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
   
   <xsl:param name="id"/>
+  <xsl:param name="css-location"/>
     
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>Single-state view of XSAMS</title>
-        <link rel="stylesheet" href="../QN-list.css" type="text/css"/>
-        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
+        <link rel="stylesheet" type="text/css">
+          <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
+        </link>
       </head>
       <body>
         <h1>Single-state view of XSAMS</h1>
@@ -217,10 +219,10 @@
     <p>
       <xsl:text>Quantum numbers for entire state: </xsl:text>
       <xsl:for-each select="xsams:TotalAngularMomentum"><i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
-      <xsl:for-each select="xsams:Kappa"><i>&#954;</i>=<xsams:value-of select="."/> </xsl:for-each>
-      <xsl:for-each select="xsams:Kappa">parity>=<xsams:value-of select="."/> </xsl:for-each>
-      <xsl:for-each select="xsams:Kappa"><i>F</i>=<xsams:value-of select="."/> </xsl:for-each>
-      <xsl:for-each select="xsams:Kappa"><i>m</i>=<xsams:value-of select="."/> </xsl:for-each>
+      <xsl:for-each select="xsams:Kappa"><i>&#954;</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
+      <xsl:for-each select="xsams:Parity"><xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
+      <xsl:for-each select="xsams:HyperfineMomentum"><i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
+      <xsl:for-each select="xsams:MagneticQuantumNumber"><i>m</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>
     </p>  
   </xsl:template>
   
@@ -289,97 +291,247 @@
         </p>
     </xsl:template>
     
-    <xsl:template match="xsams:Case[@caseID='nltcs']">
-      <p><a href="http://www.vamdc.eu/documents/cbc-0.3/nltcs-0.3.html">Quantum description of state as closed-shell, non-linear, triatomic molecule: </a></p>
-      <dl class="QN-list">
-        <dt>Label</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:ElecStateLabel"/></dd>
-        <dt>v<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v1"/></dd>
-        <dt>v<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v2"/></dd>
-        <dt>v<sub>3</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:v3"/></dd>
-        <dt>J</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:J"/></dd>
-        <dt>K<sub>a</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Ka"/></dd>
-        <dt>K<sub>c</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:Kc"/></dd>
-        <dt>F<sub>1</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F1"/></dd>
-        <dt>F<sub>2</sub></dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F2"/></dd>
-        <dt>F</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:F"/></dd>
-        <dt>parity</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:parity"/></dd>
-        <dt>symmetry</dt><dd><xsl:value-of select="nltcs:QNs/nltcs:asSym"/></dd>
-      </dl>
-    </xsl:template>
+  <xsl:template match="xsams:Case[@caseID='nltcs']">
+    <p>
+      <xsl:text>Quantum description of state as </xsl:text>
+      <a href="http://www.vamdc.eu/documents/cbc-0.3/nltcs-0.3.html">closed-shell, non-linear, triatomic molecule</a>
+      <xsl:text>: </xsl:text>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="nltcs:QNs/nltcs:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:v1">
+    <i>v</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:v2">
+    <i>v</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:v3">
+    <i>v</i><sub>3</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:ka">
+    <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:kc">
+    <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:F2">
+    <i>F</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="nltcs:QNs/nltcs:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case[@caseID='ltcs']">
+    <p>
+      <xsl:text>Quantum description of state as </xsl:text>
+      <a href="http://www.vamdc.eu/documents/cbc-0.3/ltcs-0.3.html">closed-shell, linear, triatomic molecule</a>
+      <xsl:text>: </xsl:text>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="ltcs:QNs/ltcs:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:v1">
+    <i>v</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:v2">
+    <i>v</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:v3">
+    <i>v</i><sub>3</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:l">
+    <i>l</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:ka">
+    <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:kc">
+    <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:F2">
+    <i>F</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:kronigParity">
+    <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltcs:QNs/ltcs:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case[@caseID='dcs']">
+    <p>
+      <xsl:text>Quantum description of state as </xsl:text>
+      <a href="http://www.vamdc.eu/documents/cbc-0.3/dcs-0.3.html">closed-shell, diatomic molecule</a>
+      <xsl:text>: </xsl:text>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
     
-    <xsl:template match="xsams:Case[@caseID='ltcs']">
-        <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.3/nltcs-0.3.html">Quantum description of state as closed-shell, linear, triatomic molecule: </a>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:ElecStateLabel"/>
-            <xsl:text>, v1=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v1"/>
-            <xsl:text>, v2=</xsl:text><xsl:value-of  select="ltcs:QNs/ltcs:v2"/>
-            <xsl:text>, v3=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:v3"/>
-            <xsl:text>, l=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:l"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:J"/>
-            <xsl:text>, Ka=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:Ka"/>
-            <xsl:text>, Kc=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:Kc"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:F2"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:kronigParity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="ltcs:QNs/ltcs:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='dcs']">
-        <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.3/dcs-0.3.html">Quantum description of state as closed-shell, diatomic molecule: </a>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="dcs:QNs/dcs:ElecStateLabel"/>
-            <xsl:text>, v=</xsl:text><xsl:value-of select="dcs:QNs/dcs:v"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="dcs:QNs/dcs:J"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="dcs:QNs/dcs:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="dcs:QNs/dcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="dcs:QNs/dcs:parity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="dcs:QNs/dcs:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='hunda']">
-        <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.3/hunda-0.3.html">Quantum description of state as open shell, Hund's case (a) diatomic molecule: </a>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="hunda:QNs/hunda:ElecStateLabel"/>
-            <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:elecInv"/>
-            <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:reflecInv"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="hunda:QNs/hunda:J"/>
-            <xsl:text>, |Λ|=</xsl:text><xsl:value-of select="hunda:QNs/hunda:Lambda"/>
-            <xsl:text>, |Σ|=</xsl:text><xsl:value-of select="hunda:QNs/hunda:Sigma"/>
-            <xsl:text>, Ω=</xsl:text><xsl:value-of select="hunda:QNs/hunda:Omega"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="hunda:QNs/hunda:S"/>
-            <xsl:text>, v=</xsl:text><xsl:value-of select="hunda:QNs/hunda:v"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="hunda:QNs/hunda:F"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="hunda:QNs/hunda:F1"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="hunda:QNs/hunda:kronigParity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="hunda:QNs/hunda:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='hundb']">
-        <p>
-            <a href="http://www.vamdc.eu/documents/cbc-0.3/hundb-0.3.html">Quantum description of state as open shell, Hund's case (b) diatomic molecule: </a>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="hundb:QNs/hundb:ElecStateLabel"/>
-            <xsl:text>, inversion parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:elecInv"/>
-            <xsl:text>, reflection parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:reflecInv"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="hundb:QNs/hundb:J"/>
-            <xsl:text>, |Λ|=</xsl:text><xsl:value-of select="hundb:QNs/hundb:Lambda"/>
-            <xsl:text>, Ω=</xsl:text><xsl:value-of select="hundb:QNs/hundb:Omega"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="hundb:QNs/hundb:S"/>
-            <xsl:text>, v=</xsl:text><xsl:value-of select="hundb:QNs/hundb:v"/>
-            <xsl:text>, N=</xsl:text><xsl:value-of select="hundb:QNs/hundb:N"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="hundb:QNs/hundb:F"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="hundb:QNs/hundb:F1"/>
-            <xsl:text>, spin component=</xsl:text><xsl:value-of select="hundb:QNs/hundb:SpinComponentLabel"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="hundb:QNs/hundb:kronigParity"/>
-            <xsl:text>, symmetry=</xsl:text><xsl:value-of select="hundb:QNs/hundb:asSym"/>
-        </p>
-    </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:v">
+    <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:l">
+    <i>l</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="dcs:QNs/dcs:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case[@caseID='hunda']">
+    <p>
+      <xsl:text>Quantum description of state as </xsl:text>
+      <a href="http://www.vamdc.eu/documents/cbc-0.3/hunda-0.3.html">open-shell, Hund's case (a) molecule</a>
+      <xsl:text>: </xsl:text>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="hunda:QNs/hunda:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:v">
+    <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:Lambda">
+    <xsl:text>|Λ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:Sigma">
+    <xsl:text>|Σ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:Omega">
+    <xsl:text>Ω</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:S">
+    <i>S</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:K">
+    <i>K</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:kronigParity">
+    <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:elecInv">
+    <xsl:text>inversion parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:reflectInv">
+    <xsl:text>reflection parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hunda:QNs/hunda:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Case[@caseID='hundb']">
+    <p>
+      <xsl:text>Quantum description of state as </xsl:text>
+      <a href="http://www.vamdc.eu/documents/cbc-0.3/hundb-0.3.html">open-shell, Hund's case (b) molecule</a>
+      <xsl:text>: </xsl:text>
+      <xsl:apply-templates/>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="hundb:QNs/hundb:ElecStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:v">
+    <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:Lambda">
+    <xsl:text>|Λ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:Omega">
+    <xsl:text>Ω</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:J">
+    <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:S">
+    <i>S</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:K">
+    <i>K</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:N">
+    <i>N</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:F1">
+    <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:F">
+    <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:SpinComponentLabel">
+    <xsl:text>spin component</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:parity">
+    <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:kronigParity">
+    <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:elecInv">
+    <xsl:text>inversion parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:reflectInv">
+    <xsl:text>reflection parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="hundb:QNs/hundb:asSym">
+    <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='stcs']">
         <p>

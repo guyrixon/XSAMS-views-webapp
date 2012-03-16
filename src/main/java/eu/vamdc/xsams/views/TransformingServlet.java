@@ -4,9 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,11 +35,18 @@ public class TransformingServlet extends ErrorReportingServlet {
              IOException, TransformerException, DownloadException, ServletException {
     String key = getKey(request);
     
-    CachedDataSet x = getCache().get(key);
+    DataCache d = getCache();
+    CachedDataSet x = d.get(key);
+    if (x == null) {
+      LOG.error("Data are missing for " + key);
+      throw new ServletException("The cache has no record of these data");
+    }
     if (x.isReady()) {
+      LOG.info("Data are ready for " + key);
       transformXsams(request, key, response);
     }
     else {
+      LOG.info("Data are not ready for " + key);
       writeDeferral(request, x, response);
     }
   }
@@ -66,6 +70,7 @@ public class TransformingServlet extends ErrorReportingServlet {
     t.setParameter("state-list-location", Locations.getStateListLocation(request, key));
     t.setParameter("state-location", Locations.getStateLocation(request, key));
     t.setParameter("broadening-location", Locations.getBroadeningLocation(request, key));
+    t.setParameter("css-location", Locations.getResultsCssLocation(request));
     String id = request.getParameter("id");
     if (id != null) {
       t.setParameter("id", id);
@@ -97,22 +102,7 @@ public class TransformingServlet extends ErrorReportingServlet {
   
   protected String getKey(HttpServletRequest request) throws RequestException {
     String q = request.getPathInfo();
-    log("q=" + q);
     return (q.startsWith("/"))? q.substring(1) : q;
-  }
-  
-  protected String getOriginalUrlEncoded(String key) throws RequestException {
-    CachedDataSet x = getCache().get(key);
-    if (x == null) {
-      throw new RequestException("Nothing is cached under " + key);
-    }
-    URL u = x.getOriginalUrl();
-    try {
-      return (u == null)? null : URLEncoder.encode(u.toString(), "UTF-8");
-    }
-    catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
   }
   
   protected Source getXslt() {

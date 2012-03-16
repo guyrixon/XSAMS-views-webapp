@@ -36,7 +36,7 @@ public abstract class ErrorReportingServlet extends HttpServlet {
     }
     catch (Exception e) {
       LOG.error("Request failed", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
     }
   }
   
@@ -60,7 +60,7 @@ public abstract class ErrorReportingServlet extends HttpServlet {
     }
     catch (Exception e) {
       LOG.error("Request failed", e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to cache the XSAMS document: " + e.toString());
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
     }
   }
   

@@ -6,6 +6,7 @@
   
   <!-- Specifies the transition for which to display broadening. -->
   <xsl:param name="id"/>
+  <xsl:param name="css-location"/>
   
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
   
@@ -14,7 +15,9 @@
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>Broadening view of XSAMS</title>
-        <link rel="stylesheet" href="../xsams-views.css" type="text/css"/>
+        <link rel="stylesheet" type="text/css">
+          <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
+        </link>
       </head>
       <body>
         <h1>Broadening of a single radiative-transition in XSAMS</h1>
