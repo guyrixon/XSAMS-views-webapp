@@ -231,101 +231,171 @@
     <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
     
+  <xsl:template match="stcs:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
   <xsl:template match="stcs:ElectStateLabel">
     <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:vi">
-    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:li">
-    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:vibInv">
-    <i>vibInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>vibInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:vibSym">
-    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:J">
-    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:K">
-    <i>K</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>K</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:rotSym">
-    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:I">
-    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:Fj">
-    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:F">
-    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:r">
-    <i>r</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+    <i>r</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   <xsl:template match="stcs:parity">
-    <xsl:text>parity = </xsl:text><xsl:value-of select="."/>
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   
-    
-    <xsl:template match="xsams:Case[@caseID='lpcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:ElecStateLabel"/>
-            <xsl:text>, vi=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:vi"/>
-            <xsl:text>, li=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:li"/>
-            <xsl:text>, l=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:l"/>
-            <xsl:text>, vibrational inversion-partity =</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:vibInv"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:vibRefl"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:J"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:I"/>
-            <xsl:text>, Fj=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:Fj"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:kronigParity"/>
-            <xsl:text>, as-symmetry=</xsl:text><xsl:value-of select="lpcs:QNs/lpcs:asSym"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='asymcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:ElecStateLabel"/>
-            <xsl:text>, vi=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vi"/>
-            <xsl:text>, vibrational inversion-partity =</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vibInv"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:vibRefl"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:J"/>
-            <xsl:text>, Ka=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:Ka"/>
-            <xsl:text>, Kc=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:Kc"/>
-            <xsl:text>, rotational symmetry=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:rotSym"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:I"/>
-            <xsl:text>, Fj=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:Fj"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="asymcs:QNs/asymcs:parity"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='asymos']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="asymos:QNs/asymos:ElecStateLabel"/>
-            <xsl:text>, electronic symmetry=</xsl:text><xsl:value-of select="asymos:QNs/asymos:elecSym"/>
-            <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="asymos:QNs/asymos:elecInv"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="asymos:QNs/asymos:S"/>
-            <xsl:text>, vi=</xsl:text><xsl:value-of select="asymos:QNs/asymos:vi"/>
-            <xsl:text>, vibrational inversion-partity =</xsl:text><xsl:value-of select="asymos:QNs/asymos:vibInv"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="asymos:QNs/asymos:vibRefl"/>
-            <xsl:text>, N=</xsl:text><xsl:value-of select="asymos:QNs/asymos:N"/>
-            <xsl:text>, Ka=</xsl:text><xsl:value-of select="asymos:QNs/asymos:Ka"/>
-            <xsl:text>, Kc=</xsl:text><xsl:value-of select="asymos:QNs/asymos:Kc"/>
-            <xsl:text>, rotational symmetry=</xsl:text><xsl:value-of select="asymos:QNs/asymos:rotSym"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="asymos:QNs/asymos:I"/>
-            <xsl:text>, Fj=</xsl:text><xsl:value-of select="asymos:QNs/asymos:Fj"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="asymos:QNs/asymos:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="asymos:QNs/asymos:parity"/>
-        </p>
-    </xsl:template>
+  <xsl:template match="lpcs:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="lpcs:ElectStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:li">
+    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:l">
+    <i>l</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:vibInv">
+    <i>vibInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:J">
+    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:kronigParity">
+    <xsl:text>Kronig parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="lpcs:asSym">
+    <xsl:text>as-symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="asymcs:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="asymcs:ElectStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:vibInv">
+    <i>vibInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:J">
+    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:Ka">
+    <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:Kc">
+    <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:rotSym">
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymcs:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="asymos:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="asymos:ElectStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:vibInv">
+    <i>vibInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:S">
+    <i>S</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:Ka">
+    <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:Kc">
+    <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:rotSym">
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="asymos:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
     
     <xsl:template match="xsams:Case[@caseID='sphcs']">
         <p>
