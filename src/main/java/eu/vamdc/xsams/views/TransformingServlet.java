@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -107,11 +108,11 @@ public class TransformingServlet extends ErrorReportingServlet {
   
   protected Source getXslt() {
     String stylesheetName = getInitParameter("stylesheet");
-    InputStream in = this.getClass().getResourceAsStream("/"+stylesheetName);
+    URL in = this.getClass().getResource("/"+stylesheetName);
     if (in == null) {
       throw new IllegalStateException("Can't find the stylesheet " + stylesheetName);
     }
-    return new StreamSource(in);
+    return new StreamSource(in.toString());
   }
   
   
