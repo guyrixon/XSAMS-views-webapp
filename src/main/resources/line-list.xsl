@@ -370,219 +370,256 @@
   
   
   <!-- The following templates generate the description of molecular states. -->
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:ElecStateLabel">
+  <xsams:Case>
+    <xsl:apply-templates/>
+  </xsams:Case>
+       
+  <xsl:template match="nltcs:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="nltcs:ElecStateLabel">
     <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:v1">
+  <xsl:template match="nltcs:v1">
     <i>v</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:v2">
+  <xsl:template match="nltcs:v2">
     <i>v</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:v3">
+  <xsl:template match="nltcs:v3">
     <i>v</i><sub>3</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:J">
+  <xsl:template match="nltcs:J">
     <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:ka">
+  <xsl:template match="nltcs:Ka">
     <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:kc">
+  <xsl:template match="nltcs:Kc">
     <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:F1">
+  <xsl:template match="nltcs:F1">
     <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:F2">
+  <xsl:template match="nltcs:F2">
     <i>F</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:F">
+  <xsl:template match="nltcs:F">
     <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:parity">
+  <xsl:template match="nltcs:parity">
     <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/nltcs:QNs/nltcs:asSym">
+  <xsl:template match="nltcs:asSym">
     <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:ElecStateLabel">
+  <xsl:template match="ltcs:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="ltcs:ElecStateLabel">
     <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:v1">
+  <xsl:template match="ltcs:v1">
     <i>v</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:v2">
+  <xsl:template match="ltcs:v2">
     <i>v</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:v3">
+  <xsl:template match="ltcs:v3">
     <i>v</i><sub>3</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:l">
-    <i>l</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
+  <xsl:template match="ltcs:l2">
+    <i>l</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:J">
+  <xsl:template match="ltcs:J">
     <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:ka">
+  <xsl:template match="ltcs:Ka">
     <i>K</i><sub>a</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:kc">
+  <xsl:template match="ltcs:Kc">
     <i>K</i><sub>c</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:F1">
+  <xsl:template match="ltcs:F1">
     <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:F2">
+  <xsl:template match="ltcs:F2">
     <i>F</i><sub>2</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:F">
+  <xsl:template match="ltcs:F">
     <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:parity">
+  <xsl:template match="ltcs:parity">
     <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:kronigParity">
+  <xsl:template match="ltcs:kronigParity">
     <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/ltcs:QNs/ltcs:asSym">
+  <xsl:template match="ltcs:asSym">
     <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:ElecStateLabel">
+  <xsl:template match="dcs:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="dcs:ElecStateLabel">
     <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:v">
+  <xsl:template match="dcs:v">
     <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:l">
+  <xsl:template match="dcs:l">
     <i>l</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:J">
+  <xsl:template match="dcs:J">
     <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:F1">
+  <xsl:template match="dcs:F1">
     <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:parity">
+  <xsl:template match="dcs:parity">
     <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/dcs:QNs/dcs:asSym">
+  <xsl:template match="dcs:asSym">
     <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:ElecStateLabel">
+  <xsl:template match="hunda:QNs">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <xsl:template match="hunda:ElecStateLabel">
     <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:v">
+  <xsl:template match="hunda:v">
     <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:Lambda">
+  <xsl:template match="hunda:Lambda">
     <xsl:text>|Λ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:Sigma">
+  <xsl:template match="hunda:Sigma">
     <xsl:text>|Σ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:Omega">
+  <xsl:template match="hunda:Omega">
     <xsl:text>Ω</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:J">
+  <xsl:template match="hunda:J">
     <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:S">
+  <xsl:template match="hunda:S">
     <i>S</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:K">
-    <i>K</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
-  </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:F1">
+  <xsl:template match="hunda:F1">
     <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:F">
+  <xsl:template match="hunda:F">
     <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:parity">
+  <xsl:template match="hunda:parity">
     <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:kronigParity">
+  <xsl:template match="hunda:kronigParity">
     <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:elecInv">
+  <xsl:template match="hunda:elecInv">
     <xsl:text>inversion parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:reflectInv">
+  <xsl:template match="hunda:reflectInv">
     <xsl:text>reflection parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hunda:QNs/hunda:asSym">
+  <xsl:template match="hunda:asSym">
     <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
   
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:ElecStateLabel">
+  <xsl:template match="hundb:QNs">
+    <xsl:apply-templates></xsl:apply-templates>
+  </xsl:template>
+  <xsl:template match="hundb:ElecStateLabel">
     <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:v">
+  <xsl:template match="hundb:v">
     <i>v</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:Lambda">
+  <xsl:template match="hundb:Lambda">
     <xsl:text>|Λ|</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:Omega">
+  <xsl:template match="hundb:Omega">
     <xsl:text>Ω</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:J">
+  <xsl:template match="hundb:J">
     <i>J</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:S">
+  <xsl:template match="hundb:S">
     <i>S</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:K">
-    <i>K</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
-  </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:N">
+  <xsl:template match="hundb:N">
     <i>N</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:F1">
+  <xsl:template match="hundb:F1">
     <i>F</i><sub>1</sub><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:F">
+  <xsl:template match="hundb:F">
     <i>F</i><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:SpinComponentLabel">
+  <xsl:template match="hundb:SpinComponentLabel">
     <xsl:text>spin component</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:parity">
+  <xsl:template match="hundb:parity">
     <xsl:text>parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:kronigParity">
+  <xsl:template match="hundb:kronigParity">
     <xsl:text>Kronig parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:elecInv">
+  <xsl:template match="hundb:elecInv">
     <xsl:text>inversion parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:reflectInv">
+  <xsl:template match="hundb:reflectInv">
     <xsl:text>reflection parity</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
-  <xsl:template match="xsams:Case/hundb:QNs/hundb:asSym">
+  <xsl:template match="hundb:asSym">
     <xsl:text>symmetry</xsl:text><xsl:text> = </xsl:text> <xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
     
-    <xsl:template match="xsams:Case[@caseID='stcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="stcs:QNs/stcs:ElecStateLabel"/>
-            <xsl:text>, vi=</xsl:text><xsl:value-of select="stcs:QNs/stcs:vi"/>
-            <xsl:text>, li=</xsl:text><xsl:value-of select="stcs:QNs/stcs:li"/>
-            <xsl:text>, vibrational inversion-partity =</xsl:text><xsl:value-of select="stcs:QNs/stcs:vibInv"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="stcs:QNs/stcs:vibSym"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="stcs:QNs/stcs:J"/>
-            <xsl:text>, K=</xsl:text><xsl:value-of select="stcs:QNs/stcs:K"/>
-            <xsl:text>, rotational symmetry=</xsl:text><xsl:value-of select="stcs:QNs/stcs:rotSym"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="stcs:QNs/stcs:I"/>
-            <xsl:text>, Fj=</xsl:text><xsl:value-of select="stcs:QNs/stcs:Fj"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="stcs:QNs/stcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="stcs:QNs/stcs:parity"/>
-        </p>
-    </xsl:template>
+  <xsl:template match="stcs:ElectStateLabel">
+    <xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="stcs:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:li">
+    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:vibInv">
+    <i>vibInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:J">
+    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:K">
+    <i>K</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:rotSym">
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:r">
+    <i>r</i><xsl:text> = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="stcs:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/>
+  </xsl:template>
+  
     
     <xsl:template match="xsams:Case[@caseID='lpcs']">
         <p>
