@@ -397,64 +397,116 @@
     <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
   </xsl:template>
     
-    <xsl:template match="xsams:Case[@caseID='sphcs']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:ElecStateLabel"/>
-            <xsl:text>, vi=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:vi"/>
-            <xsl:text>, li=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:li"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:vibRefl"/>
-            <xsl:text>, rotational symmetry =</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:rotSym"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:J"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:I"/>
-            <xsl:text>, Fj=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:Fj"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="sphcs:QNs/sphcs:parity"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='sphos']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="sphos:QNs/sphos:ElecStateLabel"/>
-            <xsl:text>, electronic symmetry=</xsl:text><xsl:value-of select="sphos:QNs/sphos:elecSym"/>
-            <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="sphos:QNs/sphos:elecInv"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="sphos:QNs/sphos:S"/>
-            <xsl:text>, v1=</xsl:text><xsl:value-of select="sphos:QNs/sphos:vi"/>
-            <xsl:text>, l1=</xsl:text><xsl:value-of select="sphos:QNs/sphos:li"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="sphos:QNs/sphos:vibRefl"/>
-            <xsl:text>, rotational symmetry =</xsl:text><xsl:value-of select="sphos:QNs/sphos:rotSym"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="sphos:QNs/sphos:J"/>
-            <xsl:text>, N=</xsl:text><xsl:value-of select="sphos:QNs/sphos:N"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="sphos:QNs/sphos:I"/>
-            <xsl:text>, Fj=</xsl:text><xsl:value-of select="sphos:QNs/sphos:Fj"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="sphos:QNs/sphos:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="sphos:QNs/sphos:parity"/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Case[@caseID='ltos']">
-        <p>
-            <xsl:text>Label=</xsl:text><xsl:value-of select="ltos:QNs/ltos:ElecStateLabel"/>
-            <xsl:text>, electronic inversion-parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:elecInv"/>
-            <xsl:text>, electronic reflection-parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:elecRefl"/>
-            <xsl:text>, S=</xsl:text><xsl:value-of select="ltos:QNs/ltos:S"/>
-            <xsl:text>, N=</xsl:text><xsl:value-of select="ltos:QNs/ltos:N"/>
-            <xsl:text>, v1=</xsl:text><xsl:value-of select="ltos:QNs/ltos:v1"/>
-            <xsl:text>, v2=</xsl:text><xsl:value-of select="ltos:QNs/ltos:v2"/>
-            <xsl:text>, v3=</xsl:text><xsl:value-of select="ltos:QNs/ltos:v3"/>
-            <xsl:text>, l2=</xsl:text><xsl:value-of select="ltos:QNs/ltos:l2"/>
-            <xsl:text>, vibrational symmetry =</xsl:text><xsl:value-of select="ltos:QNs/ltos:vibRefl"/>
-            <xsl:text>, rotational symmetry =</xsl:text><xsl:value-of select="ltos:QNs/ltos:rotSym"/>
-            <xsl:text>, J=</xsl:text><xsl:value-of select="ltos:QNs/ltos:J"/>
-            <xsl:text>, N=</xsl:text><xsl:value-of select="ltos:QNs/ltos:N"/>
-            <xsl:text>, I=</xsl:text><xsl:value-of select="ltos:QNs/ltos:I"/>
-            <xsl:text>, F1=</xsl:text><xsl:value-of select="ltos:QNs/ltos:F1"/>
-            <xsl:text>, F2=</xsl:text><xsl:value-of select="ltos:QNs/ltos:F2"/>
-            <xsl:text>, F=</xsl:text><xsl:value-of select="ltos:QNs/ltos:F"/>
-            <xsl:text>, parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:parity"/>
-            <xsl:text>, Kronig parity=</xsl:text><xsl:value-of select="ltos:QNs/ltos:kronigParity"/>
-            <xsl:text>, as-symmetry=</xsl:text><xsl:value-of select="ltos:QNs/ltos:asSym"/>
-        </p>
-    </xsl:template>
+  <xsl:template match="sphcs:ElecStateLabel">
+    <xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="sphcs:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:li">
+    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:rotSym">
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:J">
+    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphcs:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  
+  <xsl:template match="sphos:ElecStateLabel">
+    <xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="sphos:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:li">
+    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:rotSym">
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:elecInv">
+    <i>elecInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:N">
+    <i>N</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="sphos:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
+  
+  <xsl:template match="ltos:ElecStateLabel">
+    <xsl:value-of select="."/>
+  </xsl:template>
+  <xsl:template match="ltos:vi">
+    <i>v</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:li">
+    <i>l</i><sub><xsl:value-of select="@mode"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:vibSym">
+    <i>vibSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:rotSym">
+    <i>rotSym</i><sub><xsl:value-of select="@group"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:elecRefl">
+    <i>elecRefl</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:elecInv">
+    <i>elecInv</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:S">
+    <i>S</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:N">
+    <i>N</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:I">
+    <i>I</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:J">
+    <i>J</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:F">
+    <i>F</i><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:Fj">
+    <i>F</i><sub><xsl:value-of select="@j"/></sub><xsl:text> = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  <xsl:template match="ltos:parity">
+    <xsl:text>parity = </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text>
+  </xsl:template>
+  
     
     <xsl:template match="xsams:Case[@caseID='lpos']">
         <p>
