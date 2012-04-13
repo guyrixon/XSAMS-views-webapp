@@ -59,7 +59,5 @@
     </plugins>
   </build>
     <description>A web application to present an XSAMS document as web pages.</description>
-    <properties>
-        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
-    </properties>
+    <properties></properties>
 </project>
