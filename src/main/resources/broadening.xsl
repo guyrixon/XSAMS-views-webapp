@@ -31,7 +31,36 @@
   
   <xsl:template match="xsams:RadiativeTransition">
     <p><xsl:text>Transition ID: </xsl:text><xsl:value-of select="@id"/></p>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="xsams:EnergyWavelength"/>
+    <table rules="all">
+      <tr>
+        <th>Type</th>
+        <th>Temperature</th>
+        <th>Pressure</th>
+        <th>Density</th>
+        <th>Composition</th>
+        <th>Profile</th>
+        <th>Parameters</th>
+        <th>Comments</th>
+      </tr>
+      <xsl:for-each select="xsams:Broadening">
+        <xsl:variable name="type" select="@name"/>
+        <xsl:variable name="envRef" select="@envRef"/>
+        <xsl:variable name="environment" select="/xsams:XSAMSData/xsams:Environments/xsams:Environment[@envID=$envRef]"/>
+        <xsl:for-each select="xsams:Lineshape">
+          <tr>
+            <td><xsl:value-of select="$type"/></td>
+            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:Temperature"/></xsl:call-template></td>
+            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalPressure"/></xsl:call-template></td>
+            <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalNumberDensity"/></xsl:call-template></td>
+            <td><ul><xsl:apply-templates select="$environment/xsams:Composition/xsams:Species"/></ul></td>
+            <td><xsl:value-of select="@name"/></td>
+            <td><xsl:apply-templates/></td>
+            <td><xsl:value-of select="xsams:Comments"/></td>
+          </tr>
+        </xsl:for-each>
+      </xsl:for-each>
+    </table>
   </xsl:template>
   
   <xsl:template match="xsams:EnergyWavelength">
@@ -61,45 +90,12 @@
     </xsl:if>
   </xsl:template>
   
+  
   <xsl:template match="xsams:Broadening">
     <h2><xsl:text>Broadening: </xsl:text><xsl:value-of select="@name"/></h2>
     <xsl:variable name="envRef" select="@envRef"/>
     <xsl:apply-templates select="/xsams:XSAMSData/xsams:Environments/xsams:Environment[@envID=$envRef]"/>
     <xsl:apply-templates/>
-  </xsl:template>
-  
-  <xsl:template match="xsams:Environment">
-    <xsl:apply-templates/>
-  </xsl:template>
-  
-  <xsl:template match="xsams:Temperature">
-    <p>
-      <xsl:text>Temperature: </xsl:text>
-      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
-    </p>
-  </xsl:template>
-  
-  <xsl:template match="xsams:TotalPressure">
-    <p>
-      <xsl:text>Pressure: </xsl:text>
-      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
-    </p>
-  </xsl:template>
-  
-  <xsl:template match="xsams:TotalNumberDensity">
-    <p>
-      <xsl:text>Number density: </xsl:text>
-      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
-    </p>
-  </xsl:template>
-  
-  <xsl:template match="xsams:Composition">
-    <p>
-      <xsl:text>Caused by species:</xsl:text>
-      <ul>
-        <xsl:apply-templates/>
-      </ul>
-    </p>
   </xsl:template>
   
   <xsl:template match="xsams:Species">
@@ -125,65 +121,57 @@
   
   <xsl:template match="xsams:Concentration">
     <xsl:text>concentration</xsl:text>
-    <xsl:value-of select="xsams:Value"/>
-    <xsl:text> </xsl:text>
-    <xsl:value-of select="xsams:Value/@units"/>
+    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
     <xsl:text> </xsl:text>
   </xsl:template>
-  
-  <xsl:template match="xsams:Lineshape">
-    <h3><xsl:text>Line shape: </xsl:text><xsl:value-of select="@name"/></h3>
-    <p><xsl:value-of select="xsams:Comments"/></p>
-    <p>Characterized by:</p>
-    <dl>
-    <xsl:for-each select="xsams:LineshapeParameter">
-      <dt><xsl:value-of select="@name"/></dt>
-      <xsl:choose>
-        <xsl:when test="xsams:Value">
-          <dd><xsl:text>= </xsl:text><xsl:value-of select="xsams:Value"/></dd>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:variable name="function-ref" select="xsams:FitParameters/@functionRef"/>
-          <xsl:variable name="function" select="/xsams:XSAMSData/xsams:Functions/xsams:Function[@functionID=$function-ref]"/>
-          <xsl:variable name="fit-parameters" select="xsams:FitParameters"/>
-          <dd>
-            <xsl:text>= </xsl:text>
-            <xsl:value-of select="$function/xsams:Expression"/>
-            <xsl:if test="$function/xsams:Expression/@computerLanguage">
-              <xsl:text> (in </xsl:text><xsl:value-of select="$function/xsams:Expression/@computerLanguage"/><xsl:text>)</xsl:text>
-            </xsl:if>   
-            <xsl:text> where:</xsl:text>
-            <ul>
-              <xsl:for-each select="$function/xsams:Arguments/xsams:Argument">
-                <xsl:variable name="name" select="@name"/>
-                <li>
-                  <xsl:value-of select="@name"/>
-                  <xsl:text> (</xsl:text>
-                  <xsl:value-of select="@units"/>
-                  <xsl:text>; valid from </xsl:text>
-                  <xsl:value-of select="$fit-parameters/xsams:FitArgument[@name=$name]/xsams:LowerLimit"/>
-                  <xsl:text> to </xsl:text>
-                  <xsl:value-of select="$fit-parameters/xsams:FitArgument[@name=$name]/xsams:UpperLimit"/>
-                  <xsl:text>) </xsl:text>
-                  <xsl:value-of select="xsams:Description"/>
-                </li>
-               </xsl:for-each>
-               <xsl:for-each select="$function/xsams:Parameters/xsams:Parameter">
-                 <xsl:variable name="name" select="@name"/>
-                 <li>
-                   <xsl:value-of select="@name"/>
-                   <xsl:text> = </xsl:text>
-                   <xsl:value-of select="$fit-parameters/xsams:FitParameter[@name=$name]/xsams:Value"/>
-                   <xsl:text> </xsl:text>
-                   <xsl:value-of select="xsams:Description"/>
-                 </li>
-               </xsl:for-each>
-            </ul>
-          </dd>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:for-each>
-    </dl>
+      
+      
+  <xsl:template match="xsams:LineshapeParameter">
+    <dt><xsl:value-of select="@name"/></dt>
+    <xsl:choose>
+      <xsl:when test="xsams:Value">
+        <dd><xsl:text>= </xsl:text><xsl:value-of select="xsams:Value"/></dd>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="function-ref" select="xsams:FitParameters/@functionRef"/>
+        <xsl:variable name="function" select="/xsams:XSAMSData/xsams:Functions/xsams:Function[@functionID=$function-ref]"/>
+        <xsl:variable name="fit-parameters" select="xsams:FitParameters"/>
+        <dd>
+          <xsl:text>= </xsl:text>
+          <xsl:value-of select="$function/xsams:Expression"/>
+          <xsl:if test="$function/xsams:Expression/@computerLanguage">
+            <xsl:text> (in </xsl:text><xsl:value-of select="$function/xsams:Expression/@computerLanguage"/><xsl:text>)</xsl:text>
+          </xsl:if>   
+          <xsl:text> where:</xsl:text>
+          <ul>
+            <xsl:for-each select="$function/xsams:Arguments/xsams:Argument">
+              <xsl:variable name="name" select="@name"/>
+              <li>
+                <xsl:value-of select="@name"/>
+                <xsl:text> (</xsl:text>
+                <xsl:value-of select="@units"/>
+                <xsl:text>; valid from </xsl:text>
+                <xsl:value-of select="$fit-parameters/xsams:FitArgument[@name=$name]/xsams:LowerLimit"/>
+                <xsl:text> to </xsl:text>
+                <xsl:value-of select="$fit-parameters/xsams:FitArgument[@name=$name]/xsams:UpperLimit"/>
+                <xsl:text>) </xsl:text>
+                <xsl:value-of select="xsams:Description"/>
+              </li>
+            </xsl:for-each>
+            <xsl:for-each select="$function/xsams:Parameters/xsams:Parameter">
+              <xsl:variable name="name" select="@name"/>
+              <li>
+                <xsl:value-of select="@name"/>
+                <xsl:text> = </xsl:text>
+                <xsl:value-of select="$fit-parameters/xsams:FitParameter[@name=$name]/xsams:Value"/>
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="xsams:Description"/>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </dd>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template name="value-with-unit">
