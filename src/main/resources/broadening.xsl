@@ -24,16 +24,14 @@
         <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
           <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
         </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:apply-templates select="xsams:Processes/xsams:Radiative/xsams:RadiativeTransition[@id=$id]"/>
       </body>
     </html>
   </xsl:template>
   
   <xsl:template match="xsams:RadiativeTransition">
-    <xsl:if test="@id=$id">
-      <p><xsl:text>Transition ID: </xsl:text><xsl:value-of select="@id"/></p>
-      <xsl:apply-templates/>
-    </xsl:if>
+    <p><xsl:text>Transition ID: </xsl:text><xsl:value-of select="@id"/></p>
+    <xsl:apply-templates/>
   </xsl:template>
   
   <xsl:template match="xsams:EnergyWavelength">
@@ -65,7 +63,72 @@
   
   <xsl:template match="xsams:Broadening">
     <h2><xsl:text>Broadening: </xsl:text><xsl:value-of select="@name"/></h2>
+    <xsl:variable name="envRef" select="@envRef"/>
+    <xsl:apply-templates select="/xsams:XSAMSData/xsams:Environments/xsams:Environment[@envID=$envRef]"/>
     <xsl:apply-templates/>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Environment">
+    <xsl:apply-templates/>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Temperature">
+    <p>
+      <xsl:text>Temperature: </xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="xsams:TotalPressure">
+    <p>
+      <xsl:text>Pressure: </xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="xsams:TotalNumberDensity">
+    <p>
+      <xsl:text>Number density: </xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Composition">
+    <p>
+      <xsl:text>Caused by species:</xsl:text>
+      <ul>
+        <xsl:apply-templates/>
+      </ul>
+    </p>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Species">
+    <li>
+      <xsl:value-of select="@name"/>
+      <xsl:text> </xsl:text>
+      <xsl:call-template name="species-by-id"><xsl:with-param name="id" select="@speciesRef"/></xsl:call-template>
+      <xsl:apply-templates/>
+    </li>
+  </xsl:template>
+  
+  <xsl:template match="xsams:PartialPressure">
+    <xsl:text>partial pressure </xsl:text>
+    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:MoleFraction">
+    <xsl:text>fraction </xsl:text>
+    <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    <xsl:text> </xsl:text>
+  </xsl:template>
+  
+  <xsl:template match="xsams:Concentration">
+    <xsl:text>concentration</xsl:text>
+    <xsl:value-of select="xsams:Value"/>
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="xsams:Value/@units"/>
+    <xsl:text> </xsl:text>
   </xsl:template>
   
   <xsl:template match="xsams:Lineshape">
@@ -126,8 +189,62 @@
   <xsl:template name="value-with-unit">
     <xsl:param name="quantity"/>
     <xsl:value-of select="$quantity/xsams:Value"/>
-    <xsl:text> </xsl:text>
-    <xsl:value-of select="$quantity/xsams:Value/@units"/>
+    <xsl:if test="$quantity/xsams:Value/@units and not($quantity/xsams:Value/@units='unitless')">
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="$quantity/xsams:Value/@units"/>
+    </xsl:if>
+  </xsl:template>
+  
+  <!-- Given the ID code for a species in the document, writes a human-readable identification. -->
+  <xsl:template name="species-by-id">
+    <xsl:param name="id"/>
+    <xsl:variable name="molecule" select="/xsams:XSAMSData/xsams:Species/xsams:Molecules/xsams:Molecule[@speciesID=$id]"/>
+    <xsl:if test="$molecule">
+      <xsl:text>(</xsl:text>
+      <xsl:value-of select="xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+      <xsl:variable name="charge" select="$molecule/xsams:IonCharge"/>
+      <xsl:choose>
+        <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+        <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+        <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+        <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+      </xsl:choose>
+      <xsl:text>) </xsl:text>
+    </xsl:if>
+    <xsl:variable name="ion" select="//xsams:Ion[@speciesID=$id]"/>
+    <xsl:if test="$ion">
+      <xsl:text>(</xsl:text>
+      <xsl:if test="$ion/../xsams:IsotopeParameters/xsams:MassNumber">
+        <sup><xsl:value-of select="$ion/../xsams:IsotopeParameters/xsams:MassNumber"/></sup>
+      </xsl:if>
+      <xsl:value-of select="$ion/../../xsams:ChemicalElement/xsams:ElementSymbol"/>
+      <xsl:variable name="charge" select="$ion/xsams:IonCharge"/>
+      <xsl:choose>
+        <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+        <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+        <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+        <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+      </xsl:choose>
+      <xsl:text>) </xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template name="specie">
+    <xsl:param name="formula"/>
+    <xsl:param name="mass-number"/>
+    <xsl:param name="charge"/>
+    <xsl:if test="$mass-number">
+      <sup>
+        <xsl:value-of select="$mass-number"/>
+      </sup>
+    </xsl:if>
+    <xsl:value-of select="$formula"/>
+    <xsl:choose>
+      <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+      <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+      <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+      <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template match="text() | @*"/>
