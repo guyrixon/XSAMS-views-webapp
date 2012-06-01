@@ -14,13 +14,13 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-        <title>Broadening view of XSAMS</title>
+        <title>Broadening and shifting</title>
         <link rel="stylesheet" type="text/css">
           <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
         </link>
       </head>
       <body>
-        <h1>Broadening of a single radiative-transition in XSAMS</h1>
+        <h1>Broadening and shifting of a single radiative-transition</h1>
         <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
           <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
         </xsl:if>
@@ -34,48 +34,42 @@
     <xsl:apply-templates select="xsams:EnergyWavelength"/>
     <table rules="all">
       <tr>
-        <th>Type</th>
         <th>Temperature</th>
         <th>Pressure</th>
         <th>Density</th>
         <th>Composition</th>
-        <th>Profile</th>
+        <th>Effect</th>
         <th>Parameters</th>
         <th>Comments</th>
       </tr>
-      <xsl:for-each select="xsams:Broadening">
+      <xsl:for-each select="xsams:Broadening|xsams:Shifting">
+        <xsl:sort select="@envRef"/>
         <xsl:variable name="type" select="@name"/>
         <xsl:variable name="envRef" select="@envRef"/>
         <xsl:variable name="environment" select="/xsams:XSAMSData/xsams:Environments/xsams:Environment[@envID=$envRef]"/>
         <xsl:for-each select="xsams:Lineshape">
           <tr>
-            <td><xsl:value-of select="$type"/><xsl:text> broadening</xsl:text></td>
+            
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:Temperature"/></xsl:call-template></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalPressure"/></xsl:call-template></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalNumberDensity"/></xsl:call-template></td>
             <td><ul><xsl:apply-templates select="$environment/xsams:Composition/xsams:Species"/></ul></td>
-            <td><xsl:value-of select="@name"/></td>
+            <td><xsl:value-of select="$type"/><xsl:text> broadening: </xsl:text><xsl:value-of select="@name"/></td>
             <td><xsl:apply-templates/></td>
             <td><xsl:value-of select="xsams:Comments"/></td>
           </tr>
         </xsl:for-each>
-      </xsl:for-each>
-      <xsl:for-each select="xsams:Shifting">
-        <xsl:variable name="type" select="@name"/>
-        <xsl:variable name="envRef" select="@envRef"/>
-        <xsl:variable name="environment" select="/xsams:XSAMSData/xsams:Environments/xsams:Environment[@envID=$envRef]"/>
-        <!--<xsl:for-each select="xsams:ShiftingParameter">-->
+        <xsl:if test="xsams:ShiftingParameter">
           <tr>
-            <td><xsl:value-of select="$type"/><xsl:text> shifting</xsl:text></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:Temperature"/></xsl:call-template></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalPressure"/></xsl:call-template></td>
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalNumberDensity"/></xsl:call-template></td>
             <td><ul><xsl:apply-templates select="$environment/xsams:Composition/xsams:Species"/></ul></td>
-            <td><xsl:value-of select="@name"/></td>
+            <td><xsl:value-of select="$type"/><xsl:text> shifting</xsl:text></td>
             <td><xsl:apply-templates/></td>
             <td><xsl:value-of select="xsams:Comments"/></td>
           </tr>
-        <!--</xsl:for-each>-->
+        </xsl:if>
       </xsl:for-each>
     </table>
   </xsl:template>
