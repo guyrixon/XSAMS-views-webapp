@@ -2,7 +2,15 @@ a:link {text-decoration: none; color: blue;}
 a:visited {text-decoration: none; color: red;}
 a:active {text-decoration: none}
 a:hover {text-decoration: underline; color: blue;}
-td {padding: 5px;}
+
+table{border-collapse: collapse;}
+
+td, th {
+  padding: 5px;
+  margin: 0px;
+  border: 1px solid;
+}
+
 h1 {
   background-image: url(vamdc-logo.png);
   background-repeat: no-repeat;
@@ -10,3 +18,23 @@ h1 {
   padding-left: 150px;
   height: 45px;
 }
+
+dl.kv dd:before {
+  content: ' = ';
+}
+
+dl.kv dd {
+  white-space: nowrap;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+dl.kv dt {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font-style: italic;
+  font-weight: normal;
+}
+

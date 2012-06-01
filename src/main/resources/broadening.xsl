@@ -32,7 +32,7 @@
   <xsl:template match="xsams:RadiativeTransition">
     <p><xsl:text>Transition ID: </xsl:text><xsl:value-of select="@id"/></p>
     <xsl:apply-templates select="xsams:EnergyWavelength"/>
-    <table rules="all">
+    <table>
       <tr>
         <th>Temperature</th>
         <th>Pressure</th>
@@ -55,7 +55,7 @@
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalNumberDensity"/></xsl:call-template></td>
             <td><ul><xsl:apply-templates select="$environment/xsams:Composition/xsams:Species"/></ul></td>
             <td><xsl:value-of select="$type"/><xsl:text> broadening: </xsl:text><xsl:value-of select="@name"/></td>
-            <td><xsl:apply-templates/></td>
+            <td><dl class="kv"><xsl:apply-templates/></dl></td>
             <td><xsl:value-of select="xsams:Comments"/></td>
           </tr>
         </xsl:for-each>
@@ -66,7 +66,7 @@
             <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$environment/xsams:TotalNumberDensity"/></xsl:call-template></td>
             <td><ul><xsl:apply-templates select="$environment/xsams:Composition/xsams:Species"/></ul></td>
             <td><xsl:value-of select="$type"/><xsl:text> shifting</xsl:text></td>
-            <td><xsl:apply-templates/></td>
+            <td><dl class="kv"><xsl:apply-templates/></dl></td>
             <td><xsl:value-of select="xsams:Comments"/></td>
           </tr>
         </xsl:if>
@@ -136,14 +136,13 @@
     <dt><xsl:value-of select="@name"/></dt>
     <xsl:choose>
       <xsl:when test="xsams:Value">
-        <dd><xsl:text> = </xsl:text><xsl:value-of select="xsams:Value"/><xsl:text> </xsl:text><xsl:value-of select="xsams:Value/@units"/></dd>
+        <dd><xsl:text></xsl:text><xsl:value-of select="xsams:Value"/><xsl:text>&#160;</xsl:text><xsl:value-of select="xsams:Value/@units"/></dd>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="function-ref" select="xsams:FitParameters/@functionRef"/>
         <xsl:variable name="function" select="/xsams:XSAMSData/xsams:Functions/xsams:Function[@functionID=$function-ref]"/>
         <xsl:variable name="fit-parameters" select="xsams:FitParameters"/>
         <dd>
-          <xsl:text>= </xsl:text>
           <xsl:value-of select="$function/xsams:Expression"/>
           <xsl:if test="$function/xsams:Expression/@computerLanguage">
             <xsl:text> (in </xsl:text><xsl:value-of select="$function/xsams:Expression/@computerLanguage"/><xsl:text>)</xsl:text>
