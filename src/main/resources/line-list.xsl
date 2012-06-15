@@ -129,7 +129,7 @@
         <th>Probability</th>
         <th>Upper state</th>
         <th>Lower state</th>
-        <th>Broadening</th>
+        <th>Broadening/shifting</th>
       </tr>
       <xsl:text>
       </xsl:text>
