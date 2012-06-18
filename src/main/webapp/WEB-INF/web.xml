@@ -18,11 +18,27 @@
         </init-param>
     </servlet>
     <servlet>
+        <servlet-name>CollisionListServlet</servlet-name>
+        <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>collision-list.xsl</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
         <servlet-name>SelectedStateServlet</servlet-name>
         <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
         <init-param>
             <param-name>stylesheet</param-name>
             <param-value>selected-state.xsl</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>SelectedCollisionServlet</servlet-name>
+        <servlet-class>eu.vamdc.xsams.views.TransformingServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>selected-collision.xsl</param-value>
         </init-param>
     </servlet>
     <servlet>
@@ -54,8 +70,16 @@
         <url-pattern>/state-list/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>CollisionListServlet</servlet-name>
+        <url-pattern>/collision-list/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>SelectedStateServlet</servlet-name>
         <url-pattern>/state/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SelectedCollisionServlet</servlet-name>
+        <url-pattern>/collision/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CapabilitiesServlet</servlet-name>

@@ -23,6 +23,7 @@
   <xsl:include href="atomic-QNs.xsl"/>
     
   <xsl:param name="line-list-location"/>
+  <xsl:param name="collision-list-location"/>
   <xsl:param name="state-location"/>
   <xsl:param name="css-location"/>
     
@@ -40,10 +41,15 @@
       <body>
         <h1>State-list view of XSAMS</h1>
         <p>
-          <xsl:text>(</xsl:text>
+          <xsl:text>(Switch to view of </xsl:text>
           <a>
             <xsl:attribute name="href"><xsl:value-of select="$line-list-location"/></xsl:attribute>
-            <xsl:text>Switch to view of radiative transitions</xsl:text>
+            <xsl:text>radiative transitions</xsl:text>
+          </a>
+          <xsl:text> or </xsl:text>
+          <a>
+            <xsl:attribute name="href"><xsl:value-of select="$collision-list-location"/></xsl:attribute>
+            <xsl:text>collisions</xsl:text>
           </a>
           <xsl:text>)</xsl:text>
         </p>

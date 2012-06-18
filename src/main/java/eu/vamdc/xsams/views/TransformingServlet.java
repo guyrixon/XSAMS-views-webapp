@@ -69,7 +69,9 @@ public class TransformingServlet extends ErrorReportingServlet {
     Transformer t = TransformerFactory.newInstance().newTransformer(getXslt());
     t.setParameter("line-list-location", Locations.getLineListLocation(request, key));
     t.setParameter("state-list-location", Locations.getStateListLocation(request, key));
+    t.setParameter("collision-list-location", Locations.getCollisionListLocation(request, key));
     t.setParameter("state-location", Locations.getStateLocation(request, key));
+    t.setParameter("collision-location", Locations.getCollisionLocation(request, key));
     t.setParameter("broadening-location", Locations.getBroadeningLocation(request, key));
     t.setParameter("css-location", Locations.getResultsCssLocation(request));
     String id = request.getParameter("id");

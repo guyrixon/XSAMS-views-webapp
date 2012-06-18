@@ -26,6 +26,7 @@
   <xsl:param name="state-location"/>
   <xsl:param name="state-list-location"/>
   <xsl:param name="broadening-location"/>
+  <xsl:param name="collision-list-location"/>
   <xsl:param name="css-location"/>
     
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
@@ -104,10 +105,15 @@
       <body>
         <h1>Line-list view of XSAMS</h1>
         <p>
-          <xsl:text>(</xsl:text>
+          <xsl:text>(Switch to view of </xsl:text>
           <a>
             <xsl:attribute name="href"><xsl:value-of select="$state-list-location"/></xsl:attribute>
-            <xsl:text>Switch to view of states</xsl:text>
+            <xsl:text>states</xsl:text>
+          </a>
+          <xsl:text> or </xsl:text>
+          <a>
+            <xsl:attribute name="href"><xsl:value-of select="$state-list-location"/></xsl:attribute>
+            <xsl:text>collisions</xsl:text>
           </a>
           <xsl:text>)</xsl:text>
         </p>

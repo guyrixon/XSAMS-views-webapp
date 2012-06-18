@@ -27,8 +27,16 @@ public class Locations {
     return getRootLocation(request) + "/line-list/" + key;
   }
   
+  public static String getCollisionListLocation(HttpServletRequest request, String key) {
+    return getRootLocation(request) + "/collision-list/" + key;
+  }
+  
   public static String getStateLocation(HttpServletRequest request, String key) {
     return getRootLocation(request) + "/state/" + key;
+  }
+  
+  public static String getCollisionLocation(HttpServletRequest request, String key) {
+    return getRootLocation(request) + "/collision/" + key;
   }
   
   public static String getBroadeningLocation(HttpServletRequest request, String key) {
