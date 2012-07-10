@@ -8,6 +8,7 @@
   
   <xsl:param name="id"/>
   <xsl:param name="css-location"/>
+  <xsl:param name="state-location"/>
   
   <!-- These keys are used in the identification of species, below. -->
   <xsl:key name="atomic-states" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState" use="@stateID"/>
@@ -32,7 +33,7 @@
         </xsl:if>
         
         <!-- Write out the reaction in the form A + B -> C + D, where A,B, C, D are species names.
-             The number of reactants and priducts may vary. -->
+             The number of reactants and products may vary. -->
         <p>
           <xsl:for-each select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition[@id=$id]/xsams:Reactant">
             <xsl:call-template name="participant">
@@ -69,15 +70,19 @@
       <tr>
         <th>
           <xsl:value-of select="xsams:X/@parameter"/>
-          <xsl:text> (</xsl:text>
-          <xsl:value-of select="xsams:X/@units"/>
-          <xsl:text>)</xsl:text>
+          <xsl:if test="xsams:X/@units and not(xsams:X/@units = 'undef')">
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="xsams:X/@units"/>
+            <xsl:text>)</xsl:text>
+          </xsl:if>
         </th>
         <th>
           <xsl:value-of select="xsams:Y/@parameter"/>
-          <xsl:text> (</xsl:text>
-          <xsl:value-of select="xsams:Y/@units"/>
-          <xsl:text>)</xsl:text>
+          <xsl:if test="xsams:Y/@units and not(xsams:Y/@units = 'undef')">
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="xsams:Y/@units"/>
+            <xsl:text>)</xsl:text>
+          </xsl:if>
         </th>
       </tr>
       <xsl:call-template name="x-y-row">
@@ -113,19 +118,15 @@
     <xsl:param name="participant"/>
     
     <xsl:call-template name="atomic-ion">
-      <xsl:with-param name="ion" select="key('atomic-states', xsams:StateRef)/.."/>
-    </xsl:call-template>
-    
-    <xsl:call-template name="atomic-ion">
       <xsl:with-param name="ion" select="key('atomic-ions', xsams:SpeciesRef)"/>
-    </xsl:call-template>
-    
-    <xsl:call-template name="molecule">
-      <xsl:with-param name="molecule" select="key('molecular-states', xsams:StateRef)/.."/>
+      <xsl:with-param name="state" select="key('atomic-states', xsams:StateRef)"/>
+      <xsl:with-param name="state-location" select="$state-location"/>
     </xsl:call-template>
     
     <xsl:call-template name="molecule">
       <xsl:with-param name="molecule" select="key('molecules', xsams:SpeciesRef)"/>
+      <xsl:with-param name="state" select="key('molecular-states', xsams:StateRef)"/>
+      <xsl:with-param name="state-location" select="$state-location"/>
     </xsl:call-template>
     
     <xsl:call-template name="particle">

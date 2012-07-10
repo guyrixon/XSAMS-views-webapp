@@ -6,39 +6,70 @@
   
   <xsl:template name="molecule">
     <xsl:param name="molecule"/>
-    <!--
-    <xsl:if test="$molecule/xsams:MolecularChemicalSpecies/xsams:ChemicalName">
-      <xsl:value-of select="$molecule/xsams:MolecularChemicalSpecies/xsams:ChemicalName"/>
-      <xsl:text> &#8212; </xsl:text>
-    </xsl:if>
-    -->
-    <xsl:value-of select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
-    <xsl:variable name="charge" select="$molecule/xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
+    <xsl:param name="state"/>
+    <xsl:param name="state-location"/>
     <xsl:choose>
-      <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
-      <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
-      <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
-      <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
-    </xsl:choose>
+      <xsl:when test="$state">
+        <a href="{$state-location}?id={$state/@stateID}">
+          <xsl:value-of select="$state/../xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+          <xsl:variable name="charge" select="$state/../xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
+          <xsl:choose>
+            <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+            <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+            <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+            <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+          </xsl:choose>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+        <xsl:variable name="charge" select="$molecule/xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
+        <xsl:choose>
+          <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
+          <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+          <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
+          <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>   
   </xsl:template>
-  
   
   <xsl:template name="atomic-ion">
     <xsl:param name="ion"/>
-    <xsl:if test="$ion">
-      <xsl:if test="$ion/../xsams:IsotopeParameters/xsams:MassNumber">
-        <sup>
-          <xsl:value-of select="$ion/../xsams:IsotopeParameters/xsams:MassNumber"/>
-        </sup>
-      </xsl:if>
-      <xsl:value-of select="$ion/../../xsams:ChemicalElement/xsams:ElementSymbol"/>
-      <xsl:choose>
-        <xsl:when test="$ion/xsams:IonCharge=1"><sup>+</sup></xsl:when>
-        <xsl:when test="$ion/xsams:IonCharge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
-        <xsl:when test="$ion/xsams:IonCharge&gt;0"><sup><xsl:value-of select="$ion/xsams:IonCharge"/>+</sup></xsl:when>
-        <xsl:when test="$ion/xsams:IonCharge&lt;0"><sup><xsl:value-of select="$ion/xsams:IonCharge"/>-</sup></xsl:when>
-      </xsl:choose>  
-    </xsl:if>
+    <xsl:param name="state"/>
+    <xsl:param name="state-location"/>
+    <xsl:choose>
+      <xsl:when test="$state">
+        <a href="{$state-location}?id={$state/@stateID}">
+          <xsl:if test="$state/../../xsams:IsotopeParameters/xsams:MassNumber">
+            <sup>
+              <xsl:value-of select="$state/../../xsams:IsotopeParameters/xsams:MassNumber"/>
+            </sup>
+          </xsl:if>
+          <xsl:value-of select="$state/../../../xsams:ChemicalElement/xsams:ElementSymbol"/>
+          <xsl:choose>
+            <xsl:when test="$state/../xsams:IonCharge=1"><sup>+</sup></xsl:when>
+            <xsl:when test="$state/../xsams:IonCharge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+            <xsl:when test="$state/../xsams:IonCharge&gt;0"><sup><xsl:value-of select="$state/../xsams:IonCharge"/>+</sup></xsl:when>
+            <xsl:when test="$state/../xsams:IonCharge&lt;0"><sup><xsl:value-of select="$state/../xsams:IonCharge"/>-</sup></xsl:when>
+          </xsl:choose>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="$ion/../xsams:IsotopeParameters/xsams:MassNumber">
+          <sup>
+            <xsl:value-of select="$ion/../xsams:IsotopeParameters/xsams:MassNumber"/>
+          </sup>
+        </xsl:if>
+        <xsl:value-of select="$ion/../../xsams:ChemicalElement/xsams:ElementSymbol"/>
+        <xsl:choose>
+          <xsl:when test="$ion/xsams:IonCharge=1"><sup>+</sup></xsl:when>
+          <xsl:when test="$ion/xsams:IonCharge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
+          <xsl:when test="$ion/xsams:IonCharge&gt;0"><sup><xsl:value-of select="$ion/xsams:IonCharge"/>+</sup></xsl:when>
+          <xsl:when test="$ion/xsams:IonCharge&lt;0"><sup><xsl:value-of select="$ion/xsams:IonCharge"/>-</sup></xsl:when>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   
   <xsl:template name="particle">

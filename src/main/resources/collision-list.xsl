@@ -8,6 +8,7 @@
   
   <xsl:param name="id"/>
   <xsl:param name="state-list-location"/>
+  <xsl:param name="state-location"/>
   <xsl:param name="line-list-location"/>
   <xsl:param name="collision-location"/>
   <xsl:param name="css-location"/>
@@ -99,19 +100,15 @@
     <xsl:param name="participant"/>
     
     <xsl:call-template name="atomic-ion">
-      <xsl:with-param name="ion" select="key('atomic-states', xsams:StateRef)/.."/>
-    </xsl:call-template>
-    
-    <xsl:call-template name="atomic-ion">
       <xsl:with-param name="ion" select="key('atomic-ions', xsams:SpeciesRef)"/>
-    </xsl:call-template>
-    
-    <xsl:call-template name="molecule">
-      <xsl:with-param name="molecule" select="key('molecular-states', xsams:StateRef)/.."/>
+      <xsl:with-param name="state" select="key('atomic-states', xsams:StateRef)"/>
+      <xsl:with-param name="state-location" select="$state-location"/>
     </xsl:call-template>
     
     <xsl:call-template name="molecule">
       <xsl:with-param name="molecule" select="key('molecules', xsams:SpeciesRef)"/>
+      <xsl:with-param name="state" select="key('molecular-states', xsams:StateRef)"/>
+      <xsl:with-param name="state-location" select="$state-location"/>
     </xsl:call-template>
     
     <xsl:call-template name="particle">
