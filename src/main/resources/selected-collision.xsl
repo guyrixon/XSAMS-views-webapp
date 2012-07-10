@@ -2,7 +2,7 @@
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
-  version="1.0">
+  version="2.0">
   
   <xsl:include href="species-name.xsl"/>
   
@@ -90,6 +90,45 @@
         <xsl:with-param name="y" select="xsams:Y/xsams:DataList"/>
       </xsl:call-template>
     </table>
+  </xsl:template>
+  
+  <xsl:template match="xsams:FitData">
+    <p><xsl:value-of select="xsams:Description"/></p>
+    <xsl:variable name="function-ref" select="xsams:FitParameters/@functionRef"/>
+    <xsl:variable name="function" select="/xsams:XSAMSData/xsams:Functions/xsams:Function[@functionID=$function-ref]"/>
+    <xsl:variable name="fit-parameters" select="xsams:FitParameters"/>
+    
+    <xsl:value-of select="$function/xsams:Expression"/>
+      <xsl:if test="$function/xsams:Expression/@computerLanguage">
+        <xsl:text> (in </xsl:text><xsl:value-of select="$function/xsams:Expression/@computerLanguage"/><xsl:text>)</xsl:text>
+      </xsl:if>   
+      <xsl:text> where:</xsl:text>
+      <ul>
+        <xsl:for-each select="$function/xsams:Arguments/xsams:Argument">
+          <xsl:variable name="name" select="@name"/>
+          <li>
+            <xsl:value-of select="@name"/>
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="@units"/>
+            <xsl:text>; valid from </xsl:text>
+            <xsl:value-of select="$fit-parameters/xsams:FitArgument[@name=$name]/xsams:LowerLimit"/>
+            <xsl:text> to </xsl:text>
+            <xsl:value-of select="$fit-parameters/xsams:FitArgument[@name=$name]/xsams:UpperLimit"/>
+            <xsl:text>) </xsl:text>
+            <xsl:value-of select="xsams:Description"/>
+          </li>
+        </xsl:for-each>
+        <xsl:for-each select="$function/xsams:Parameters/xsams:Parameter">
+          <xsl:variable name="name" select="@name"/>
+          <li>
+            <xsl:value-of select="@name"/>
+            <xsl:text> = </xsl:text>
+            <xsl:value-of select="$fit-parameters/xsams:FitParameter[@name=$name]/xsams:Value"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="xsams:Description"/>
+          </li>
+        </xsl:for-each>
+      </ul>
   </xsl:template>
   
   <!-- Adapted from Stack Overflow: http://stackoverflow.com/questions/136500/does-xslt-have-a-split-function -->

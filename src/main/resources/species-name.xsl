@@ -2,7 +2,7 @@
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
-  version="1.0">
+  version="2.0">
   
   <xsl:template name="molecule">
     <xsl:param name="molecule"/>
@@ -11,7 +11,10 @@
     <xsl:choose>
       <xsl:when test="$state">
         <a href="{$state-location}?id={$state/@stateID}">
-          <xsl:value-of select="$state/../xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+          <xsl:call-template name="formula">
+            <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"></xsl:with-param>
+          </xsl:call-template>
+          <!--<xsl:value-of select="$state/../xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>-->
           <xsl:variable name="charge" select="$state/../xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
           <xsl:choose>
             <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
@@ -22,7 +25,9 @@
         </a>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
+        <xsl:call-template name="formula">
+          <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"></xsl:with-param>
+        </xsl:call-template>
         <xsl:variable name="charge" select="$molecule/xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
         <xsl:choose>
           <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
@@ -76,6 +81,22 @@
     <xsl:param name="particle"/>
     <xsl:if test="$particle">
       <xsl:value-of select="$particle/@name"/>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template name="formula">
+    <xsl:param name="formula"/>
+    <xsl:if test="$formula">
+      <xsl:analyze-string select="$formula" regex="(.*)\$_(\d+)\$(.*)">
+        <xsl:matching-substring>
+          <xsl:value-of select="regex-group(1)"/>
+          <sub><xsl:value-of select="regex-group(2)"/></sub>
+          <xsl:value-of select="regex-group(3)"/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
     </xsl:if>
   </xsl:template>
   
