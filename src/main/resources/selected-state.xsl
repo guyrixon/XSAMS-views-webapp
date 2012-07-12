@@ -18,6 +18,8 @@
         
   <!-- Display rules for molecular states in the case-by-case framework. -->
   <xsl:include href="cbc.xsl"/>
+  
+  <xsl:include href="query-source.xsl"/>
     
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
   
@@ -35,10 +37,11 @@
       </head>
       <body>
         <h1>Single-state view of XSAMS</h1>
-        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
-          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
-        </xsl:if>
-        <xsl:apply-templates/>
+        <p>
+          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        </p>
+        <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion"/>
+        <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule"/>
       </body>
     </html>
   </xsl:template>
@@ -52,7 +55,8 @@
           <xsl:value-of select="descendant::xsams:InChIKey"/>
           <xsl:text>)</xsl:text>
         </p>
-        <xsl:apply-templates/>
+        <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion"/>
+        <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule"/>
       </xsl:if>
     </xsl:template>
    

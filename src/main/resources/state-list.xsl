@@ -21,6 +21,8 @@
   
   <!-- Display rules for atomic states. -->
   <xsl:include href="atomic-QNs.xsl"/>
+  
+  <xsl:include href="query-source.xsl"/>
     
   <xsl:param name="line-list-location"/>
   <xsl:param name="collision-list-location"/>
@@ -54,9 +56,9 @@
           <xsl:text>)</xsl:text>
         </p>
         
-        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
-          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
-        </xsl:if>
+        <p>
+          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        </p>
         
         
         <table rules="all">
@@ -65,7 +67,8 @@
             <th>State</th>
             <th>Energy</th>
           </tr>
-          <xsl:apply-templates/>
+          <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion"/>
+          <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule"/>
         </table>
       </body>
     </html>

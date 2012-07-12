@@ -23,6 +23,8 @@
   <!-- Display rules for atomic states. -->
   <xsl:include href="atomic-QNs.xsl"/>
   
+  <xsl:include href="query-source.xsl"/>
+  
   <xsl:param name="state-location"/>
   <xsl:param name="state-list-location"/>
   <xsl:param name="broadening-location"/>
@@ -117,9 +119,9 @@
           </a>
           <xsl:text>)</xsl:text>
         </p>
-        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
-          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
-        </xsl:if>
+        <p>
+          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        </p>
         <p>Assume all wavelengths are in vacuum and <input type="button" value="Convert to air" onclick="convertAllVacuumToAir()"/> (at IAU STP).</p>
         <p>Assume all wavelengths are in air (at IAU STP) and <input type="button" value="Convert to vacuum" onclick="convertAllAirToVacuum()"/>.</p>
         <xsl:apply-templates select="xsams:Processes/xsams:Radiative"/>

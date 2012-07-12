@@ -5,6 +5,7 @@
   version="2.0">
   
   <xsl:import href="species-name.xsl"/>
+  <xsl:include href="query-source.xsl"/>
   
   <xsl:param name="id"/>
   <xsl:param name="state-list-location"/>
@@ -46,9 +47,9 @@
           
           <xsl:text>)</xsl:text>
         </p>
-        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
-          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
-        </xsl:if>
+        <p>
+          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        </p>
         <table>
           <tr>
             <th>ID</th>

@@ -5,6 +5,7 @@
   version="2.0">
   
   <xsl:include href="species-name.xsl"/>
+  <xsl:include href="query-source.xsl"/>
   
   <xsl:param name="id"/>
   <xsl:param name="css-location"/>
@@ -28,9 +29,9 @@
       </head>
       <body>
         <h1>Data for single collision</h1>
-        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
-          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
-        </xsl:if>
+        <p>
+          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        </p>
         
         <!-- Write out the reaction in the form A + B -> C + D, where A,B, C, D are species names.
              The number of reactants and products may vary. -->

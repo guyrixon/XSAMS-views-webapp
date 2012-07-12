@@ -14,7 +14,6 @@
           <xsl:call-template name="formula">
             <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"></xsl:with-param>
           </xsl:call-template>
-          <!--<xsl:value-of select="$state/../xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>-->
           <xsl:variable name="charge" select="$state/../xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
           <xsl:choose>
             <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
@@ -87,11 +86,9 @@
   <xsl:template name="formula">
     <xsl:param name="formula"/>
     <xsl:if test="$formula">
-      <xsl:analyze-string select="$formula" regex="(.*)\$_(\d+)\$(.*)">
+      <xsl:analyze-string select="$formula" regex="\$_(\d+).*\$*">
         <xsl:matching-substring>
-          <xsl:value-of select="regex-group(1)"/>
-          <sub><xsl:value-of select="regex-group(2)"/></sub>
-          <xsl:value-of select="regex-group(3)"/>
+          <sub><xsl:value-of select="regex-group(1)"/></sub>
         </xsl:matching-substring>
         <xsl:non-matching-substring>
           <xsl:value-of select="."/>

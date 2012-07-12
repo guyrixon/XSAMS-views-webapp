@@ -4,6 +4,8 @@
   xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
   version="1.0">
   
+  <xsl:include href="query-source.xsl"/>
+  
   <!-- Specifies the transition for which to display broadening. -->
   <xsl:param name="id"/>
   <xsl:param name="css-location"/>
@@ -21,9 +23,9 @@
       </head>
       <body>
         <h1>Broadening and shifting of a single radiative-transition</h1>
-        <xsl:if test="xsams:Sources/xsams:Source[1]/xsams:Comments">
-          <p><xsl:value-of select="xsams:Sources/xsams:Source[1]/@sourceID"/></p>
-        </xsl:if>
+        <p>
+          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        </p>
         <xsl:apply-templates select="xsams:Processes/xsams:Radiative/xsams:RadiativeTransition[@id=$id]"/>
       </body>
     </html>
