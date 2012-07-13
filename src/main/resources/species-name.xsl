@@ -86,9 +86,12 @@
   <xsl:template name="formula">
     <xsl:param name="formula"/>
     <xsl:if test="$formula">
-      <xsl:analyze-string select="$formula" regex="\$_(\d+).*\$*">
+      <xsl:variable name="f" select="translate($formula, '$', '')"/>
+      <xsl:analyze-string select="$f" regex="(_)(\d+)|(\^)\d*\+|(\^)\d*\-">
         <xsl:matching-substring>
-          <sub><xsl:value-of select="regex-group(1)"/></sub>
+          <xsl:if test="regex-group(1)='_'">
+            <sub><xsl:value-of select="regex-group(2)"/></sub>
+          </xsl:if>
         </xsl:matching-substring>
         <xsl:non-matching-substring>
           <xsl:value-of select="."/>
