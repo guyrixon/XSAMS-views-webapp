@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
   xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
   xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
   xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"
@@ -23,7 +23,11 @@
   <!-- Display rules for atomic states. -->
   <xsl:include href="atomic-QNs.xsl"/>
   
+  <!-- Display rules for the paragraph identifying the data set. -->
   <xsl:include href="query-source.xsl"/>
+  
+  <!-- Display rules for naming species (inc. charge state). -->
+  <xsl:include href="species-name.xsl"/>
   
   <xsl:param name="state-location"/>
   <xsl:param name="state-list-location"/>
@@ -162,11 +166,10 @@
         
         <tr>
           <td>
-            <xsl:call-template name="specie">
-              <xsl:with-param name="specie" select="$lowerState/../../../xsams:ChemicalElement/xsams:ElementSymbol"/>
-              <xsl:with-param name="mass-number" select="$lowerState/../../xsams:IsotopeParameters/xsams:MassNumber"/>
-              <xsl:with-param name="charge" select="$lowerState/../xsams:IonCharge"/>
-            </xsl:call-template></td>
+            <xsl:call-template name="atomic-ion">
+              <xsl:with-param name="ion" select="$lowerState/.."/>
+            </xsl:call-template>
+          </td>
           <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
           <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:Probability"></xsl:with-param></xsl:call-template></td>
           <td><xsl:call-template name="atomic-state"><xsl:with-param name="state" select="$upperState"/></xsl:call-template></td>
@@ -181,18 +184,11 @@
         <xsl:variable name="lowerState" select="key('molecularState', $lowerStateId)"/>
         
         <tr>
-          <xsl:variable name="specie">
-            <xsl:if test="$lowerState/../xsams:MolecularChemicalSpecies/xsams:ChemicalName">
-              <xsl:value-of select="$lowerState/../xsams:MolecularChemicalSpecies/xsams:ChemicalName"/>
-              <xsl:text> &#8212; </xsl:text>
-            </xsl:if>
-            <xsl:value-of select="$lowerState/../xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"/>
-          </xsl:variable>
           <td>
-            <xsl:call-template name="specie">
-              <xsl:with-param name="specie" select="$specie"/>
-              <xsl:with-param name="charge" select="$lowerState/../xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
-            </xsl:call-template></td>
+            <xsl:call-template name="molecule">
+              <xsl:with-param name="molecule" select="$lowerState/.."/>
+            </xsl:call-template>
+          </td>
           <td><xsl:call-template name="wavelength"><xsl:with-param name="wl" select="xsams:EnergyWavelength"></xsl:with-param></xsl:call-template></td>
           <td><xsl:call-template name="probability"><xsl:with-param name="p" select="xsams:Probability"></xsl:with-param></xsl:call-template></td>
           <td><xsl:call-template name="molecular-state"><xsl:with-param name="state" select="$upperState"/></xsl:call-template></td>
@@ -215,25 +211,6 @@
       </xsl:if>
         
     </xsl:template>
-  
-  
-  <xsl:template name="specie">
-    <xsl:param name="specie"/>
-    <xsl:param name="mass-number"/>
-    <xsl:param name="charge"/>
-    <xsl:if test="$mass-number">
-      <sup>
-        <xsl:value-of select="$mass-number"/>
-      </sup>
-    </xsl:if>
-    <xsl:value-of select="$specie"/>
-    <xsl:choose>
-      <xsl:when test="$charge=1"><sup>+</sup></xsl:when>
-      <xsl:when test="$charge=-1"><sup><xsl:text>-</xsl:text></sup></xsl:when>
-      <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
-      <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
-    </xsl:choose>
-  </xsl:template>
   
   <xsl:template name="wavelength">
     <xsl:param name="wl"/>
