@@ -8,7 +8,7 @@
   
   <xsl:template match="//tr">
     <xsl:for-each select="th|td">
-      <xsl:value-of select="normalize-space(.)"/>
+      <xsl:text>"</xsl:text><xsl:value-of select="normalize-space(.)"/><xsl:text>"</xsl:text>
       <xsl:choose>
         <xsl:when test="position() = last()">
           <xsl:text>&#xd;&#x0a;</xsl:text>
