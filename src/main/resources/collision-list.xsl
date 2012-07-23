@@ -13,6 +13,7 @@
   <xsl:param name="line-list-location"/>
   <xsl:param name="collision-location"/>
   <xsl:param name="css-location"/>
+  <xsl:param name="js-location"/>
   
   <!-- These keys are used in the identification of species, below. -->
   <xsl:key name="atomic-states" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState" use="@stateID"/>
@@ -29,6 +30,7 @@
         <link rel="stylesheet" type="text/css">
           <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
         </link>
+        <script type="text/javascript" src="{$js-location}"></script>
       </head>
       <body>
         <h1>Collisions</h1>
@@ -50,7 +52,13 @@
         <p>
           <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
         </p>
-        <table>
+        <form action="../csv/collision-list.csv" method="post" enctype="application/x-www-form-urlencoded" onsubmit="copyTableToFormField('t1', 't1Content');">
+          <p>
+            <input id="t1Content" type="hidden" name="content" value="initial"/>
+            <input type="submit" value="Show table in CSV format"/>  
+          </p>
+        </form>
+        <table id="t1">
           <tr>
             <th>ID</th>
             <th>Species</th>

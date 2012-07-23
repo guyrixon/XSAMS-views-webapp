@@ -34,8 +34,9 @@
   <xsl:param name="broadening-location"/>
   <xsl:param name="collision-list-location"/>
   <xsl:param name="css-location"/>
+  <xsl:param name="js-location"/>
     
-  <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+  <xsl:output method="html" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
     
   <xsl:key name="atomicState" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState" use="@stateID"/>
   <xsl:key name="molecularState" match="/xsams:XSAMSData/xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState" use="@stateID"/>
@@ -49,7 +50,7 @@
         <title>Line-list view of XSAMS</title>
         <link rel="stylesheet" type="text/css">
           <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
-        </link>  
+        </link>
         <script type="text/javascript">
           <xsl:text disable-output-escaping="yes">
             <![CDATA[
@@ -107,6 +108,7 @@
           ]]>
           </xsl:text>
         </script>
+        <script type="text/javascript" src="{$js-location}"></script>
       </head>
       <body>
         <h1>Line-list view of XSAMS</h1>
@@ -134,7 +136,13 @@
   </xsl:template>       
          
   <xsl:template match="/xsams:XSAMSData/xsams:Processes/xsams:Radiative">
-    <table>
+    <form action="../csv/line-list.csv" method="post" enctype="application/x-www-form-urlencoded" onsubmit="copyTableToFormField('t1', 't1Content');">
+      <p>
+        <input id="t1Content" type="hidden" name="content" value="initial"/>
+        <input type="submit" value="Show table in CSV format"/>  
+      </p>
+    </form>
+    <table id="t1">
       <tr>
         <th>Species</th>
         <th>&#955;/&#957;/n/E</th>
