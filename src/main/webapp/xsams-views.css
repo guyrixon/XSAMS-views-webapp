@@ -3,12 +3,16 @@ a:visited {text-decoration: none; color: red;}
 a:active {text-decoration: none}
 a:hover {text-decoration: underline; color: blue;}
 
-table{border-collapse: collapse;}
+table{
+  border: 1px solid black;
+  border-collapse: collapse;
+}
 
 td, th {
   padding: 5px;
   margin: 0px;
-  border: 1px solid;
+  border: 1px solid black;
+  border-collapse: collapse;
 }
 
 h1 {
