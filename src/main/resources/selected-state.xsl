@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
     xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
     xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
     xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"
@@ -20,6 +20,8 @@
   <xsl:include href="cbc.xsl"/>
   
   <xsl:include href="query-source.xsl"/>
+  
+  <xsl:include href="species-name.xsl"/>
     
   <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
   
@@ -40,104 +42,66 @@
         <p>
           <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
         </p>
-        <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion"/>
-        <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule"/>
+        <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$id]"/>
+        <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState[@stateID=$id]"/>
       </body>
     </html>
   </xsl:template>
     
-    <xsl:template match="xsams:Molecule">
-      <xsl:if test="xsams:MolecularState[@stateID=$id]">
+    <xsl:template match="xsams:MolecularState">
+      <h2>Species</h2>
+      <p>
+        <xsl:text>InChI=</xsl:text>
+        <xsl:value-of select="../xsams:MolecularChemicalSpecies/xsams:InChI"/>
+        <xsl:text> (</xsl:text>
+        <xsl:value-of select="../xsams:MolecularChemicalSpecies/xsams:InChIKey"/>
+        <xsl:text>)</xsl:text>
+      </p>
+      <p>
+        <xsl:text>Structural formula: </xsl:text>
+        <xsl:call-template name="molecule">
+          <xsl:with-param name="molecule" select=".."/>
+        </xsl:call-template>
+      </p>
+      <p>
+        <xsl:text>Stoichiometric formula: </xsl:text>
+        <xsl:value-of select="../xsams:MolecularChemicalSpecies/xsams:StoichiometricFormula"/>
+      </p>
+      <p>
+        <xsl:text>Chemical name: </xsl:text>
+        <xsl:value-of select="../xsams:MolecularChemicalSpecies/xsams:ChemicalName/xsams:Value"/>
+      </p>
+      
+      <h2>State</h2>
+      <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="xsams:AtomicState">
+      <xsl:if test="@stateID=$id">
         <h2>Species</h2>
         <p>
-          <xsl:value-of select="descendant::xsams:InChI"/>
+          <xsl:call-template name="atomic-ion">
+            <xsl:with-param name="ion" select=".."/>
+          </xsl:call-template>
+        </p>
+        <p>
+          <xsl:value-of select="../xsams:InChI"/>
           <xsl:text> (</xsl:text>
-          <xsl:value-of select="descendant::xsams:InChIKey"/>
+          <xsl:value-of select="../xsams:InChIKey"/>
           <xsl:text>)</xsl:text>
         </p>
-        <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion"/>
-        <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule"/>
-      </xsl:if>
-    </xsl:template>
-   
-    
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:ChemicalName/xsams:Value">
         <p>
-            <xsl:text>Molecule name: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula/xsams:Value">
-        <p>
-            <xsl:text>Structural formula: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:MolecularChemicalSpecies/xsams:StoichiometricFormula">
-        <p>
-            <xsl:text>Stoichiometric formula: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Atom">
-      <xsl:if test="xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$id]">
-        <h2>Species</h2>
-        <p>
-            <xsl:choose>
-                <xsl:when test="xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber">
-                    <xsl:text>Isotope: </xsl:text>
-                    <sup><xsl:value-of select="xsams:Isotope/xsams:IsotopeParameters/xsams:MassNumber"/></sup>
-                    <xsl:value-of select="xsams:ChemicalElement/xsams:ElementSymbol"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text>Element: </xsl:text>
-                    <xsl:value-of select="xsams:ChemicalElement/xsams:ElementSymbol"/>
-                    <xsl:text> (isotope unspecified)</xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
+          <xsl:text>Ion charge: </xsl:text>
+          <xsl:value-of select="../xsams:IonCharge"/>
         </p>
         <p>
-          <xsl:value-of select="descendant::xsams:InChI"/>
-          <xsl:if test="descendant::xsams:InChIKey">
-            <xsl:text> (</xsl:text>
-            <xsl:value-of select="descendant::xsams:InChIKey"/>
-            <xsl:text>)</xsl:text>
-          </xsl:if>
+          <xsl:text> Nuclear spin: </xsl:text>
+          <xsl:value-of select="../../xsams:IsotopeParameters/xsams:NuclearSpin"/>
         </p>
-        <xsl:if test="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin">
-          <p>
-            <xsl:text> Nuclear spin: </xsl:text>
-           <xsl:value-of select="xsams:Isotope/xsams:IsotopeParameters/xsams:NuclearSpin"/>
-          </p>
-        </xsl:if>
-        <xsl:apply-templates/>
-      </xsl:if>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Isotope">
-      <xsl:apply-templates/>
-    </xsl:template>
-    
-    <xsl:template match="xsams:Ion">
-      <xsl:apply-templates/>
-    </xsl:template>
-    
-    <xsl:template match="xsams:IonCharge">
-        <p>
-            <xsl:text>Ion charge: </xsl:text>
-            <xsl:value-of select="."/>
-        </p>
-    </xsl:template>
-    
-    <xsl:template match="xsams:AtomicState|xsams:MolecularState">
-      <xsl:if test="@stateID=$id">
         <h2>State</h2>
         <p>
-            <xsl:text>State description: </xsl:text>
-            <xsl:value-of select="xsams:Description"/>
+          <xsl:text>State description: </xsl:text>
+          <xsl:value-of select="xsams:Description"/>
         </p>
         <xsl:apply-templates/>
       </xsl:if>
