@@ -1,6 +1,7 @@
 package eu.vamdc.xsams.views;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,9 +63,11 @@ public class CsvServlet extends ErrorReportingServlet {
    */
   public void transformTable(HttpServletRequest request, HttpServletResponse response) 
       throws RequestException, IOException, TransformerConfigurationException, TransformerException {
-    StreamSource in = new StreamSource(request.getInputStream());
     response.setContentType("text/csv");
     response.setCharacterEncoding("UTF-8");
+    LOG.info(request.getParameter("content"));
+    
+    StreamSource in = new StreamSource(new StringReader(request.getParameter("content")));
     StreamResult out = new StreamResult(response.getWriter());
     
     Transformer t = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null).newTransformer(getXslt());

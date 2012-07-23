@@ -55,4 +55,8 @@ public class Locations {
     return getRootLocation(request) + "/xsams-views.css";
   }
   
+  public static String getPostTableJsLocation(HttpServletRequest request) {
+    return getRootLocation(request) + "/post-table.js";
+  }
+  
 }

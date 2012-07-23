@@ -32,17 +32,19 @@
   <xsl:param name="collision-list-location"/>
   <xsl:param name="state-location"/>
   <xsl:param name="css-location"/>
+  <xsl:param name="js-location"/>
     
-  <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+  <xsl:output method="html" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
     
   <xsl:template match="xsams:XSAMSData">
-    <html xmlns="http://www.w3.org/1999/xhtml">
+    <html>
       <head>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
         <title>State-list view of XSAMS</title>
         <link rel="stylesheet" type="text/css">
           <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
         </link>
+        <script type="text/javascript" src="{$js-location}"/>
       </head>
       <body>
         <h1>State-list view of XSAMS</h1>
@@ -60,73 +62,81 @@
           <xsl:text>)</xsl:text>
         </p>
         
-        <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
-        </p>
+        <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
         
-        
-        <table rules="all">
-          <tr>
-            <th>Species</th>
-            <th>State</th>
-            <th>Energy</th>
-          </tr>
-          
-          <xsl:for-each select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState">
-            <xsl:sort select="xsams:AtomicNumericalData/xsams:StateEnergy/xsams:value"/>
+        <form action="http://localhost:8080/XSAMS-views-webapp/t1.csv" method="post" enctype="application/x-www-form-urlencoded" onsubmit="copyTableToFormField('t1', 't1Content');">
+          <p>
+            <input id="t1Content" type="hidden" name="content" value="initial"/>
+            <input type="submit" value="Show table in CSV format"/>  
+          </p>
+        </form>
+            
+        <table ID="t1" rules="all">
+          <thead>
             <tr>
-              <td>
-                <xsl:call-template name="atomic-ion">
+              <th>Species</th>
+              <th>State</th>
+              <th>Energy</th>
+            </tr>  
+          </thead>
+          
+          <tbody>
+            <xsl:for-each select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState">
+              <xsl:sort select="xsams:AtomicNumericalData/xsams:StateEnergy/xsams:value"/>
+              <tr>
+                <td>
+                  <xsl:call-template name="atomic-ion">
                     <xsl:with-param name="ion" select=".."/>
                   </xsl:call-template>
-              </td>
-              <td>
-                <a>
-                  <xsl:attribute name="href">
-                    <xsl:value-of select="$state-location"/>
-                    <xsl:text>?id=</xsl:text>
+                </td>
+                <td>
+                  <a>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$state-location"/>
+                      <xsl:text>?id=</xsl:text>
+                      <xsl:value-of select="@stateID"/>
+                    </xsl:attribute>
                     <xsl:value-of select="@stateID"/>
-                  </xsl:attribute>
-                  <xsl:value-of select="@stateID"/>
-                  <xsl:text>: </xsl:text>
-                  <xsl:if test="xsams:Description">
-                    <xsl:value-of select="xsams:Description"/>
-                    <xsl:text> &#8212; </xsl:text>  
-                  </xsl:if>
-                  <xsl:apply-templates/>
-                </a>    
-              </td>
-              <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="xsams:AtomicNumericalData/xsams:StateEnergy"/></xsl:call-template></td>
-            </tr>
-          </xsl:for-each>
-          
-          <xsl:for-each select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState">
-            <xsl:sort select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/>
-            <tr>
-              <td>
-                <xsl:call-template name="molecule">
-                  <xsl:with-param name="molecule" select=".."/>
-                </xsl:call-template>
-              </td>
-              <td>
-                <a>
-                  <xsl:attribute name="href">
-                    <xsl:value-of select="$state-location"/>
-                    <xsl:text>?id=</xsl:text>
+                    <xsl:text>: </xsl:text>
+                    <xsl:if test="xsams:Description">
+                      <xsl:value-of select="xsams:Description"/>
+                      <xsl:text> &#8212; </xsl:text>  
+                    </xsl:if>
+                    <xsl:apply-templates/>
+                  </a>    
+                </td>
+                <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="xsams:AtomicNumericalData/xsams:StateEnergy"/></xsl:call-template></td>
+              </tr>
+            </xsl:for-each>
+            
+            <xsl:for-each select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState">
+              <xsl:sort select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/>
+              <tr>
+                <td>
+                  <xsl:call-template name="molecule">
+                    <xsl:with-param name="molecule" select=".."/>
+                  </xsl:call-template>
+                </td>
+                <td>
+                  <a>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$state-location"/>
+                      <xsl:text>?id=</xsl:text>
+                      <xsl:value-of select="@stateID"/>
+                    </xsl:attribute>
                     <xsl:value-of select="@stateID"/>
-                  </xsl:attribute>
-                  <xsl:value-of select="@stateID"/>
-                  <xsl:text>: </xsl:text>
-                  <xsl:if test="xsams:Description">
-                    <xsl:value-of select="xsams:Description"/>
-                    <xsl:text> &#8212; </xsl:text>  
-                  </xsl:if>
-                  <xsl:apply-templates/>
-                </a> 
-              </td>
-              <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/></xsl:call-template></td>
-            </tr>
-          </xsl:for-each>
+                    <xsl:text>: </xsl:text>
+                    <xsl:if test="xsams:Description">
+                      <xsl:value-of select="xsams:Description"/>
+                      <xsl:text> &#8212; </xsl:text>  
+                    </xsl:if>
+                    <xsl:apply-templates/>
+                  </a> 
+                </td>
+                <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/></xsl:call-template></td>
+              </tr>
+            </xsl:for-each>  
+          </tbody>
           
         </table>
       </body>

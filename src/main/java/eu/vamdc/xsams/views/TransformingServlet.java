@@ -74,6 +74,7 @@ public class TransformingServlet extends ErrorReportingServlet {
     t.setParameter("collision-location", Locations.getCollisionLocation(request, key));
     t.setParameter("broadening-location", Locations.getBroadeningLocation(request, key));
     t.setParameter("css-location", Locations.getResultsCssLocation(request));
+    t.setParameter("js-location", Locations.getPostTableJsLocation(request));
     String id = request.getParameter("id");
     if (id != null) {
       t.setParameter("id", id);

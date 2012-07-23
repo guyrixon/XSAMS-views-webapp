@@ -99,7 +99,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CsvServlet</servlet-name>
-        <url-pattern>/csv</url-pattern>
+        <url-pattern>*.csv</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
