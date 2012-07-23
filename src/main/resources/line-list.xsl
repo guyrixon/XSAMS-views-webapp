@@ -134,7 +134,7 @@
   </xsl:template>       
          
   <xsl:template match="/xsams:XSAMSData/xsams:Processes/xsams:Radiative">
-    <table rules="all">
+    <table>
       <tr>
         <th>Species</th>
         <th>&#955;/&#957;/n/E</th>
