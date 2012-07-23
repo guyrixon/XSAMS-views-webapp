@@ -57,6 +57,14 @@
             <param-value>broadening.xsl</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>CsvServlet</servlet-name>
+        <servlet-class>eu.vamdc.xsams.views.CsvServlet</servlet-class>
+        <init-param>
+            <param-name>stylesheet</param-name>
+            <param-value>html-table-to-csv.xsl</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CacheServlet</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -88,6 +96,10 @@
     <servlet-mapping>
         <servlet-name> BroadeningServlet</servlet-name>
         <url-pattern>/broadening/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CsvServlet</servlet-name>
+        <url-pattern>/csv</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
