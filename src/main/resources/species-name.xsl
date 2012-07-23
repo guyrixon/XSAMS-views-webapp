@@ -12,7 +12,7 @@
       <xsl:when test="$state">
         <a href="{$state-location}?id={$state/@stateID}">
           <xsl:call-template name="formula">
-            <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"></xsl:with-param>
+            <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula/xsams:Value"></xsl:with-param>
           </xsl:call-template>
           <xsl:variable name="charge" select="$state/../xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
           <xsl:choose>
@@ -25,7 +25,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="formula">
-          <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula"></xsl:with-param>
+          <xsl:with-param name="formula" select="$molecule/xsams:MolecularChemicalSpecies/xsams:OrdinaryStructuralFormula/xsams:Value"></xsl:with-param>
         </xsl:call-template>
         <xsl:variable name="charge" select="$molecule/xsams:MolecularChemicalSpecies/xsams:IonCharge"/>
         <xsl:choose>
