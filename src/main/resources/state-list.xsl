@@ -64,7 +64,7 @@
         
         <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
         
-        <form action="../csv/state-list.csv" method="post" enctype="application/x-www-form-urlencoded" onsubmit="copyTableToFormField('t1', 't1Content');">
+        <form action="../csv/state-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
           <p>
             <input id="t1Content" type="hidden" name="content" value="initial"/>
             <input type="submit" value="Show table in CSV format"/>  

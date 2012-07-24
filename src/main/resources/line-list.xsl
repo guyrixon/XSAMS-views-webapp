@@ -136,7 +136,7 @@
   </xsl:template>       
          
   <xsl:template match="/xsams:XSAMSData/xsams:Processes/xsams:Radiative">
-    <form action="../csv/line-list.csv" method="post" enctype="application/x-www-form-urlencoded" onsubmit="copyTableToFormField('t1', 't1Content');">
+    <form action="../csv/line-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
       <p>
         <input id="t1Content" type="hidden" name="content" value="initial"/>
         <input type="submit" value="Show table in CSV format"/>  
