@@ -71,13 +71,13 @@ public class CsvServlet extends ErrorReportingServlet {
     response.setCharacterEncoding("UTF-8");
     
     if (request.getContentType().startsWith("application/x-www-form-urlencoded")) {
-      LOG.info("Handling application/x-www-form-urlencoded");
+      LOG.debug("Creating CSV from application/x-www-form-urlencoded");
       StreamSource in = new StreamSource(new StringReader(request.getParameter("content")));
       StreamResult out = new StreamResult(response.getWriter());
       getTransformer().transform(in, out);
     }
     else if (request.getContentType().startsWith("multipart/form-data")) {
-      LOG.info("Handling multipart/form-data");
+      LOG.debug("Creating CSV from multipart/form-data");
       InputStream stream = null;
       try {
         ServletFileUpload upload = new ServletFileUpload();
