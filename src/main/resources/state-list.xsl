@@ -102,7 +102,10 @@
                       <xsl:value-of select="xsams:Description"/>
                       <xsl:text> &#8212; </xsl:text>  
                     </xsl:if>
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates select="xsams:AtomicComposition"/>
+                    <xsl:if test="not(xsams:AtomicComposition/xsams:Component/xsams:Term)">
+                      <xsl:apply-templates select="xsams:AtomicQuantumNumbers"/>
+                    </xsl:if>
                   </a>    
                 </td>
                 <td><xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="xsams:AtomicNumericalData/xsams:StateEnergy"/></xsl:call-template></td>
