@@ -291,7 +291,9 @@
       <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$state/xsams:AtomicNumericalData/xsams:StateEnergy"></xsl:with-param></xsl:call-template>
       <xsl:text> &#8212; </xsl:text>
       <xsl:apply-templates select="$state/xsams:AtomicComposition/xsams:Component"/>
-      <xsl:apply-templates select="$state/xsams:AtomicQuantumNumbers"/>
+      <xsl:if test="not($state/xsams:AtomicComposition/xsams:Component/xsams:Term)">
+        <xsl:apply-templates select="$state/xsams:AtomicQuantumNumbers"/>
+      </xsl:if>
     </a>  
   </xsl:template>
   
