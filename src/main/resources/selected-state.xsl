@@ -221,7 +221,11 @@
         <sup><xsl:value-of select="xsams:NumberOfElectrons"/></sup>
         <xsl:text> </xsl:text>
       </xsl:for-each>
+    </p>
+    <p>
+      <xsl:text>Coupling term:</xsl:text>
       <xsl:for-each select="xsams:Term/xsams:LS">
+        <xsl:text> LS: </xsl:text>
         <sup><xsl:value-of select="(xsams:S*2)+1"/></sup>
         <xsl:choose>
           <xsl:when test="xsams:L/xsams:Value=0"><xsl:text>S</xsl:text></xsl:when>
@@ -237,6 +241,10 @@
           <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
         </xsl:choose>
         <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
+      </xsl:for-each>
+      <xsl:for-each select="xsams:Term/xsams:J1J2">
+        <xsl:text> J</xsl:text><sub>1</sub><xsl:text>J</xsl:text><sub>2</sub><xsl:text>: </xsl:text>
+        <xsl:text>(</xsl:text><xsl:value-of select="xsams:j[1]"/><xsams:text>,</xsams:text><xsl:value-of select="xsams:j[2]"/><xsl:text>)</xsl:text>
       </xsl:for-each>
     </p>
   </xsl:template>
