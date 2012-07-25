@@ -240,10 +240,10 @@
           <xsl:when test="xsams:L/xsams:Value=9"><xsl:text>M</xsl:text></xsl:when>
           <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
         </xsl:choose>
-        <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
         <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
           <xsl:text>&#176;</xsl:text>
         </xsl:if>
+        <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
       </xsl:for-each>
       <xsl:for-each select="xsams:Term/xsams:jj">
         <xsl:text> </xsl:text><i>jj</i><xsl:text>: </xsl:text>
