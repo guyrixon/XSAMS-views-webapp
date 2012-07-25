@@ -225,7 +225,7 @@
     <p>
       <xsl:text>Coupling term:</xsl:text>
       <xsl:for-each select="xsams:Term/xsams:LS">
-        <xsl:text> LS: </xsl:text>
+        <xsl:text> </xsl:text><i>LS</i><xsl:text>: </xsl:text>
         <sup><xsl:value-of select="(xsams:S*2)+1"/></sup>
         <xsl:choose>
           <xsl:when test="xsams:L/xsams:Value=0"><xsl:text>S</xsl:text></xsl:when>
@@ -241,10 +241,53 @@
           <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
         </xsl:choose>
         <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
+        <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+          <xsl:text>&#176;</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:for-each select="xsams:Term/xsams:jj">
+        <xsl:text> </xsl:text><i>jj</i><xsl:text>: </xsl:text>
+        <xsl:text>(</xsl:text>
+        <xsl:for-each select="xsams:j">
+          <xsl:value-of select="."/>
+          <xsl:if test="not(position()=last())">
+            <xsl:text>,</xsl:text>
+          </xsl:if>
+        </xsl:for-each>
+        <xsl:text>)</xsl:text>
+        <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+          <xsl:text>&#176;</xsl:text>
+        </xsl:if>
       </xsl:for-each>
       <xsl:for-each select="xsams:Term/xsams:J1J2">
-        <xsl:text> J</xsl:text><sub>1</sub><xsl:text>J</xsl:text><sub>2</sub><xsl:text>: </xsl:text>
-        <xsl:text>(</xsl:text><xsl:value-of select="xsams:j[1]"/><xsams:text>,</xsams:text><xsl:value-of select="xsams:j[2]"/><xsl:text>)</xsl:text>
+        <i><xsl:text> J</xsl:text><sub>1</sub><xsl:text>J</xsl:text><sub>2</sub></i><xsl:text>: </xsl:text>
+        <xsl:text>(</xsl:text>
+        <xsl:for-each select="xsams:j">
+          <xsl:value-of select="."/>
+          <xsl:if test="not(position()=last())">
+            <xsl:text>,</xsl:text>
+          </xsl:if>
+        </xsl:for-each>
+        <xsl:text>)</xsl:text>
+        <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+          <xsl:text>&#176;</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:for-each select="xsams:Term/xsams:jK">
+        <i><xsl:text> jK</xsl:text></i><xsl:text>: </xsl:text>
+        <sup><xsl:value-of select="(2*xsams:S2)+1"/></sup>
+        <xsl:text>[</xsl:text><xsl:value-of select="xsams:K"/><xsl:text>]</xsl:text>
+        <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+          <xsl:text>&#176;</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:for-each select="xsams:Term/xsams:LK">
+        <i><xsl:text> LK</xsl:text></i><xsl:text>: </xsl:text>
+        <sup><xsl:value-of select="(2*xsams:S2)+1"/></sup>
+        <xsl:text>[</xsl:text><xsl:value-of select="xsams:K"/><xsl:text>]</xsl:text>
+        <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+          <xsl:text>&#176;</xsl:text>
+        </xsl:if>
       </xsl:for-each>
     </p>
   </xsl:template>
