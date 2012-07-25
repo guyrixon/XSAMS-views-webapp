@@ -74,7 +74,50 @@
         <xsl:when test="xsams:L/xsams:Value=10"><xsl:text>N</xsl:text></xsl:when>
       </xsl:choose>
       <sub><xsl:value-of select="../../../../xsams:AtomicQuantumNumbers/xsams:TotalAngularMomentum"/></sub>
+      <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+        <xsl:text>&#176;</xsl:text>
+      </xsl:if>
       <xsl:text> </xsl:text>
+    </xsl:for-each>
+    <xsl:for-each select="xsams:Term/xsams:jj">
+      <xsl:text>(</xsl:text>
+      <xsl:for-each select="xsams:j">
+        <xsl:value-of select="."/>
+        <xsl:if test="not(position()=last())">
+          <xsl:text>,</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:text>)</xsl:text>
+      <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+        <xsl:text>&#176;</xsl:text>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:for-each select="xsams:Term/xsams:J1J2">
+      <xsl:text>(</xsl:text>
+      <xsl:for-each select="xsams:j">
+        <xsl:value-of select="."/>
+        <xsl:if test="not(position()=last())">
+          <xsl:text>,</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
+      <xsl:text>)</xsl:text>
+      <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+        <xsl:text>&#176;</xsl:text>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:for-each select="xsams:Term/xsams:jK">
+      <sup><xsl:value-of select="(2*xsams:S2)+1"/></sup>
+      <xsl:text>[</xsl:text><xsl:value-of select="xsams:K"/><xsl:text>]</xsl:text>
+      <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+        <xsl:text>&#176;</xsl:text>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:for-each select="xsams:Term/xsams:LK">
+      <sup><xsl:value-of select="(2*xsams:S2)+1"/></sup>
+      <xsl:text>[</xsl:text><xsl:value-of select="xsams:K"/><xsl:text>]</xsl:text>
+      <xsl:if test="../../../../xsams:AtomicQuantumNumbers/xsams:Parity='odd'">
+        <xsl:text>&#176;</xsl:text>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
     
