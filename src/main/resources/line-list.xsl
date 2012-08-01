@@ -222,43 +222,43 @@
   
   <xsl:template name="wavelength">
     <xsl:param name="wl"/>
-    <xsl:if test="$wl/xsams:Wavelength">
-      <xsl:text> &#955;=</xsl:text>
-      <xsl:call-template name="wavelength-with-unit"><xsl:with-param name="quantity" select="$wl/xsams:Wavelength"/></xsl:call-template>
-    </xsl:if>
-    <xsl:if test="$wl/xsams:Frequency">
-      <xsl:text> &#957;=</xsl:text>
-      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$wl/xsams:Frequency"/></xsl:call-template>
-    </xsl:if>
-    <xsl:if test="$wl/xsams:Wavenumber">
-      <xsl:text> n=</xsl:text>
-      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$wl/xsams:Wavenumber"/></xsl:call-template>
-    </xsl:if>
-    <xsl:if test="$wl/xsams:Energy">
-      <xsl:text> E=</xsl:text>
-      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="$wl/xsams:Energy"/></xsl:call-template>
-    </xsl:if>
+    <xsl:for-each select="$wl/xsams:Wavelength">
+      <i> &#955;</i><xsl:text>=</xsl:text>
+      <xsl:call-template name="wavelength-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </xsl:for-each>
+    <xsl:for-each select="$wl/xsams:Frequency">
+      <i> &#957;</i><xsl:text>=</xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </xsl:for-each>
+    <xsl:for-each select="$wl/xsams:Wavenumber">
+      <i> n</i><xsl:text>=</xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </xsl:for-each>
+    <xsl:for-each select="$wl/xsams:Energy">
+      <i> E</i><xsl:text>=</xsl:text>
+      <xsl:call-template name="value-with-unit"><xsl:with-param name="quantity" select="."/></xsl:call-template>
+    </xsl:for-each>
   </xsl:template>
   
   
   <xsl:template name="probability">
     <xsl:param name="p"/>
-    <xsl:if test="$p/xsams:TransitionProbabilityA">
-      <xsl:text> A=</xsl:text>
-      <xsl:value-of select="$p/xsams:TransitionProbabilityA/xsams:Value"/>
-    </xsl:if>
-    <xsl:if test="$p/xsams:OscillatorStrength">
-      <xsl:text> f=</xsl:text>
-      <xsl:value-of select="$p/xsams:OscillatorStrength/xsams:Value"/>
-    </xsl:if>
-    <xsl:if test="$p/xsams:WeightedOscillatorStrength">
-      <xsl:text> gf=</xsl:text>
-      <xsl:value-of select="$p/xsams:WeightedOscillatorStrength/xsams:Value"/>
-    </xsl:if>
-    <xsl:if test="$p/xsams:Log10WeightedOscillatorStrength">
-      <xsl:text> log</xsl:text><sub>10</sub><xsl:text>gf=</xsl:text>
-      <xsl:value-of select="$p/xsams:Log10WeightedOscillatorStrength/xsams:Value"/>
-    </xsl:if>
+    <xsl:for-each select="$p/xsams:TransitionProbabilityA">
+      <i> A</i><xsl:text>=</xsl:text>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:for-each select="$p/xsams:OscillatorStrength">
+      <i> f</i><xsl:text>=</xsl:text>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:for-each select="$p/xsams:WeightedOscillatorStrength">
+      <i> gf</i><xsl:text>=</xsl:text>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
+    <xsl:for-each select="$p/xsams:Log10WeightedOscillatorStrength">
+      <xsl:text> log</xsl:text><sub>10</sub><i>gf</i><xsl:text>=</xsl:text>
+      <xsl:value-of select="."/>
+    </xsl:for-each>
   </xsl:template>
   
   
