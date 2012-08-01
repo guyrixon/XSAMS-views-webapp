@@ -128,7 +128,7 @@
         <p>
           <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
         </p>
-        <p>Assume all wavelengths are in vacuum and <input type="button" value="Convert to air" onclick="convertAllVacuumToAir()"/> (at IAU STP).</p>
+        <p>Assume<a href="#footnote">*</a> all wavelengths are in vacuum and <input type="button" value="Convert to air" onclick="convertAllVacuumToAir()"/> (at IAU STP).</p>
         <p>Assume all wavelengths are in air (at IAU STP) and <input type="button" value="Convert to vacuum" onclick="convertAllAirToVacuum()"/>.</p>
         <xsl:apply-templates select="xsams:Processes/xsams:Radiative"/>
       </body>
@@ -155,6 +155,8 @@
       </xsl:text>
       <xsl:apply-templates select="xsams:RadiativeTransition"/>
     </table>
+    
+    <p><a name="footnote">* In XSAMS 0.3 there is no way to tell whether a wavelength is in air or vacuum. In XSAMS 1.0 this will be done better.</a></p>
         
   </xsl:template>
   
