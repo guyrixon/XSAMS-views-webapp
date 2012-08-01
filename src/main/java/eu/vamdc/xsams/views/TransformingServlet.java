@@ -67,6 +67,7 @@ public class TransformingServlet extends ErrorReportingServlet {
     StreamResult out = new StreamResult(response.getWriter());
     
     Transformer t = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null).newTransformer(getXslt());
+    t.setParameter("root-location", Locations.getRootLocation(request));
     t.setParameter("line-list-location", Locations.getLineListLocation(request, key));
     t.setParameter("state-list-location", Locations.getStateListLocation(request, key));
     t.setParameter("collision-list-location", Locations.getCollisionListLocation(request, key));
