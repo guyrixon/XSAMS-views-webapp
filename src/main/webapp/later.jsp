@@ -6,6 +6,7 @@
 
 <%@page import="eu.vamdc.xsams.views.Locations"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%response.setStatus(202);%>
 <!DOCTYPE html>
 <html>
   <head>
