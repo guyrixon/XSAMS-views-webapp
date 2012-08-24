@@ -191,19 +191,19 @@
     <xsl:param name="p"/>
     <xsl:for-each select="$p/xsams:TransitionProbabilityA">
       <i> A</i><xsl:text>=</xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:value-of select="xsams:Value"/>
     </xsl:for-each>
     <xsl:for-each select="$p/xsams:OscillatorStrength">
       <i> f</i><xsl:text>=</xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:value-of select="xsams:Value"/>
     </xsl:for-each>
     <xsl:for-each select="$p/xsams:WeightedOscillatorStrength">
       <i> gf</i><xsl:text>=</xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:value-of select="xsams:Value"/>
     </xsl:for-each>
     <xsl:for-each select="$p/xsams:Log10WeightedOscillatorStrength">
       <xsl:text> log</xsl:text><sub>10</sub><i>gf</i><xsl:text>=</xsl:text>
-      <xsl:value-of select="."/>
+      <xsl:value-of select="xsams:Value"/>
     </xsl:for-each>
   </xsl:template>
   
