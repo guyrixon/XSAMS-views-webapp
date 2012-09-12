@@ -25,43 +25,92 @@
     <xsl:for-each select="$sources">
       <xsl:if test="not(position()=1)"><xsl:text>; </xsl:text></xsl:if>
       <xsl:choose>
-        <xsl:when test="count(xsams:Authors/xsams:Author) = 1"><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/></xsl:when>
-        <xsl:when test="count(xsams:Authors/xsams:Author) = 2"><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/><xsl:text> and </xsl:text><xsl:value-of select="xsams:Authors/xsams:Author[2]/xsams:Name"/></xsl:when>
-        <xsl:otherwise><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/><xsl:text> et al. </xsl:text></xsl:otherwise>
+        <xsl:when test="xsams:UniformResourceIdentifier">
+          <a href="{xsams:UniformResourceIdentifier}"> 
+            <xsl:choose>
+              <xsl:when test="count(xsams:Authors/xsams:Author) = 1"><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/></xsl:when>
+              <xsl:when test="count(xsams:Authors/xsams:Author) = 2"><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/><xsl:text> and </xsl:text><xsl:value-of select="xsams:Authors/xsams:Author[2]/xsams:Name"/></xsl:when>
+              <xsl:otherwise><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/><xsl:text> et al. </xsl:text></xsl:otherwise>
+            </xsl:choose>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="xsams:Year"/>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:choose>
+            <xsl:when test="count(xsams:Authors/xsams:Author) = 1"><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/></xsl:when>
+            <xsl:when test="count(xsams:Authors/xsams:Author) = 2"><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/><xsl:text> and </xsl:text><xsl:value-of select="xsams:Authors/xsams:Author[2]/xsams:Name"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="xsams:Authors/xsams:Author[1]/xsams:Name"/><xsl:text> et al. </xsl:text></xsl:otherwise>
+          </xsl:choose>
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="xsams:Year"/>
+        </xsl:otherwise>
       </xsl:choose>
-      <xsl:text> </xsl:text>
-      <xsl:value-of select="xsams:Year"/>  
     </xsl:for-each>
   </xsl:template>
   
   <xsl:template name="source-long">
     <xsl:param name="source"/>
-    <xsl:for-each select="$source/xsams:Authors/xsams:Author">
-      <xsl:choose>
-        <xsl:when test="position() = 1"></xsl:when>
-        <xsl:when test="position() = last()"><xsl:text> and </xsl:text></xsl:when>
-        <xsl:otherwise><xsl:text>, </xsl:text></xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="xsams:Name"/>
-    </xsl:for-each>
-    <xsl:text>, </xsl:text>
-    <xsl:if test="$source/xsams:Title">
-      <i><xsl:value-of select="$source/xsams:Title"/></i>
-      <xsl:text>, </xsl:text>  
-    </xsl:if>
-    <xsl:if test="$source/xsams:SourceName">
-      <xsl:value-of select="$source/xsams:SourceName"/>
-      <xsl:text>, </xsl:text>  
-    </xsl:if>
-    <xsl:if test="$source/xsams:Volume">
-      <b><xsl:value-of select="$source/xsams:Volume"/></b>
-      <xsl:text>, </xsl:text>
-    </xsl:if>
     <xsl:choose>
-      <xsl:when test="$source/xsams:PageBegin and $source/xsams:PageEnd"><xsl:value-of select="$source/xsams:PageBegin"/><xsl:text>-</xsl:text><xsl:value-of select="$source/xsams:PageEnd"/><xsl:text>, </xsl:text></xsl:when>
-      <xsl:otherwise><xsl:value-of select="$source/xsams:PageBegin"/><xsl:text>, </xsl:text></xsl:otherwise>
+      <xsl:when test="$source/xsams:UniformResourceIdentifier">
+        <a href="{$source/xsams:UniformResourceIdentifier}">
+          <xsl:for-each select="$source/xsams:Authors/xsams:Author">
+            <xsl:choose>
+              <xsl:when test="position() = 1"></xsl:when>
+              <xsl:when test="position() = last()"><xsl:text> and </xsl:text></xsl:when>
+              <xsl:otherwise><xsl:text>, </xsl:text></xsl:otherwise>
+            </xsl:choose>
+            <xsl:value-of select="xsams:Name"/>
+          </xsl:for-each>
+          <xsl:text>, </xsl:text>
+          <xsl:if test="$source/xsams:Title">
+            <i><xsl:value-of select="$source/xsams:Title"/></i>
+            <xsl:text>, </xsl:text>  
+          </xsl:if>
+          <xsl:if test="$source/xsams:SourceName">
+            <xsl:value-of select="$source/xsams:SourceName"/>
+            <xsl:text>, </xsl:text>  
+          </xsl:if>
+          <xsl:if test="$source/xsams:Volume">
+            <b><xsl:value-of select="$source/xsams:Volume"/></b>
+            <xsl:text>, </xsl:text>
+          </xsl:if>
+          <xsl:choose>
+            <xsl:when test="$source/xsams:PageBegin and $source/xsams:PageEnd"><xsl:value-of select="$source/xsams:PageBegin"/><xsl:text>-</xsl:text><xsl:value-of select="$source/xsams:PageEnd"/><xsl:text>, </xsl:text></xsl:when>
+            <xsl:otherwise><xsl:value-of select="$source/xsams:PageBegin"/><xsl:text>, </xsl:text></xsl:otherwise>
+          </xsl:choose>
+          <xsl:value-of select="$source/xsams:Year"/>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:for-each select="$source/xsams:Authors/xsams:Author">
+          <xsl:choose>
+            <xsl:when test="position() = 1"></xsl:when>
+            <xsl:when test="position() = last()"><xsl:text> and </xsl:text></xsl:when>
+            <xsl:otherwise><xsl:text>, </xsl:text></xsl:otherwise>
+          </xsl:choose>
+          <xsl:value-of select="xsams:Name"/>
+        </xsl:for-each>
+        <xsl:text>, </xsl:text>
+        <xsl:if test="$source/xsams:Title">
+          <i><xsl:value-of select="$source/xsams:Title"/></i>
+          <xsl:text>, </xsl:text>  
+        </xsl:if>
+        <xsl:if test="$source/xsams:SourceName">
+          <xsl:value-of select="$source/xsams:SourceName"/>
+          <xsl:text>, </xsl:text>  
+        </xsl:if>
+        <xsl:if test="$source/xsams:Volume">
+          <b><xsl:value-of select="$source/xsams:Volume"/></b>
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$source/xsams:PageBegin and $source/xsams:PageEnd"><xsl:value-of select="$source/xsams:PageBegin"/><xsl:text>-</xsl:text><xsl:value-of select="$source/xsams:PageEnd"/><xsl:text>, </xsl:text></xsl:when>
+          <xsl:otherwise><xsl:value-of select="$source/xsams:PageBegin"/><xsl:text>, </xsl:text></xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="$source/xsams:Year"/>
+      </xsl:otherwise>
     </xsl:choose>
-    <xsl:value-of select="$source/xsams:Year"/>  
   </xsl:template>
   
 </xsl:stylesheet>

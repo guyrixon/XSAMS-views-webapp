@@ -74,6 +74,15 @@
   
   <xsl:template match="xsams:DataSets/xsams:DataSet">
     <h2><xsl:value-of select="@dataDescription"/></h2>
+    <ul>
+      <xsl:for-each select="xsams:SourceRef">
+        <li>
+          <xsl:call-template name="source-long">
+            <xsl:with-param name="source" select="key('sources', .)"/>
+          </xsl:call-template>  
+        </li>
+      </xsl:for-each>
+    </ul>
     <xsl:apply-templates/>
   </xsl:template>
   
