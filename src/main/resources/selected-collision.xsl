@@ -6,6 +6,7 @@
   
   <xsl:include href="species-name.xsl"/>
   <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <xsl:param name="id"/>
   <xsl:param name="css-location"/>
@@ -17,6 +18,7 @@
   <xsl:key name="atomic-ions" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion" use="@speciesID"/>
   <xsl:key name="molecules" match="/xsams:XSAMSData/xsams:Species/xsams:Molecules/xsams:Molecule" use="@speciesID"/>
   <xsl:key name="particles" match="/xsams:XSAMSData/xsams:Species/xsams:Particles/xsams:Particle" use="@speciesID"/>
+  <xsl:key name="sources" match="/xsams:XSAMSData/xsams:Sources/xsams:Source" use="@sourceID"/>
   
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -54,6 +56,16 @@
             </xsl:if>
           </xsl:for-each>
         </p>
+        
+        <ul>
+          <xsl:for-each select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition[@id=$id]/xsams:SourceRef">
+            <li>
+              <xsl:call-template name="source-long">
+                <xsl:with-param name="source" select="key('sources', .)"/>
+              </xsl:call-template>  
+            </li>
+          </xsl:for-each>
+        </ul>
         
         <xsl:apply-templates select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition[@id=$id]"/>
       </body>

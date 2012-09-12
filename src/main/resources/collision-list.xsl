@@ -5,7 +5,7 @@
   version="2.0">
   
   <xsl:import href="species-name.xsl"/>
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <xsl:param name="id"/>
   <xsl:param name="state-list-location"/>
@@ -21,6 +21,7 @@
   <xsl:key name="atomic-ions" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion" use="@speciesID"/>
   <xsl:key name="molecules" match="/xsams:XSAMSData/xsams:Species/xsams:Molecules/xsams:Molecule" use="@speciesID"/>
   <xsl:key name="particles" match="/xsams:XSAMSData/xsams:Species/xsams:Particles/xsams:Particle" use="@speciesID"/>
+  <xsl:key name="sources" match="/xsams:XSAMSData/xsams:Sources/xsams:Source" use="@sourceID"/>
   
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -50,7 +51,9 @@
           <xsl:text>)</xsl:text>
         </p>
         <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+          <xsl:call-template name="query-source">
+            <xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/>
+          </xsl:call-template>
         </p>
         <form action="../csv/collision-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
           <p>
@@ -62,6 +65,7 @@
           <tr>
             <th>ID</th>
             <th>Species</th>
+            <th>Source</th>
             <th>Detail</th>
           </tr>
           <xsl:apply-templates select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition"/>  
@@ -91,6 +95,11 @@
             <xsl:text> + </xsl:text>
           </xsl:if>
         </xsl:for-each>
+      </td>
+      <td>
+        <xsl:call-template name="sources-short">
+          <xsl:with-param name="sources" select="key('sources', xsams:SourceRef)"/>
+        </xsl:call-template>
       </td>
       <td>
         <a>
