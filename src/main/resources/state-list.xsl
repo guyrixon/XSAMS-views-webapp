@@ -82,7 +82,7 @@
           
           <tbody>
             <xsl:for-each select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState">
-              <xsl:sort select="xsams:AtomicNumericalData/xsams:StateEnergy/xsams:value"/>
+              <xsl:sort select="@stateID"/>
               <tr>
                 <td>
                   <xsl:call-template name="atomic-ion">
@@ -113,7 +113,7 @@
             </xsl:for-each>
             
             <xsl:for-each select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState">
-              <xsl:sort select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/>
+              <xsl:sort select="@stateID"/>
               <tr>
                 <td>
                   <xsl:call-template name="molecule">

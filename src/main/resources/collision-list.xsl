@@ -68,17 +68,23 @@
             <th>Source</th>
             <th>Detail</th>
           </tr>
-          <xsl:apply-templates select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition"/>  
+          <xsl:for-each select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition">
+            <xsl:sort select="@id"/>
+            <xsl:call-template name="collision">
+              <xsl:with-param name="collision" select="."/>
+            </xsl:call-template>
+          </xsl:for-each>  
         </table>
       </body>
     </html>
   </xsl:template>
   
-  <xsl:template match="xsams:CollisionalTransition">
+  <xsl:template name="collision">
+    <xsl:param name="collision"/>
     <tr>
       <td><xsl:value-of select="@id"/></td>
       <td>
-        <xsl:for-each select="xsams:Reactant">
+        <xsl:for-each select="$collision/xsams:Reactant">
           <xsl:call-template name="participant">
             <xsl:with-param name="participant" select="."/>
           </xsl:call-template>
@@ -87,7 +93,7 @@
           </xsl:if>
         </xsl:for-each>
         <xsl:text> &#8594; </xsl:text>
-        <xsl:for-each select="xsams:Product">
+        <xsl:for-each select="$collision/xsams:Product">
           <xsl:call-template name="participant">
             <xsl:with-param name="participant" select="."/>
           </xsl:call-template>
@@ -98,7 +104,7 @@
       </td>
       <td>
         <xsl:call-template name="sources-short">
-          <xsl:with-param name="sources" select="key('sources', xsams:SourceRef)"/>
+          <xsl:with-param name="sources" select="key('sources', $collision/xsams:SourceRef)"/>
         </xsl:call-template>
       </td>
       <td>
@@ -106,7 +112,7 @@
           <xsl:attribute name="href">
             <xsl:value-of select="$collision-location"/>
             <xsl:text>?id=</xsl:text>
-            <xsl:value-of select="@id"/>
+            <xsl:value-of select="$collision/@id"/>
           </xsl:attribute>
           <xsl:text>detail</xsl:text>
         </a>
