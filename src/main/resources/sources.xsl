@@ -10,12 +10,16 @@
       <xsl:if test="matches(xsams:Comments, 'This Source is a self-reference.')">
         <xsl:value-of select="substring(@sourceID,2)"></xsl:value-of>
         <xsl:text> : </xsl:text>
-        <xsl:value-of select="substring-after(xsams:Comments, 'Query was: ')"/>  
+        <a href="{$source/xsams:UniformResourceIdentifier}">
+          <xsl:value-of select="substring-after(xsams:Comments, 'Query was: ')"/>   
+        </a>
       </xsl:if>
       <xsl:if test="starts-with($source/xsams:Comments, 'QUERY')">
-        <xsl:value-of select="substring(@sourceID,2)"></xsl:value-of>
+        <a href="{$source/xsams:UniformResourceIdentifier}">
+          <xsl:value-of select="substring(@sourceID,2)"></xsl:value-of>
+        </a>
         <xsl:text> : </xsl:text>
-        <xsl:value-of select="substring-after(xsams:Comments, 'QUERY ')"/>  
+        <xsl:value-of select="substring-after(xsams:Comments, 'QUERY ')"/> 
       </xsl:if>
     </xsl:for-each>
   </xsl:template>

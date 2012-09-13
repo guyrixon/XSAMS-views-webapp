@@ -19,7 +19,7 @@
   <!-- Display rules for molecular states in the case-by-case framework. -->
   <xsl:include href="cbc.xsl"/>
   
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <xsl:include href="species-name.xsl"/>
     
@@ -40,7 +40,7 @@
       <body>
         <h1>Single-state view of XSAMS</h1>
         <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+          <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template>"/>
         </p>
         <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$id]"/>
         <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState[@stateID=$id]"/>

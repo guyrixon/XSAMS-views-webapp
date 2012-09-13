@@ -5,7 +5,7 @@
   <groupId>eu.vamdc</groupId>
   <artifactId>xsams-views-webapp</artifactId>
   <packaging>war</packaging>
-  <version>11.12r3-SNAPSHOT</version>
+  <version>11.12r3</version>
 
   <name>xsams-views-webapp</name>
   <url>http://maven.apache.org</url>

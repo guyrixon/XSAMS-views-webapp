@@ -24,7 +24,7 @@
   <xsl:include href="atomic-QNs.xsl"/>
   
   <!-- Display rules for the paragraph identifying the data set. -->
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <!-- Display rules for naming species (inc. charge state). -->
   <xsl:include href="species-name.xsl"/>
@@ -70,7 +70,7 @@
           <xsl:text>)</xsl:text>
         </p>
         <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+          <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template>
         </p>
         <p>Assume<a href="#footnote">*</a> all wavelengths are in vacuum and <input type="button" value="Convert to air" onclick="convertAllVacuumToAir()"/> (at IAU STP).</p>
         <p>Assume all wavelengths are in air (at IAU STP) and <input type="button" value="Convert to vacuum" onclick="convertAllAirToVacuum()"/>.</p>

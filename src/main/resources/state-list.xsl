@@ -23,7 +23,7 @@
   <xsl:include href="atomic-QNs.xsl"/>
   
   <!-- Display rules for the paragraph naming the data set. -->
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <!-- Display rules for species names (inc. charge state). -->
   <xsl:include href="species-name.xsl"/>
@@ -62,7 +62,7 @@
           <xsl:text>)</xsl:text>
         </p>
         
-        <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template> 
         
         <form action="../csv/state-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
           <p>

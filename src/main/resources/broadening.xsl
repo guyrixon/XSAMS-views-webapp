@@ -4,7 +4,7 @@
   xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
   version="1.0">
   
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <!-- Specifies the transition for which to display broadening. -->
   <xsl:param name="id"/>
@@ -24,7 +24,7 @@
       <body>
         <h1>Broadening and shifting of a single radiative-transition</h1>
         <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+          <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template> 
         </p>
         <xsl:apply-templates select="xsams:Processes/xsams:Radiative/xsams:RadiativeTransition[@id=$id]"/>
       </body>
