@@ -5,7 +5,6 @@
   version="2.0">
   
   <xsl:include href="species-name.xsl"/>
-  <xsl:include href="query-source.xsl"/>
   <xsl:include href="sources.xsl"/>
   
   <xsl:param name="id"/>
