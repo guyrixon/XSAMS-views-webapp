@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
-    xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
-    xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
-    xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"
-    xmlns:dcs="http://vamdc.org/xml/xsams/0.3/cases/dcs"
-    xmlns:hunda="http://vamdc.org/xml/xsams/0.3/cases/hunda"
-    xmlns:hundb="http://vamdc.org/xml/xsams/0.3/cases/hundb"
-    xmlns:stcs="http://vamdc.org/xml/xsams/0.3/cases/stcs"
-    xmlns:lpcs="http://vamdc.org/xml/xsams/0.3/cases/lpcs"
-    xmlns:asymcs="http://vamdc.org/xml/xsams/0.3/cases/asymcs"
-    xmlns:asymos="http://vamdc.org/xml/xsams/0.3/cases/asymos"
-    xmlns:sphcs="http://vamdc.org/xml/xsams/0.3/cases/sphcs"
-    xmlns:sphos="http://vamdc.org/xml/xsams/0.3/cases/sphos"
-    xmlns:ltos="http://vamdc.org/xml/xsams/0.3/cases/ltos"
-    xmlns:lpos="http://vamdc.org/xml/xsams/0.3/cases/lpos"
-    xmlns:nltos="http://vamdc.org/xml/xsams/0.3/cases/nltos">
+    xmlns:xsams="http://vamdc.org/xml/xsams/1.0">
         
   <!-- Display rules for molecular states in the case-by-case framework. -->
   <xsl:include href="cbc.xsl"/>
@@ -40,7 +26,7 @@
       <body>
         <h1>Single-state view of XSAMS</h1>
         <p>
-          <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template>"/>
+          <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template>
         </p>
         <xsl:apply-templates select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState[@stateID=$id]"/>
         <xsl:apply-templates select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState[@stateID=$id]"/>
@@ -318,7 +304,7 @@
   <xsl:template match="xsams:Case[@caseID='nltcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/nltcs-0.3.html">closed-shell, non-linear, triatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/nltcs-1.0.html">closed-shell, non-linear, triatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -327,7 +313,7 @@
   <xsl:template match="xsams:Case[@caseID='ltcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/ltcs-0.3.html">closed-shell, linear, triatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/ltcs-1.0.html">closed-shell, linear, triatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -336,7 +322,7 @@
   <xsl:template match="xsams:Case[@caseID='dcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/dcs-0.3.html">closed-shell, diatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/dcs-1.0.html">closed-shell, diatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -345,7 +331,7 @@
   <xsl:template match="xsams:Case[@caseID='hunda']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/hunda-0.3.html">open-shell, Hund's case (a) molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/hunda-1.0.html">open-shell, Hund's case (a) molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -354,7 +340,7 @@
   <xsl:template match="xsams:Case[@caseID='hundb']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/hundb-0.3.html">open-shell, Hund's case (b) molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/hundb-1.0.html">open-shell, Hund's case (b) molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -363,7 +349,7 @@
   <xsl:template match="xsams:Case[@caseID='stcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/stcs-0.3.html">closed-shell, symmetric top molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/stcs-1.0.html">closed-shell, symmetric top molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -372,7 +358,7 @@
   <xsl:template match="xsams:Case[@caseID='lpcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/lpcs-0.3.html">closed-shell, linear, polyatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/lpcs-1.0.html">closed-shell, linear, polyatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -381,7 +367,7 @@
   <xsl:template match="xsams:Case[@caseID='asymcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/asymcs-0.3.html">closed-shell, asymmetric-top molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/asymcs-1.0.html">closed-shell, asymmetric-top molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -390,7 +376,7 @@
   <xsl:template match="xsams:Case[@caseID='asymos']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/asymos-0.3.html">open-shell, symmetric-top molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/asymos-1.0.html">open-shell, symmetric-top molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -399,7 +385,7 @@
   <xsl:template match="xsams:Case[@caseID='sphcs']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/sphcs-0.3.html">closed-shell, spherical-top molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/sphcs-1.0.html">closed-shell, spherical-top molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -408,7 +394,7 @@
   <xsl:template match="xsams:Case[@caseID='sphos']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/sphos-0.3.html">open-shell, spherical-top molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/sphos-1.0.html">open-shell, spherical-top molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -417,7 +403,7 @@
   <xsl:template match="xsams:Case[@caseID='ltos']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/ltos-0.3.html">open-shell, linear, triatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/ltos-1.0.html">open-shell, linear, triatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -426,7 +412,7 @@
   <xsl:template match="xsams:Case[@caseID='lpos']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/lpos-0.3.html">open-shell, linear, polyatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/lpos-1.0.html">open-shell, linear, polyatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>
@@ -435,7 +421,7 @@
   <xsl:template match="xsams:Case[@caseID='nltos']">
     <p>
       <xsl:text>Quantum description of state as </xsl:text>
-      <a href="http://www.vamdc.eu/documents/cbc-0.3/lpos-0.3.html">open-shell, non-linear, triatomic molecule</a>
+      <a href="http://www.vamdc.eu/documents/cbc-1.0/lpos-1.0.html">open-shell, non-linear, triatomic molecule</a>
       <xsl:text>: </xsl:text>
       <xsl:apply-templates/>
     </p>

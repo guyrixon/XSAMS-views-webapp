@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
-  xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
-  xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
-  xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"
-  xmlns:dcs="http://vamdc.org/xml/xsams/0.3/cases/dcs"
-  xmlns:hunda="http://vamdc.org/xml/xsams/0.3/cases/hunda"
-  xmlns:hundb="http://vamdc.org/xml/xsams/0.3/cases/hundb"
-  xmlns:stcs="http://vamdc.org/xml/xsams/0.3/cases/stcs"
-  xmlns:lpcs="http://vamdc.org/xml/xsams/0.3/cases/lpcs"
-  xmlns:asymcs="http://vamdc.org/xml/xsams/0.3/cases/asymcs"
-  xmlns:asymos="http://vamdc.org/xml/xsams/0.3/cases/asymos"
-  xmlns:sphcs="http://vamdc.org/xml/xsams/0.3/cases/sphcs"
-  xmlns:sphos="http://vamdc.org/xml/xsams/0.3/cases/sphos"
-  xmlns:ltos="http://vamdc.org/xml/xsams/0.3/cases/ltos"
-  xmlns:lpos="http://vamdc.org/xml/xsams/0.3/cases/lpos"
-  xmlns:nltos="http://vamdc.org/xml/xsams/0.3/cases/nltos">
+  xmlns:xsams="http://vamdc.org/xml/xsams/1.0">
       
   <!-- Display rules for molecular states in the case-by-case framework. -->
   <xsl:include href="cbc.xsl"/>
