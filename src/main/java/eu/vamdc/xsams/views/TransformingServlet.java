@@ -3,11 +3,13 @@ package eu.vamdc.xsams.views;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -61,12 +63,16 @@ public class TransformingServlet extends ErrorReportingServlet {
   
   public void transformXsams(HttpServletRequest request, String key, HttpServletResponse response) 
       throws RequestException, IllegalStateException, FileNotFoundException, IOException, TransformerException {
+    
+    String version = getXsamsVersion(getData(key));
+    
     StreamSource in = getData(key);
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
     StreamResult out = new StreamResult(response.getWriter());
     
-    Transformer t = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null).newTransformer(getXslt());
+    
+    Transformer t = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null).newTransformer(getXslt(version));
     t.setParameter("root-location", Locations.getRootLocation(request));
     t.setParameter("line-list-location", Locations.getLineListLocation(request, key));
     t.setParameter("state-list-location", Locations.getStateListLocation(request, key));
@@ -110,9 +116,9 @@ public class TransformingServlet extends ErrorReportingServlet {
     return (q.startsWith("/"))? q.substring(1) : q;
   }
   
-  protected Source getXslt() {
+  protected Source getXslt(String version) {
     String stylesheetName = getInitParameter("stylesheet");
-    URL in = this.getClass().getResource("/"+stylesheetName);
+    URL in = this.getClass().getResource("/"+version+"/"+stylesheetName);
     if (in == null) {
       throw new IllegalStateException("Can't find the stylesheet " + stylesheetName);
     }
@@ -133,6 +139,45 @@ public class TransformingServlet extends ErrorReportingServlet {
     long bytesDownloaded = x.getByteCounter().get();
     request.setAttribute("eu.vamdc.xsams.views.bytesdownloaded", bytesDownloaded);
     request.getRequestDispatcher("/later.jsp").forward(request, response);
+  }
+  
+  
+  protected String getXsamsVersion(Source xml) throws RequestException {
+    XMLEventReader in = null;
+    try {
+      in = XMLInputFactory.newFactory().createXMLEventReader(xml);
+      while (in.hasNext()) {
+        XMLEvent x = (XMLEvent) in.next();
+        if (x.isStartElement()) {
+          String n = x.asStartElement().getName().getNamespaceURI();
+          if ("http://vamdc.org/xml/xsams/0.3".equals(n)) {
+            LOG.info("XSAMS v0.3");
+            return "0.3";
+          }
+          else if ("http://vamdc.org/xml/xsams/1.0".equals(n)) {
+            LOG.info("XSAMS v1.0");
+            return "1.0";
+          }
+          else {
+            throw new RequestException("XSAMS version was not recognized");
+          }
+        }
+      }
+      throw new RequestException("XSAMS version was not given");
+    }
+    catch(Exception e) {
+      throw new RequestException("XSAMS version was not found", e);
+    }
+    finally {
+      if (in != null) {
+        try {
+          in.close();
+        }
+        catch (Exception e) {
+          // Ignore it.
+        }
+      }
+    }
   }
   
   

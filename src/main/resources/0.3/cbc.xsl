@@ -1,5 +1,5 @@
 <xsl:stylesheet 
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
   xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
   xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
   xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"

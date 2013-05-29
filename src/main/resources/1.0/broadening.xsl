@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
+  xmlns:xsams="http://vamdc.org/xml/xsams/1.0"
   version="1.0">
   
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <!-- Specifies the transition for which to display broadening. -->
   <xsl:param name="id"/>
   <xsl:param name="css-location"/>
+  <xsl:param name="js-location"/>
   
-  <xsl:output method="xml" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+  <xsl:output method="html" encoding="UTF-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
   
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -20,11 +21,12 @@
         <link rel="stylesheet" type="text/css">
           <xsl:attribute name="href"><xsl:value-of select="$css-location"/></xsl:attribute>
         </link>
+        <script type="text/javascript" src="{$js-location}"></script>
       </head>
       <body>
         <h1>Broadening and shifting of a single radiative-transition</h1>
         <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+          <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template> 
         </p>
         <xsl:apply-templates select="xsams:Processes/xsams:Radiative/xsams:RadiativeTransition[@id=$id]"/>
       </body>
@@ -34,7 +36,13 @@
   <xsl:template match="xsams:RadiativeTransition">
     <p><xsl:text>Transition ID: </xsl:text><xsl:value-of select="@id"/></p>
     <xsl:apply-templates select="xsams:EnergyWavelength"/>
-    <table>
+    <form action="../csv/state-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
+      <p>
+        <input id="t1Content" type="hidden" name="content" value="initial"/>
+        <input type="submit" value="Show table in CSV format"/>  
+      </p>
+    </form>
+    <table id="t1">
       <tr>
         <th>Temperature</th>
         <th>Pressure</th>

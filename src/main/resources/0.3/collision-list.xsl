@@ -5,7 +5,7 @@
   version="2.0">
   
   <xsl:import href="species-name.xsl"/>
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <xsl:param name="id"/>
   <xsl:param name="state-list-location"/>
@@ -21,6 +21,7 @@
   <xsl:key name="atomic-ions" match="/xsams:XSAMSData/xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion" use="@speciesID"/>
   <xsl:key name="molecules" match="/xsams:XSAMSData/xsams:Species/xsams:Molecules/xsams:Molecule" use="@speciesID"/>
   <xsl:key name="particles" match="/xsams:XSAMSData/xsams:Species/xsams:Particles/xsams:Particle" use="@speciesID"/>
+  <xsl:key name="sources" match="/xsams:XSAMSData/xsams:Sources/xsams:Source" use="@sourceID"/>
   
   <xsl:template match="xsams:XSAMSData">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -50,7 +51,9 @@
           <xsl:text>)</xsl:text>
         </p>
         <p>
-          <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+          <xsl:call-template name="query-source">
+            <xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/>
+          </xsl:call-template>
         </p>
         <form action="../csv/collision-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
           <p>
@@ -62,19 +65,26 @@
           <tr>
             <th>ID</th>
             <th>Species</th>
+            <th>Source</th>
             <th>Detail</th>
           </tr>
-          <xsl:apply-templates select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition"/>  
+          <xsl:for-each select="xsams:Processes/xsams:Collisions/xsams:CollisionalTransition">
+            <xsl:sort select="@id"/>
+            <xsl:call-template name="collision">
+              <xsl:with-param name="collision" select="."/>
+            </xsl:call-template>
+          </xsl:for-each>  
         </table>
       </body>
     </html>
   </xsl:template>
   
-  <xsl:template match="xsams:CollisionalTransition">
+  <xsl:template name="collision">
+    <xsl:param name="collision"/>
     <tr>
       <td><xsl:value-of select="@id"/></td>
       <td>
-        <xsl:for-each select="xsams:Reactant">
+        <xsl:for-each select="$collision/xsams:Reactant">
           <xsl:call-template name="participant">
             <xsl:with-param name="participant" select="."/>
           </xsl:call-template>
@@ -83,7 +93,7 @@
           </xsl:if>
         </xsl:for-each>
         <xsl:text> &#8594; </xsl:text>
-        <xsl:for-each select="xsams:Product">
+        <xsl:for-each select="$collision/xsams:Product">
           <xsl:call-template name="participant">
             <xsl:with-param name="participant" select="."/>
           </xsl:call-template>
@@ -93,11 +103,16 @@
         </xsl:for-each>
       </td>
       <td>
+        <xsl:call-template name="sources-short">
+          <xsl:with-param name="sources" select="key('sources', $collision/xsams:SourceRef)"/>
+        </xsl:call-template>
+      </td>
+      <td>
         <a>
           <xsl:attribute name="href">
             <xsl:value-of select="$collision-location"/>
             <xsl:text>?id=</xsl:text>
-            <xsl:value-of select="@id"/>
+            <xsl:value-of select="$collision/@id"/>
           </xsl:attribute>
           <xsl:text>detail</xsl:text>
         </a>

@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0" 
-    xmlns:xsams="http://vamdc.org/xml/xsams/0.3"
-    xmlns:nltcs="http://vamdc.org/xml/xsams/0.3/cases/nltcs"
-    xmlns:ltcs="http://vamdc.org/xml/xsams/0.3/cases/ltcs"
-    xmlns:dcs="http://vamdc.org/xml/xsams/0.3/cases/dcs"
-    xmlns:hunda="http://vamdc.org/xml/xsams/0.3/cases/hunda"
-    xmlns:hundb="http://vamdc.org/xml/xsams/0.3/cases/hundb"
-    xmlns:stcs="http://vamdc.org/xml/xsams/0.3/cases/stcs"
-    xmlns:lpcs="http://vamdc.org/xml/xsams/0.3/cases/lpcs"
-    xmlns:asymcs="http://vamdc.org/xml/xsams/0.3/cases/asymcs"
-    xmlns:asymos="http://vamdc.org/xml/xsams/0.3/cases/asymos"
-    xmlns:sphcs="http://vamdc.org/xml/xsams/0.3/cases/sphcs"
-    xmlns:sphos="http://vamdc.org/xml/xsams/0.3/cases/sphos"
-    xmlns:ltos="http://vamdc.org/xml/xsams/0.3/cases/ltos"
-    xmlns:lpos="http://vamdc.org/xml/xsams/0.3/cases/lpos"
-    xmlns:nltos="http://vamdc.org/xml/xsams/0.3/cases/nltos">
+    xmlns:xsams="http://vamdc.org/xml/xsams/0.3">
         
   <!-- Display rules for molecular states in the case-by-case framework. -->
   <xsl:include href="cbc.xsl"/>
@@ -23,7 +9,7 @@
   <xsl:include href="atomic-QNs.xsl"/>
   
   <!-- Display rules for the paragraph naming the data set. -->
-  <xsl:include href="query-source.xsl"/>
+  <xsl:include href="sources.xsl"/>
   
   <!-- Display rules for species names (inc. charge state). -->
   <xsl:include href="species-name.xsl"/>
@@ -62,7 +48,7 @@
           <xsl:text>)</xsl:text>
         </p>
         
-        <xsl:apply-templates select="xsams:Sources/xsams:Source[1]"/>
+        <xsl:call-template name="query-source"><xsl:with-param name="source" select="xsams:Sources/xsams:Source[1]"/></xsl:call-template> 
         
         <form action="../csv/state-list.csv" method="post" enctype="multipart/form-data" onsubmit="copyTableToFormField('t1', 't1Content');">
           <p>
@@ -82,7 +68,7 @@
           
           <tbody>
             <xsl:for-each select="xsams:Species/xsams:Atoms/xsams:Atom/xsams:Isotope/xsams:Ion/xsams:AtomicState">
-              <xsl:sort select="xsams:AtomicNumericalData/xsams:StateEnergy/xsams:value"/>
+              <xsl:sort select="@stateID"/>
               <tr>
                 <td>
                   <xsl:call-template name="atomic-ion">
@@ -113,7 +99,7 @@
             </xsl:for-each>
             
             <xsl:for-each select="xsams:Species/xsams:Molecules/xsams:Molecule/xsams:MolecularState">
-              <xsl:sort select="xsams:MolecularStateCharacterisation/xsams:StateEnergy"/>
+              <xsl:sort select="@stateID"/>
               <tr>
                 <td>
                   <xsl:call-template name="molecule">
