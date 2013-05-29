@@ -57,6 +57,10 @@
         <xsl:text>Chemical name: </xsl:text>
         <xsl:value-of select="../xsams:MolecularChemicalSpecies/xsams:ChemicalName/xsams:Value"/>
       </p>
+      <p>
+        <xsl:variable name="nisturl">http://webbook.nist.gov/cgi/cbook.cgi?Units=SI&amp;InChI=<xsl:value-of select="../xsams:MolecularChemicalSpecies/xsams:InChIKey"/></xsl:variable>
+        <a href="{$nisturl}">Information from NIST chemical web-book.</a>
+      </p>
       
       <h2>State</h2>
       <xsl:apply-templates/>
