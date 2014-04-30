@@ -24,7 +24,7 @@
       <accessURL><%=Locations.getServiceLocation(request)%></accessURL>
       <resultType>text/html</resultType>
     </interface>
-    <versionOfStandards>11.12</versionOfStandards>
+    <versionOfStandards>12.07</versionOfStandards>
     <versionOfSoftware>1.0-SNAPSHOT</versionOfSoftware>
     <numberOfInputs>1</numberOfInputs>
   </capability>
@@ -32,6 +32,13 @@
   <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
     <interface xsi:type="vs:ParamHTTP">
       <accessURL><%=Locations.getCapabilitiesLocation(request)%></accessURL>
+      <resultType>application/xml</resultType>
+    </interface>
+  </capability>
+  
+  <capability standardID="ivo://ivoa.net/std/VOSI#availability">
+    <interface xsi:type="vs:ParamHTTP">
+      <accessURL><%=Locations.getAvailabilityLocation(request)%></accessURL>
       <resultType>application/xml</resultType>
     </interface>
   </capability>
