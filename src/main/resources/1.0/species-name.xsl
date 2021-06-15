@@ -65,6 +65,9 @@
             <xsl:when test="$state/../xsams:IonCharge&gt;0"><sup><xsl:value-of select="$state/../xsams:IonCharge"/>+</sup></xsl:when>
             <xsl:when test="$state/../xsams:IonCharge&lt;0"><sup><xsl:value-of select="$state/../xsams:IonCharge"/>-</sup></xsl:when>
           </xsl:choose>
+          <xsl:text> (</xsl:text>
+          <xsl:value-of select="$state/xsams:Description"/>
+          <xsl:text>)</xsl:text>
         </a>
       </xsl:when>
       <xsl:otherwise>
