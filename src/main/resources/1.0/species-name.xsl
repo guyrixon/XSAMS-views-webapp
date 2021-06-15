@@ -4,10 +4,13 @@
   xmlns:xsams="http://vamdc.org/xml/xsams/1.0"
   version="2.0">
   
+  <xsl:include href="cbc.xsl"/>
+  
   <xsl:template name="molecule">
     <xsl:param name="molecule"/>
     <xsl:param name="state"/>
     <xsl:param name="state-location"/>
+    
     <xsl:choose>
       <xsl:when test="$state">
         <a href="{$state-location}?id={$state/@stateID}">
@@ -21,6 +24,11 @@
             <xsl:when test="$charge&gt;0"><sup><xsl:value-of select="$charge"/>+</sup></xsl:when>
             <xsl:when test="$charge&lt;0"><sup><xsl:value-of select="$charge"/>-</sup></xsl:when>
           </xsl:choose>
+          <xsl:for-each select="$state/xsams:Case">
+              <xsl:text> (</xsl:text>
+              <xsl:apply-templates/>
+              <xsl:text>)</xsl:text>
+          </xsl:for-each>
         </a>
       </xsl:when>
       <xsl:otherwise>
